@@ -7,11 +7,48 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "prepare": "husky",
+    "typecheck": "tsc --noEmit"
+  },
+  "lint-staged": {
+    "*.{js,ts,vue}": [
+      "eslint . --fix  --max-warnings=0",
+      "prettier --write"
+    ],
+    "*.{css,md,json,html}": [
+      "prettier --write"
+    ]
   },
   "dependencies": {
+    "@nuxt/eslint": "^1.9.0",
+    "@nuxt/fonts": "^0.11.4",
+    "@nuxt/icon": "^2.1.0",
+    "@pinia/nuxt": "^0.11.2",
+    "@primevue/nuxt-module": "^4.4.1",
+    "@vee-validate/nuxt": "^4.15.1",
+    "@vee-validate/zod": "^4.15.1",
+    "eslint": "^9.38.0",
+    "graphql": "^16.11.0",
+    "graphql-tag": "^2.12.6",
     "nuxt": "^4.2.0",
+    "pinia": "^3.0.3",
+    "primevue": "^4.4.1",
     "vue": "^3.5.22",
-    "vue-router": "^4.6.3"
+    "vue-router": "^4.6.3",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.6",
+    "prettier": "^3.6.2",
+    "sass": "^1.93.2",
+    "typescript": "^5.9.3"
   }
 }
