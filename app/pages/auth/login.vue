@@ -11,7 +11,7 @@
       <div class="form-group">
         <div class="password-wrapper">
           <input type="password" placeholder="Password" class="form-input" />
-          <Icon name="ep:hide-filled" size="1.2em" class="password-icon" mode="svg" />
+          <Icon name="mdi:eye" size="1.2em" class="password-icon" mode="svg" />
         </div>
       </div>
 
@@ -85,7 +85,7 @@ definePageMeta({
     right: $space-lg;
     top: 50%;
     transform: translateY(-50%);
-    color: $color-text-muted;
+    color: $color-text-primary;
     cursor: pointer;
   }
 }
