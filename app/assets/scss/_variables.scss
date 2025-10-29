@@ -53,6 +53,12 @@ $radius-2xl: 2em;
 $radius-rounded: 50%;
 $radius-full: 100%;
 
+/* SHADOWS */
+$shadow-md:
+  rgba(0, 0, 0, 0.2) 0px 5px 5px -3px,
+  rgba(0, 0, 0, 0.14) 0px 8px 10px 1px,
+  rgba(0, 0, 0, 0.12) 0px 3px 14px 2px;
+
 /* SPACING */
 $space-2xs: 0.125rem;
 $space-xs: 0.25rem;

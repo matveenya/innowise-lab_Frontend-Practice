@@ -1,20 +1,17 @@
+<script setup lang="ts">
+const navLinks = [
+  { label: 'Employees', icon: 'mdi:account-multiple', to: '/users' },
+  { label: 'Skills', icon: 'material-symbols:trending-up', to: '/skills' },
+  { label: 'Languages', icon: 'material-symbols:translate', to: '/languages' },
+  { label: 'CVs', icon: 'material-symbols:contact-page-outline', to: '/cvs' },
+];
+</script>
+
 <template>
   <nav class="nav-links">
-    <NuxtLink to="/users">
-      <Icon name="mdi:account-multiple" size="1.5em" mode="svg" />
-      <span>Employees</span>
-    </NuxtLink>
-    <NuxtLink to="/skills">
-      <Icon name="material-symbols:trending-up" size="1.5em" mode="svg" />
-      <span>Skills</span>
-    </NuxtLink>
-    <NuxtLink to="/languages">
-      <Icon name="material-symbols:translate" size="1.5em" mode="svg" />
-      <span>Languages</span>
-    </NuxtLink>
-    <NuxtLink to="/cvs">
-      <Icon name="material-symbols:contact-page-outline" size="1.5em" mode="svg" />
-      <span>CVs</span>
+    <NuxtLink v-for="link in navLinks" :key="link.to" :to="link.to">
+      <Icon :name="link.icon" size="1.5em" mode="svg" />
+      <span>{{ link.label }}</span>
     </NuxtLink>
   </nav>
 </template>
