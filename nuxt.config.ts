@@ -10,6 +10,19 @@ export default defineNuxtConfig({
     '@vee-validate/nuxt',
     '@primevue/nuxt-module',
   ],
+  vite: {
+    css: {
+      preprocessorOptions: {
+        scss: {
+          additionalData: `
+            @use "@/assets/scss/variables.scss" as *;
+            @use "@/assets/scss/mixins.scss" as *;
+          `,
+        },
+      },
+    },
+  },
+  css: ['~/assets/scss/main.scss'],
   primevue: {
     options: {
       unstyled: true,

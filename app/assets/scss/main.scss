@@ -1,0 +1,11 @@
+@use './_reset.scss' as *;
+@use './_variables.scss' as *;
+@use './_mixins.scss' as *;
+
+body {
+  background-color: $color-primary;
+  color: $color-text-primary;
+  font-family: Roboto, Helvetica, Arial, sans-serif;
+  font-weight: $font-weight-regular;
+  font-display: swap;
+}
