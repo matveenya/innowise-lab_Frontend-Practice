@@ -7,7 +7,7 @@
 
 <style scoped lang="scss">
 .auth-tabs {
-  @include d-flex(center, center);
+  @include d-flex(center, flex-start);
   width: 100%;
   margin-bottom: $space-6xl;
 

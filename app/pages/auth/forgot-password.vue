@@ -29,7 +29,7 @@ definePageMeta({
     font-size: $font-size-4xl;
     font-weight: $font-weight-bold;
     color: $color-text-primary;
-    margin-bottom: $space-xs;
+    margin-bottom: $space-xl;
   }
 
   &__subtitle {
@@ -46,10 +46,11 @@ definePageMeta({
 
 .form-group {
   text-align: left;
+  width: 100%;
 }
 
 .form-input {
-  width: 560px;
+  width: 100%;
   padding: $space-md $space-lg;
   border-radius: $radius-sm;
   border: $border-outline;
@@ -88,6 +89,7 @@ definePageMeta({
   text-transform: uppercase;
   font-weight: $font-weight-medium;
   transition: background-color 0.2s ease;
+  margin-top: $space-xl;
 
   &--primary {
     background-color: $button-primary-bg;

@@ -1,6 +1,6 @@
 <template>
   <div class="auth-layout">
-    <AuthFormContainer>
+    <AuthFormContainer :is-forgot-password="isForgotPasswordPage">
       <AuthLayoutTabs v-if="!isForgotPasswordPage" />
 
       <slot />
