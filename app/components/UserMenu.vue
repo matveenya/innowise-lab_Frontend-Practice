@@ -1,20 +1,3 @@
-<script setup lang="ts">
-import Avatar from 'primevue/avatar';
-import Menu from 'primevue/menu';
-
-const menu = ref<InstanceType<typeof Menu> | null>(null);
-
-const items = [
-  { label: 'Profile', icon: 'ic:account-circle', to: '/profile' },
-  { label: 'Settings', icon: 'ic:baseline-settings', to: '/settings' },
-  { label: 'Logout', icon: 'ic:baseline-logout', to: '/login' },
-];
-
-const toggleMenu = (event: Event) => {
-  menu.value?.toggle(event);
-};
-</script>
-
 <template>
   <div class="userbar">
     <button class="userbar-avatar" @click="toggleMenu">
@@ -32,6 +15,29 @@ const toggleMenu = (event: Event) => {
     </Menu>
   </div>
 </template>
+
+<script setup lang="ts">
+import Avatar from 'primevue/avatar';
+import Menu from 'primevue/menu';
+
+const menu = ref<InstanceType<typeof Menu> | null>(null);
+
+interface UserMenuLink {
+  label: string;
+  icon: string;
+  to: string;
+}
+
+const items: UserMenuLink[] = [
+  { label: 'Profile', icon: 'ic:account-circle', to: '/profile' },
+  { label: 'Settings', icon: 'ic:baseline-settings', to: '/settings' },
+  { label: 'Logout', icon: 'ic:baseline-logout', to: '/login' },
+];
+
+const toggleMenu = (event: Event) => {
+  menu.value?.toggle(event);
+};
+</script>
 
 <style lang="scss">
 .userbar {

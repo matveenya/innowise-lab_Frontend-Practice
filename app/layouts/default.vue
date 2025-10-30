@@ -1,9 +1,3 @@
-<script setup lang="ts">
-const isMenuOpen = ref(true);
-
-const toggleMenu = () => (isMenuOpen.value = !isMenuOpen.value);
-</script>
-
 <template>
   <div class="layout" :class="{ 'layout--menu-open': isMenuOpen }">
     <aside class="layout__aside" :class="{ 'layout__aside--open': isMenuOpen }">
@@ -20,10 +14,15 @@ const toggleMenu = () => (isMenuOpen.value = !isMenuOpen.value);
   </div>
 </template>
 
+<script setup lang="ts">
+const isMenuOpen = ref(true);
+
+const toggleMenu = () => (isMenuOpen.value = !isMenuOpen.value);
+</script>
+
 <style scoped lang="scss">
 .layout {
-  display: grid;
-  grid-template-columns: max-content 1fr;
+  @include grid-layout(max-content 1fr);
   height: 100vh;
   width: 100%;
 

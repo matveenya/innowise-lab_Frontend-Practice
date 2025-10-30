@@ -1,12 +1,3 @@
-<script setup lang="ts">
-const navLinks = [
-  { label: 'Employees', icon: 'mdi:account-multiple', to: '/users' },
-  { label: 'Skills', icon: 'material-symbols:trending-up', to: '/skills' },
-  { label: 'Languages', icon: 'material-symbols:translate', to: '/languages' },
-  { label: 'CVs', icon: 'material-symbols:contact-page-outline', to: '/cvs' },
-];
-</script>
-
 <template>
   <nav class="nav-links">
     <NuxtLink v-for="link in navLinks" :key="link.to" :to="link.to">
@@ -15,6 +6,20 @@ const navLinks = [
     </NuxtLink>
   </nav>
 </template>
+
+<script setup lang="ts">
+interface NavLinksItem {
+  label: string;
+  icon: string;
+  to: string;
+}
+const navLinks: NavLinksItem[] = [
+  { label: 'Employees', icon: 'mdi:account-multiple', to: '/users' },
+  { label: 'Skills', icon: 'material-symbols:trending-up', to: '/skills' },
+  { label: 'Languages', icon: 'material-symbols:translate', to: '/languages' },
+  { label: 'CVs', icon: 'material-symbols:contact-page-outline', to: '/cvs' },
+];
+</script>
 
 <style scoped lang="scss">
 .nav-links {
