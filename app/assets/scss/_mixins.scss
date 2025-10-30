@@ -5,3 +5,7 @@
   flex-direction: $direction;
   flex-wrap: $wrap;
 }
+
+@mixin border-bottom($color, $width: 2px) {
+  border-bottom: $width solid $color;
+}

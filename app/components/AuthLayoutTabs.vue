@@ -18,7 +18,7 @@
     text-transform: uppercase;
     font-size: $font-size-sm;
     font-weight: $font-weight-medium;
-    border-bottom: 2px solid transparent;
+    @include border-bottom(transparent);
     transition: all 0.2s ease;
 
     &:hover {
@@ -27,7 +27,7 @@
 
     &.router-link-exact-active {
       color: $color-secondary;
-      border-bottom: 2px solid $color-secondary;
+      @include border-bottom($color-secondary);
     }
   }
 }
