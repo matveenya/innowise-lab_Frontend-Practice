@@ -1,0 +1,88 @@
+$color-primary: rgb(53, 53, 53);
+$color-secondary: rgb(197, 48, 49);
+$color-secondary-hover: rgb(138, 33, 34);
+
+/* TEXT COLORS */
+$color-text-primary: rgb(255, 255, 255);
+$color-text-primary-disabled: rgba(255, 255, 255, 0.3);
+$color-text-secondary: rgb(195, 195, 195);
+$color-text-muted: rgb(118, 118, 118);
+
+$color-nav-link: rgb(245, 245, 247);
+$color-nav-link-active: $color-secondary;
+
+/* SKILLS SECTION */
+$color-novice: $color-text-muted;
+$color-novice-max: rgb(59, 59, 59);
+$color-advanced: rgb(41, 182, 246);
+$color-advanced-max: rgb(20, 91, 123);
+$color-competent: rgb(102, 187, 106);
+$color-competent-max: rgb(51, 93, 53);
+$color-proficient: rgb(255, 184, 0);
+$color-proficient-max: rgb(127, 92, 0);
+$color-expert: $color-secondary;
+
+/* BUTTONS VARIANTS */
+$button-bg-disabled: rgba(255, 255, 255, 0.12);
+
+$button-primary-bg: $color-secondary;
+$button-primary-hover: $color-secondary-hover;
+$button-primary-text: $color-text-primary;
+
+$button-ghost-bg: transparent;
+$button-ghost-hover: rgba(118, 118, 118, 0.08);
+$button-ghost-text: $color-text-muted;
+
+$button-outline-bg: transparent;
+$button-outline-hover: rgba(118, 118, 118, 0.08);
+$button-outline-text: $color-text-muted;
+
+/* LAYOUT */
+$sidebar-width-open: 200px;
+
+/* BORDERS */
+$border-outline: 1px solid rgba(118, 118, 118, 0.5);
+$border-outline-hover: 1px solid rgb(118, 118, 118);
+
+/* BORDER RADIUS */
+$radius-sm: 0.25em;
+$radius-md: 0.5em;
+$radius-lg: 0.6em;
+$radius-xl: 1em;
+$radius-2xl: 2em;
+$radius-rounded: 50%;
+$radius-full: 100%;
+
+/* SHADOWS */
+$shadow-md:
+  rgba(0, 0, 0, 0.2) 0px 5px 5px -3px,
+  rgba(0, 0, 0, 0.14) 0px 8px 10px 1px,
+  rgba(0, 0, 0, 0.12) 0px 3px 14px 2px;
+
+/* SPACING */
+$space-2xs: 0.125rem;
+$space-xs: 0.25rem;
+$space-sm: 0.5rem;
+$space-md: 0.75rem;
+$space-lg: 1rem;
+$space-xl: 1.25rem;
+$space-2xl: 1.5rem;
+$space-3xl: 2rem;
+$space-4xl: 2.5rem;
+$space-5xl: 3.5rem;
+$space-6xl: 5rem;
+
+/* FONTS*/
+$font-size-sm: 0.875rem; // 14px
+$font-size-md: 1rem; // 16px
+$font-size-lg: 1.125rem; // 18px
+$font-size-xl: 1.25rem; // 20px
+$font-size-2xl: 1.5rem; // 24px
+$font-size-3xl: 1.75rem; // 28px
+$font-size-4xl: 2rem; // 32px
+$font-size-5xl: 2.25rem; // 36px
+$font-size-6xl: 2.5rem; // 40px
+
+$font-weight-regular: 400;
+$font-weight-medium: 500;
+$font-weight-bold: 700;
