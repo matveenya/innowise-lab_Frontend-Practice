@@ -4,13 +4,12 @@
     <p class="auth-content__subtitle">We will send you an email with further instructions</p>
 
     <form class="auth-form">
-      <div class="form-group">
-        <input type="email" placeholder="example@email.com" class="form-input" />
-      </div>
+      <FormInput type="email" placeholder="example@email.com" />
 
-      <button type="submit" class="auth-button auth-button--primary">RESET PASSWORD</button>
-
-      <NuxtLink to="/auth/login" class="auth-link auth-link--muted">CANCEL</NuxtLink>
+      <FormAction link-to="/auth/login">
+        <template #button-text>RESET PASSWORD</template>
+        <template #link-text>CANCEL</template>
+      </FormAction>
     </form>
   </div>
 </template>
@@ -42,77 +41,5 @@ definePageMeta({
 .auth-form {
   @include d-flex(center, center, column);
   gap: $space-xl;
-}
-
-.form-group {
-  text-align: left;
-  width: 100%;
-}
-
-.form-input {
-  width: 100%;
-  padding: $space-md $space-lg;
-  border-radius: $radius-sm;
-  border: $border-outline;
-  background-color: transparent;
-  color: $color-text-primary;
-  font-size: $font-size-md;
-
-  &:focus {
-    outline: none;
-    border: $border-outline-hover;
-  }
-}
-
-.password-wrapper {
-  position: relative;
-
-  .form-input {
-    padding-right: $space-4xl;
-  }
-
-  .password-icon {
-    position: absolute;
-    right: $space-lg;
-    top: 50%;
-    transform: translateY(-50%);
-    color: $color-text-muted;
-    cursor: pointer;
-  }
-}
-
-.auth-button {
-  width: 220px;
-  padding: $space-md $space-lg;
-  border-radius: $radius-2xl;
-  cursor: pointer;
-  text-transform: uppercase;
-  font-weight: $font-weight-medium;
-  transition: background-color 0.2s ease;
-  margin-top: $space-xl;
-
-  &--primary {
-    background-color: $button-primary-bg;
-    color: $button-primary-text;
-
-    &:hover {
-      background-color: $button-primary-hover;
-    }
-  }
-}
-
-.auth-link {
-  font-size: $font-size-sm;
-  text-transform: uppercase;
-  margin-top: $space-md;
-  text-align: center;
-
-  &--muted {
-    color: $color-text-muted;
-
-    &:hover {
-      color: $color-text-secondary;
-    }
-  }
 }
 </style>
