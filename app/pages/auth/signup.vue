@@ -3,7 +3,7 @@
     <h2 class="auth-content__title">Register now</h2>
     <p class="auth-content__subtitle">Welcome! Sign up to continue</p>
 
-    <form class="auth-form">
+    <form class="auth-form" @submit.prevent="handleSubmit">
       <FormInput type="email" placeholder="Email" />
       <FormPasswordInput />
 
@@ -19,6 +19,10 @@
 definePageMeta({
   layout: 'auth',
 });
+
+const handleSubmit = () => {
+  navigateTo('/');
+};
 </script>
 
 <style scoped lang="scss">
