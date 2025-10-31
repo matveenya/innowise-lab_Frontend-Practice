@@ -20,40 +20,40 @@ defineProps<{
 .form-action-wrapper {
   @include d-flex(center, center, column);
   width: 100%;
-}
 
-.auth-button {
-  width: $button-width-auth;
-  padding: $space-md $space-lg;
-  border-radius: $radius-2xl;
-  cursor: pointer;
-  text-transform: uppercase;
-  font-weight: $font-weight-medium;
-  transition: background-color 0.2s ease;
-  margin-top: $space-xl;
+  .auth-button {
+    width: $button-width-auth;
+    padding: $space-md $space-lg;
+    border-radius: $radius-2xl;
+    cursor: pointer;
+    text-transform: uppercase;
+    font-weight: $font-weight-medium;
+    transition: background-color 0.2s ease;
+    margin-top: $space-xl;
 
-  &--primary {
-    background-color: $button-primary-bg;
-    color: $button-primary-text;
+    &--primary {
+      background-color: $button-primary-bg;
+      color: $button-primary-text;
 
-    &:hover {
-      background-color: $button-primary-hover;
+      &:hover {
+        background-color: $button-primary-hover;
+      }
     }
   }
-}
 
-.auth-link {
-  font-size: $font-size-sm;
-  text-transform: uppercase;
-  margin-top: $space-xl;
-  text-align: center;
-  text-decoration: none;
+  .auth-link {
+    font-size: $font-size-sm;
+    text-transform: uppercase;
+    margin-top: $space-xl;
+    text-align: center;
+    text-decoration: none;
 
-  &--muted {
-    color: $color-text-muted;
+    &--muted {
+      color: $color-text-muted;
 
-    &:hover {
-      color: $color-text-secondary;
+      &:hover {
+        color: $color-text-secondary;
+      }
     }
   }
 }

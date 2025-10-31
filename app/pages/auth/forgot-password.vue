@@ -3,8 +3,8 @@
     <h2 class="auth-content__title">Forgot password</h2>
     <p class="auth-content__subtitle">We will send you an email with further instructions</p>
 
-    <form class="auth-form">
-      <FormInput type="email" placeholder="example@email.com" />
+    <form class="auth-form" @submit.prevent="onSubmit">
+      <FormInput name="email" type="email" placeholder="example@email.com" />
 
       <FormAction link-to="/auth/login">
         <template #button-text>RESET PASSWORD</template>
@@ -15,9 +15,22 @@
 </template>
 
 <script setup lang="ts">
+import {
+  forgotPasswordSchema,
+  type ForgotPasswordSchema,
+} from '~/utils/schemas/authValidationSchema';
+import { useForm } from 'vee-validate';
+import { toTypedSchema } from '@vee-validate/zod';
+
 definePageMeta({
   layout: 'auth',
 });
+
+const { handleSubmit } = useForm<ForgotPasswordSchema>({
+  validationSchema: toTypedSchema(forgotPasswordSchema),
+});
+
+const onSubmit = handleSubmit(() => {});
 </script>
 
 <style scoped lang="scss">
@@ -36,10 +49,10 @@ definePageMeta({
     color: $color-text-secondary;
     margin-bottom: $space-5xl;
   }
-}
 
-.auth-form {
-  @include d-flex(center, center, column);
-  gap: $space-xl;
+  .auth-form {
+    @include d-flex(center, center, column);
+    gap: $space-xl;
+  }
 }
 </style>

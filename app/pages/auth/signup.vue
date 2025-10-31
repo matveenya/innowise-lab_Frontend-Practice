@@ -3,9 +3,9 @@
     <h2 class="auth-content__title">Register now</h2>
     <p class="auth-content__subtitle">Welcome! Sign up to continue</p>
 
-    <form class="auth-form">
-      <FormInput type="email" placeholder="Email" />
-      <FormPasswordInput />
+    <form class="auth-form" @submit.prevent="onSubmit">
+      <FormInput name="email" type="email" placeholder="Email" />
+      <FormPasswordInput name="password" />
 
       <FormAction link-to="/auth/login">
         <template #button-text>CREATE ACCOUNT</template>
@@ -16,8 +16,20 @@
 </template>
 
 <script setup lang="ts">
+import { authSchema, type AuthSchema } from '~/utils/schemas/authValidationSchema';
+import { useForm } from 'vee-validate';
+import { toTypedSchema } from '@vee-validate/zod';
+
 definePageMeta({
   layout: 'auth',
+});
+
+const { handleSubmit } = useForm<AuthSchema>({
+  validationSchema: toTypedSchema(authSchema),
+});
+
+const onSubmit = handleSubmit(() => {
+  navigateTo('/');
 });
 </script>
 

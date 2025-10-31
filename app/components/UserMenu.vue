@@ -31,7 +31,7 @@ interface UserMenuLink {
 const items: UserMenuLink[] = [
   { label: 'Profile', icon: 'ic:account-circle', to: '/profile' },
   { label: 'Settings', icon: 'ic:baseline-settings', to: '/settings' },
-  { label: 'Logout', icon: 'ic:baseline-logout', to: '/login' },
+  { label: 'Logout', icon: 'ic:baseline-logout', to: '/auth/login' },
 ];
 
 const toggleMenu = (event: Event) => {
