@@ -1,9 +1,10 @@
 import { z } from 'zod';
-
-const REQUIRED_EMAIL_MESSAGE = 'Email is required';
-const INVALID_EMAIL_MESSAGE = 'Email Incorrect';
-const REQUIRED_PASSWORD_MESSAGE = 'Password is required';
-const INVALID_PASSWORD_MESSAGE = 'Password should be at least 6 symbols';
+import {
+  REQUIRED_EMAIL_MESSAGE,
+  INVALID_EMAIL_MESSAGE,
+  REQUIRED_PASSWORD_MESSAGE,
+  INVALID_PASSWORD_MESSAGE,
+} from './constants';
 
 export const authSchema = z.object({
   email: z
