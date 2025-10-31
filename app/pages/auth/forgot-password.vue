@@ -30,9 +30,7 @@ const { handleSubmit } = useForm<ForgotPasswordSchema>({
   validationSchema: toTypedSchema(forgotPasswordSchema),
 });
 
-const onSubmit = handleSubmit(() => {
-  // console.log(values);
-});
+const onSubmit = handleSubmit(() => {});
 </script>
 
 <style scoped lang="scss">

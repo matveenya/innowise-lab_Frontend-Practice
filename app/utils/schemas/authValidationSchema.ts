@@ -16,9 +16,10 @@ export const authSchema = z.object({
 });
 
 export const forgotPasswordSchema = z.object({
-  password: z
-    .string({ required_error: REQUIRED_PASSWORD_MESSAGE })
-    .min(6, INVALID_PASSWORD_MESSAGE),
+  email: z
+    .string({ required_error: REQUIRED_EMAIL_MESSAGE })
+    .email(INVALID_EMAIL_MESSAGE)
+    .min(1, REQUIRED_EMAIL_MESSAGE),
 });
 
 export type AuthSchema = z.infer<typeof authSchema>;

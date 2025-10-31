@@ -29,7 +29,6 @@ const { handleSubmit } = useForm<AuthSchema>({
 });
 
 const onSubmit = handleSubmit(() => {
-  // console.log(values);
   navigateTo('/');
 });
 </script>
