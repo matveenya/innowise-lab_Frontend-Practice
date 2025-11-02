@@ -7,7 +7,7 @@ export default withNuxt([
     files: ['**/*.{ts,vue}'],
     rules: {
       'prettier/prettier': 'error',
-      'no-console': 'warn',
+      'no-console': ['warn', { allow: ['warn', 'error'] }],
       'no-unused-vars': 'warn',
       'vue/multi-word-component-names': 'off',
       '@typescript-eslint/no-unused-vars': ['error'],
