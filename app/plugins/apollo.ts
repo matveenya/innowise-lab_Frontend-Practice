@@ -3,6 +3,7 @@ import { SetContextLink } from '@apollo/client/link/context';
 
 export default defineNuxtPlugin(nuxtApp => {
   const config = useRuntimeConfig();
+  const authStore = useAuthStore();
 
   const httpLink = new HttpLink({
     uri: config.public.apiUrl,
@@ -12,7 +13,7 @@ export default defineNuxtPlugin(nuxtApp => {
     let token = null;
 
     if (import.meta.client) {
-      token = localStorage.getItem('access_token');
+      token = authStore.accessToken;
     }
 
     return {
