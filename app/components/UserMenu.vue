@@ -25,7 +25,7 @@ import Avatar from 'primevue/avatar';
 import Menu from 'primevue/menu';
 
 const menu = ref<InstanceType<typeof Menu> | null>(null);
-const { logout } = useLogout();
+const authStore = useAuthStore();
 
 interface UserMenuLink {
   label: string;
@@ -37,7 +37,7 @@ interface UserMenuLink {
 const items: UserMenuLink[] = [
   { label: 'Profile', icon: 'ic:account-circle', to: '/profile' },
   { label: 'Settings', icon: 'ic:baseline-settings', to: '/settings' },
-  { label: 'Logout', icon: 'ic:baseline-logout', command: () => logout() },
+  { label: 'Logout', icon: 'ic:baseline-logout', command: () => authStore.logout() },
 ];
 
 const toggleMenu = (event: Event) => {

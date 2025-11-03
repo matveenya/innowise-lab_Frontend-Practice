@@ -79,9 +79,8 @@ const onSubmit = handleSubmit(() => {
 import { authSchema, type AuthSchema } from '~/utils/schemas/authValidationSchema';
 import { useForm } from 'vee-validate';
 import { toTypedSchema } from '@vee-validate/zod';
-import { useSignup } from '~/composables/useSignup';
 
-const { signup, error } = useSignup();
+const authStore = useAuthStore();
 
 definePageMeta({
   layout: 'auth',
@@ -92,17 +91,13 @@ const { handleSubmit, values } = useForm<AuthSchema>({
 });
 
 const onSubmit = handleSubmit(async () => {
-  try {
-    const result = await signup({
-      email: values.email,
-      password: values.password,
-    });
+  const result = await authStore.signup({
+    email: values.email,
+    password: values.password,
+  });
 
-    if (result?.signup?.user) {
-      navigateTo('/');
-    }
-  } catch {
-    console.error(error.value);
+  if (result?.success) {
+    navigateTo('/');
   }
 });
 </script>

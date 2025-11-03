@@ -2,10 +2,9 @@ export default defineNuxtRouteMiddleware(to => {
   if (import.meta.server) {
     return;
   }
+  const authStore = useAuthStore();
 
-  const token = localStorage.getItem('access_token');
-
-  if (!token) {
+  if (!authStore.isAuthenticated) {
     return navigateTo({
       path: '/auth/login',
       query: { redirect: to.fullPath },
