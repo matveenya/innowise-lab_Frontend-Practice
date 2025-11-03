@@ -1,18 +1,26 @@
 import type { User, AuthInput } from 'cv-graphql';
 import { useLogin, useSignup } from '../composables/graphql/hooks';
+import { defineStore } from 'pinia';
 
 const ACCESS_TOKEN_KEY = 'access_token';
 
 export const useAuthStore = defineStore('auth', () => {
   const user = ref<User | null>(null);
-  const accessToken = ref<string | null>(null);
-  const isAuthenticated = ref<boolean>(false);
+  const accessToken = ref<string | null>(
+    (import.meta.client && localStorage.getItem(ACCESS_TOKEN_KEY)) || null
+  );
+  const isAuthenticated = computed<boolean>(() => {
+    if (import.meta.client && !accessToken.value) {
+      const token = localStorage.getItem(ACCESS_TOKEN_KEY);
+      return !!token;
+    }
+    return !!accessToken.value;
+  });
 
   const router = useRouter();
 
   const setUser = (userData: User) => {
     user.value = userData;
-    isAuthenticated.value = true;
   };
 
   const setToken = (token: string) => {
@@ -23,7 +31,6 @@ export const useAuthStore = defineStore('auth', () => {
   const clearAuth = () => {
     user.value = null;
     accessToken.value = null;
-    isAuthenticated.value = false;
     localStorage.removeItem(ACCESS_TOKEN_KEY);
   };
 

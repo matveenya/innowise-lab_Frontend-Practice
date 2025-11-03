@@ -8,6 +8,7 @@ export const SIGNUP = gql`
         email
       }
       access_token
+      refresh_token
     }
   }
 `;

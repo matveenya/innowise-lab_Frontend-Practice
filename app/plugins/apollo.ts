@@ -1,6 +1,9 @@
 import { ApolloClient, InMemoryCache, HttpLink } from '@apollo/client';
 import { SetContextLink } from '@apollo/client/link/context';
 
+// TODO: move to constants
+const ACCESS_TOKEN_KEY = 'access_token';
+
 export default defineNuxtPlugin(nuxtApp => {
   const config = useRuntimeConfig();
   const authStore = useAuthStore();
@@ -13,7 +16,7 @@ export default defineNuxtPlugin(nuxtApp => {
     let token = null;
 
     if (import.meta.client) {
-      token = authStore.accessToken;
+      token = authStore.accessToken || localStorage.getItem(ACCESS_TOKEN_KEY) || null;
     }
 
     return {
