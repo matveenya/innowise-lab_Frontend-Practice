@@ -1,5 +1,6 @@
 import { ApolloClient, InMemoryCache, HttpLink } from '@apollo/client';
 import { SetContextLink } from '@apollo/client/link/context';
+import { useAuthStore } from '~/stores/auth';
 
 // TODO: move to constants
 const ACCESS_TOKEN_KEY = 'access_token';
