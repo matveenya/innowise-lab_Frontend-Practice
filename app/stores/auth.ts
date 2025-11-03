@@ -3,18 +3,19 @@ import { useLogin, useSignup } from '../composables/graphql/hooks';
 import { defineStore } from 'pinia';
 
 const ACCESS_TOKEN_KEY = 'access_token';
+const REFRESH_TOKEN_KEY = 'refresh_token';
 
 export const useAuthStore = defineStore('auth', () => {
   const user = ref<User | null>(null);
-  const accessToken = ref<string | null>(
-    (import.meta.client && localStorage.getItem(ACCESS_TOKEN_KEY)) || null
-  );
+
+  const accessTokenCookie = useCookie<string | null>(ACCESS_TOKEN_KEY);
+  const refreshTokenCookie = useCookie<string | null>(REFRESH_TOKEN_KEY);
+
+  const accessToken = computed(() => accessTokenCookie.value);
+  const refreshToken = computed(() => refreshTokenCookie.value);
+
   const isAuthenticated = computed<boolean>(() => {
-    if (import.meta.client && !accessToken.value) {
-      const token = localStorage.getItem(ACCESS_TOKEN_KEY);
-      return !!token;
-    }
-    return !!accessToken.value;
+    return !!accessTokenCookie.value;
   });
 
   const router = useRouter();
@@ -23,15 +24,15 @@ export const useAuthStore = defineStore('auth', () => {
     user.value = userData;
   };
 
-  const setToken = (token: string) => {
-    accessToken.value = token;
-    localStorage.setItem(ACCESS_TOKEN_KEY, token);
+  const setToken = (access: string, refresh: string) => {
+    accessTokenCookie.value = access;
+    refreshTokenCookie.value = refresh;
   };
 
   const clearAuth = () => {
     user.value = null;
-    accessToken.value = null;
-    localStorage.removeItem(ACCESS_TOKEN_KEY);
+    accessTokenCookie.value = null;
+    refreshTokenCookie.value = null;
   };
 
   const login = async (auth: AuthInput) => {
@@ -40,7 +41,7 @@ export const useAuthStore = defineStore('auth', () => {
       const data = await loginQuery(auth);
 
       if (data?.login) {
-        setToken(data.login.access_token);
+        setToken(data.login.access_token, data.login.refresh_token);
         setUser(data.login.user);
         return true;
       }
@@ -57,7 +58,7 @@ export const useAuthStore = defineStore('auth', () => {
       const data = await signupMutation(auth);
 
       if (data?.signup) {
-        setToken(data.signup.access_token);
+        setToken(data.signup.access_token, data.signup.refresh_token);
         setUser(data.signup.user);
       }
       return { success: true };
@@ -84,5 +85,15 @@ export const useAuthStore = defineStore('auth', () => {
     }
   };
 
-  return { user, isAuthenticated, accessToken, login, signup, logout };
+  return {
+    user,
+    isAuthenticated,
+    accessToken,
+    refreshToken,
+    setToken,
+    clearAuth,
+    login,
+    signup,
+    logout,
+  };
 });

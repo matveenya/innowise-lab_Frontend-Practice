@@ -15,10 +15,3 @@ export type SignupArgs = {
 export type SignupResult = {
   signup: AuthResult;
 };
-
-export type UpdateTokenResult = {
-  updateToken: {
-    access_token: string;
-    refresh_token: string;
-  };
-};

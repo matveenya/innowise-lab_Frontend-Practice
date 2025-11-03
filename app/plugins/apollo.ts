@@ -1,9 +1,15 @@
-import { ApolloClient, InMemoryCache, HttpLink } from '@apollo/client';
+import {
+  ApolloClient,
+  InMemoryCache,
+  HttpLink,
+  CombinedGraphQLErrors,
+  Observable,
+  ApolloLink,
+} from '@apollo/client';
 import { SetContextLink } from '@apollo/client/link/context';
 import { useAuthStore } from '~/stores/auth';
-
-// TODO: move to constants
-const ACCESS_TOKEN_KEY = 'access_token';
+import { ErrorLink } from '@apollo/client/link/error';
+import { useUpdateToken } from '~/composables/graphql/hooks/auth';
 
 export default defineNuxtPlugin(nuxtApp => {
   const config = useRuntimeConfig();
@@ -14,11 +20,13 @@ export default defineNuxtPlugin(nuxtApp => {
   });
 
   const authLink = new SetContextLink(prevContext => {
-    let token = null;
+    const existingAuth = prevContext.headers?.authorization;
 
-    if (import.meta.client) {
-      token = authStore.accessToken || localStorage.getItem(ACCESS_TOKEN_KEY) || null;
+    if (existingAuth) {
+      return prevContext;
     }
+
+    const token = authStore.accessToken || null;
 
     return {
       headers: {
@@ -27,12 +35,97 @@ export default defineNuxtPlugin(nuxtApp => {
       },
     };
   });
+
+  const getNewToken = async (): Promise<string | null> => {
+    try {
+      const refreshToken = authStore.refreshToken;
+
+      if (!refreshToken) {
+        console.warn('[Token Refresh] ⚠️ No refresh token available, clearing auth');
+        authStore.clearAuth();
+        return null;
+      }
+
+      const updateTokenMutation = await nuxtApp.runWithContext(() => useUpdateToken());
+      const data = await updateTokenMutation(refreshToken);
+
+      const newAccess = data?.updateToken?.access_token;
+      const newRefresh = data?.updateToken?.refresh_token;
+
+      if (newAccess && newRefresh) {
+        authStore.setToken(newAccess, newRefresh);
+        return newAccess;
+      }
+
+      console.warn('[Token Refresh] ⚠️ Failed to get new tokens, clearing auth');
+      authStore.clearAuth();
+      return null;
+    } catch {
+      authStore.clearAuth();
+      return null;
+    }
+  };
+
+  const errorLink = new ErrorLink(({ error, operation, forward }) => {
+    if (operation.operationName === 'UpdateToken') {
+      return forward(operation);
+    }
+
+    if (CombinedGraphQLErrors.is(error)) {
+      const authError = error.errors.find(
+        err => err.extensions?.code === 'UNAUTHENTICATED' || err.extensions?.code === 'UNAUTHORIZED'
+      );
+
+      if (authError) {
+        return new Observable(observer => {
+          getNewToken()
+            .then(newToken => {
+              if (!newToken) {
+                console.error('[Token Refresh] ❌ Could not refresh token, operation will fail');
+                observer.error(error);
+                return;
+              }
+
+              const oldHeaders = operation.getContext().headers;
+              operation.setContext({
+                headers: {
+                  ...oldHeaders,
+                  authorization: `Bearer ${newToken}`,
+                },
+              });
+
+              const subscriber = forward(operation).subscribe({
+                next: value => observer.next(value),
+                error: e => observer.error(e),
+                complete: () => {
+                  observer.complete();
+                },
+              });
+
+              return () => {
+                if (subscriber) subscriber.unsubscribe();
+              };
+            })
+            .catch(refreshError => {
+              console.error('[Token Refresh] ❌ Error during token refresh:', refreshError);
+              observer.error(refreshError);
+            });
+        });
+      }
+    }
+
+    return forward(operation);
+  });
+  const link = ApolloLink.from([errorLink, authLink, httpLink]);
   const apolloClient = new ApolloClient({
-    link: authLink.concat(httpLink),
+    link,
     cache: new InMemoryCache(),
     defaultOptions: {
       watchQuery: {
         fetchPolicy: 'cache-and-network',
+      },
+      query: {
+        fetchPolicy: 'cache-first',
       },
     },
   });
