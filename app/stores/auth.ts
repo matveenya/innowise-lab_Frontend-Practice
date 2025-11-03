@@ -8,9 +8,7 @@ export const useAuthStore = defineStore('auth', () => {
   const accessToken = ref<string | null>(null);
   const isAuthenticated = ref<boolean>(false);
 
-  const { $apollo } = useNuxtApp();
-  const loginQuery = useLogin();
-  const signupMutation = useSignup();
+  const router = useRouter();
 
   const setUser = (userData: User) => {
     user.value = userData;
@@ -31,6 +29,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   const login = async (auth: AuthInput) => {
     try {
+      const loginQuery = useLogin();
       const data = await loginQuery(auth);
 
       if (data?.login) {
@@ -47,6 +46,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   const signup = async (auth: AuthInput) => {
     try {
+      const signupMutation = useSignup();
       const data = await signupMutation(auth);
 
       if (data?.signup) {
@@ -65,8 +65,12 @@ export const useAuthStore = defineStore('auth', () => {
   const logout = async () => {
     try {
       clearAuth();
-      await $apollo.clearStore();
-      navigateTo('/auth/login');
+      const { $apollo } = useNuxtApp();
+      if ($apollo) {
+        await $apollo.clearStore();
+      }
+      await router.replace('/auth/login');
+      return true;
     } catch (error) {
       console.error('Logout error:', error);
       return false;

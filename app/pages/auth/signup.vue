@@ -37,7 +37,7 @@ const onSubmit = handleSubmit(async () => {
   });
 
   if (result?.success) {
-    navigateTo('/');
+    navigateTo('/users');
   }
 });
 </script>

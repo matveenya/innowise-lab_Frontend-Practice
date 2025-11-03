@@ -36,7 +36,7 @@ const onSubmit = handleSubmit(async () => {
     password: values.password,
   });
   if (success) {
-    navigateTo('/');
+    navigateTo('/users');
   }
 });
 </script>
