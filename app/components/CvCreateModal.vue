@@ -48,7 +48,7 @@ const createCv = () => {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background-color: rgba(0, 0, 0, 0.66);
+  background-color: $color-bg-modal;
   @include d-flex(center, center);
   z-index: 1000;
 
