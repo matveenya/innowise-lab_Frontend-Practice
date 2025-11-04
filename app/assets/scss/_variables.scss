@@ -24,6 +24,8 @@ $color-expert: $color-secondary;
 
 /* BUTTONS VARIANTS */
 $button-bg-disabled: rgba(255, 255, 255, 0.12);
+$button-neutral-bg: rgba(78, 78, 78, 1);
+$button-neutral-hover: rgba(90, 90, 90, 1);
 
 $button-primary-bg: $color-secondary;
 $button-primary-hover: $color-secondary-hover;
@@ -41,11 +43,14 @@ $button-outline-text: $color-text-muted;
 $button-width-auth: 220px;
 
 /* INPUT SIZES */
-
 $input-width-cvs: 320px;
 
 /* LAYOUT */
 $sidebar-width-open: 200px;
+
+/* MODAL */
+$modal-width: 600px;
+$modal-distance-top: 0.55rem;
 
 /* BORDERS */
 $border-outline: 1px solid rgba(118, 118, 118, 0.5);

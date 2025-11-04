@@ -7,34 +7,45 @@
         <Icon name="ic:baseline-search" size="1.5em" mode="svg" class="search-icon" />
         <input type="text" placeholder="Search" class="search-input" />
       </div>
-      <button class="create-button">
+      <button class="create-button" @click="isDialogVisible = true">
         <Icon name="ic:baseline-plus" size="1.2em" mode="svg" />
         CREATE CV
       </button>
     </div>
 
-    <div class="cvs-page__table-wrapper">
-      <div class="cvs-page__table-header">
-        <span class="table-header__item sortable">
-          Name
-          <Icon name="ic:baseline-arrow-upward" size="1em" mode="svg" />
-        </span>
-        <span class="table-header__item">Education</span>
-        <span class="table-header__item">Employee</span>
-      </div>
-    </div>
+    <table class="cvs-page__table">
+      <thead>
+        <tr class="cvs-page__table-header-row">
+          <th class="table-header__item sortable">
+            Name
+            <Icon name="ic:baseline-arrow-upward" size="1em" mode="svg" />
+          </th>
+          <th class="table-header__item">Education</th>
+          <th class="table-header__item">Employee</th>
+          <th class="table-header__item table-header__item--actions"></th>
+        </tr>
+      </thead>
 
-    <div class="cvs-page__content">
-      <div class="no-results">No results found</div>
-    </div>
+      <tbody>
+        <tr>
+          <td colspan="4" class="no-results-cell">
+            <p class="no-results">No results found</p>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <CvCreateModal v-model:is-visible="isDialogVisible" />
   </section>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { ref } from 'vue';
+
+const isDialogVisible = ref(false);
+</script>
 
 <style scoped lang="scss">
-@use 'sass:color';
-
 .cvs-page {
   padding-top: $space-lg;
 
@@ -101,39 +112,42 @@
     }
   }
 
-  &__table-wrapper {
-    padding-bottom: $space-md;
-    border-bottom: 1px solid $color-border-subtle;
+  &__table {
+    width: 100%;
+    border-collapse: collapse;
     margin-bottom: $space-md;
 
-    .cvs-page__table-header {
-      @include d-flex(flex-start, center);
-      gap: $space-5xl;
+    thead {
+      border-bottom: 1px solid $color-border-subtle;
+    }
 
-      .table-header__item {
+    .cvs-page__table-header-row {
+      height: 40px;
+    }
+
+    .table-header__item {
+      color: $color-text-primary;
+      font-size: $font-size-sm;
+      font-weight: $font-weight-medium;
+      text-align: left;
+      padding-bottom: $space-md;
+
+      &.sortable {
+        @include d-flex(flex-start, center);
+        gap: $space-2xs;
         color: $color-text-primary;
-        font-size: $font-size-sm;
-        font-weight: $font-weight-medium;
-        flex: 1;
+        cursor: pointer;
 
-        &.sortable {
-          @include d-flex(flex-start, center);
-          gap: $space-2xs;
+        svg {
           color: $color-text-primary;
-          cursor: pointer;
-
-          svg {
-            color: $color-text-primary;
-          }
         }
       }
     }
   }
 
-  &__content {
-    @include d-flex(center, center, column);
-    height: 60vh;
-    width: 100%;
+  .no-results-cell {
+    padding-top: $space-3xl;
+    text-align: center;
 
     .no-results {
       text-align: center;
