@@ -35,7 +35,7 @@ const navLinks: NavLinksItem[] = [
     width: 100%;
     border-top-right-radius: $radius-2xl;
     border-bottom-right-radius: $radius-2xl;
-    color: $color-text-primary;
+    color: $color-text-secondary;
     font-size: $font-size-md;
     font-weight: $font-weight-regular;
     line-height: 1.5;

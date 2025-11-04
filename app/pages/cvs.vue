@@ -108,17 +108,13 @@
 
     .cvs-page__table-header {
       @include d-flex(flex-start, center);
-      gap: $space-2xl;
+      gap: $space-5xl;
 
       .table-header__item {
         color: $color-text-primary;
         font-size: $font-size-sm;
         font-weight: $font-weight-medium;
         flex: 1;
-
-        &:nth-child(1) {
-          flex: 1.5;
-        }
 
         &.sortable {
           @include d-flex(flex-start, center);
