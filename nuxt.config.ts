@@ -1,4 +1,3 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
@@ -10,6 +9,11 @@ export default defineNuxtConfig({
     '@vee-validate/nuxt',
     '@primevue/nuxt-module',
   ],
+  runtimeConfig: {
+    public: {
+      apiUrl: process.env.NUXT_PUBLIC_API_URL as string,
+    },
+  },
   vite: {
     css: {
       preprocessorOptions: {

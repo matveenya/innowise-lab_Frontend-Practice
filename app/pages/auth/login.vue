@@ -20,16 +20,24 @@ import { authSchema, type AuthSchema } from '~/utils/schemas/authValidationSchem
 import { useForm } from 'vee-validate';
 import { toTypedSchema } from '@vee-validate/zod';
 
+const authStore = useAuthStore();
+
 definePageMeta({
   layout: 'auth',
 });
 
-const { handleSubmit } = useForm<AuthSchema>({
+const { handleSubmit, values } = useForm<AuthSchema>({
   validationSchema: toTypedSchema(authSchema),
 });
 
-const onSubmit = handleSubmit(() => {
-  navigateTo('/');
+const onSubmit = handleSubmit(async () => {
+  const success = await authStore.login({
+    email: values.email,
+    password: values.password,
+  });
+  if (success) {
+    navigateTo('/users');
+  }
 });
 </script>
 

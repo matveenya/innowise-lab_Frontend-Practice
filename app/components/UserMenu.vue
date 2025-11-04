@@ -7,10 +7,14 @@
 
     <Menu ref="menu" :model="items" :popup="true" class="userbar-menu">
       <template #item="{ item }">
-        <NuxtLink :to="item.to" class="userbar-menu__item">
+        <NuxtLink v-if="item.to" :to="item.to" class="userbar-menu__item">
           <Icon :name="item.icon!" size="1.5em" mode="svg" />
           <span>{{ item.label }}</span>
         </NuxtLink>
+        <button v-else class="userbar-menu__item" @click="item.command!">
+          <Icon :name="item.icon!" size="1.5em" mode="svg" />
+          <span>{{ item.label }}</span>
+        </button>
       </template>
     </Menu>
   </div>
@@ -21,17 +25,19 @@ import Avatar from 'primevue/avatar';
 import Menu from 'primevue/menu';
 
 const menu = ref<InstanceType<typeof Menu> | null>(null);
+const authStore = useAuthStore();
 
 interface UserMenuLink {
   label: string;
   icon: string;
-  to: string;
+  to?: string;
+  command?: () => void;
 }
 
 const items: UserMenuLink[] = [
   { label: 'Profile', icon: 'ic:account-circle', to: '/profile' },
   { label: 'Settings', icon: 'ic:baseline-settings', to: '/settings' },
-  { label: 'Logout', icon: 'ic:baseline-logout', to: '/auth/login' },
+  { label: 'Logout', icon: 'ic:baseline-logout', command: () => authStore.logout() },
 ];
 
 const toggleMenu = (event: Event) => {
