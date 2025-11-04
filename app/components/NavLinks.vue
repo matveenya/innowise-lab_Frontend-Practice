@@ -42,6 +42,11 @@ const navLinks: NavLinksItem[] = [
     transition: background 0.2s ease;
     overflow-x: hidden;
 
+    &.router-link-exact-active {
+      background: $button-bg-disabled;
+      color: $color-text-primary;
+    }
+
     &:hover {
       background: $button-bg-disabled;
       color: $color-text-secondary;
