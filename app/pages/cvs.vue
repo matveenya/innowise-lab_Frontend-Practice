@@ -66,7 +66,7 @@
 
         &:focus {
           outline: none;
-          border: $border-outline-hover;
+          border: $border-outline-active;
         }
 
         &::placeholder {
