@@ -25,6 +25,7 @@
     ]
   },
   "dependencies": {
+    "@apollo/client": "^4.0.9",
     "@nuxt/eslint": "^1.9.0",
     "@nuxt/fonts": "^0.11.4",
     "@nuxt/icon": "^2.1.0",
@@ -32,8 +33,9 @@
     "@primevue/nuxt-module": "^4.4.1",
     "@vee-validate/nuxt": "^4.15.1",
     "@vee-validate/zod": "^4.15.1",
+    "cv-graphql": "^2.13.2",
     "eslint": "^9.38.0",
-    "graphql": "^16.11.0",
+    "graphql": "^16.12.0",
     "graphql-tag": "^2.12.6",
     "nuxt": "^4.2.0",
     "pinia": "^3.0.3",
@@ -43,6 +45,7 @@
     "zod": "^3.25.76"
   },
   "devDependencies": {
+    "@types/node": "^24.9.2",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
     "husky": "^9.1.7",
