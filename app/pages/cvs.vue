@@ -1,5 +1,5 @@
 <template>
-  <div class="cvs-page">
+  <section class="cvs-page">
     <h2 class="page-title-small">CVs</h2>
 
     <div class="cvs-page__controls-and-button">
@@ -27,7 +27,7 @@
     <div class="cvs-page__content">
       <div class="no-results">No results found</div>
     </div>
-  </div>
+  </section>
 </template>
 
 <script setup lang="ts"></script>
@@ -96,7 +96,7 @@
       border-radius: $radius-2xl;
 
       &:hover {
-        background-color: rgba(197, 48, 49, 0.1);
+        background-color: rgba($color-secondary, 0.1);
       }
     }
   }
