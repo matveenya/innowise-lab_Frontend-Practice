@@ -35,7 +35,7 @@
       </tbody>
     </table>
 
-    <CvCreateModal v-model:is-visible="isDialogVisible" />
+    <ModalsCvCreateModal v-model:is-visible="isDialogVisible" />
   </section>
 </template>
 
@@ -118,11 +118,11 @@ const isDialogVisible = ref(false);
     margin-bottom: $space-md;
 
     thead {
-      border-bottom: 1px solid $color-border-subtle;
+      @include border-bottom($color-border-subtle, 1px);
     }
 
     .cvs-page__table-header-row {
-      height: 40px;
+      height: $space-4xl;
     }
 
     .table-header__item {
