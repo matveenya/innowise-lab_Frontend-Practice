@@ -35,12 +35,17 @@ const navLinks: NavLinksItem[] = [
     width: 100%;
     border-top-right-radius: $radius-2xl;
     border-bottom-right-radius: $radius-2xl;
-    color: $color-text-primary;
+    color: $color-text-secondary;
     font-size: $font-size-md;
     font-weight: $font-weight-regular;
     line-height: 1.5;
     transition: background 0.2s ease;
     overflow-x: hidden;
+
+    &.router-link-exact-active {
+      background: $button-bg-disabled;
+      color: $color-text-primary;
+    }
 
     &:hover {
       background: $button-bg-disabled;
