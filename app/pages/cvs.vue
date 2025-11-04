@@ -48,11 +48,11 @@
 
   &__controls-and-button {
     @include d-flex(space-between, center);
-    margin-bottom: $space-4xl;
+    margin-bottom: $space-3xl;
 
     .search-input-wrapper {
       position: relative;
-      width: 300px;
+      width: $input-width-cvs;
 
       .search-input {
         width: 100%;
