@@ -9,7 +9,7 @@ import {
 import { SetContextLink } from '@apollo/client/link/context';
 import { useAuthStore } from '~/stores/auth';
 import { ErrorLink } from '@apollo/client/link/error';
-import { useUpdateToken } from '~/composables/graphql/hooks/auth';
+import { useUpdateToken } from '~/graphql/hooks/auth';
 
 export default defineNuxtPlugin(nuxtApp => {
   const config = useRuntimeConfig();
@@ -49,8 +49,8 @@ export default defineNuxtPlugin(nuxtApp => {
       const updateTokenMutation = await nuxtApp.runWithContext(() => useUpdateToken());
       const data = await updateTokenMutation(refreshToken);
 
-      const newAccess = data?.updateToken?.access_token;
-      const newRefresh = data?.updateToken?.refresh_token;
+      const newAccess = data?.access_token;
+      const newRefresh = data?.refresh_token;
 
       if (newAccess && newRefresh) {
         authStore.setToken(newAccess, newRefresh);

@@ -1,4 +1,4 @@
-import { GET_USERS } from '../queries/users';
+import { GET_USERS } from '../queries';
 import type { GetUsersResult } from '../types/user';
 
 export const useGetUsers = () => {

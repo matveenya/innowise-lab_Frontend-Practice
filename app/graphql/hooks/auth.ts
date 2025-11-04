@@ -1,8 +1,6 @@
-import { LOGIN } from '../queries/login';
-import { SIGNUP } from '../mutations/signup';
-import { UPDATE_TOKEN } from '../mutations/updateToken';
-import type { LoginResult, LoginArgs, SignupResult, SignupArgs } from '../types';
-import type { UpdateTokenResult } from 'cv-graphql';
+import { LOGIN } from '../queries';
+import { SIGNUP, UPDATE_TOKEN } from '../mutations';
+import type { LoginResult, LoginArgs, SignupResult, SignupArgs, UpdateTokenResult } from '../types';
 
 export const useLogin = () => {
   const { $apollo } = useNuxtApp();
@@ -45,8 +43,8 @@ export const useUpdateToken = () => {
     throw new Error('Apollo Client is not initialized');
   }
 
-  return async (refreshToken: string): Promise<{ updateToken: UpdateTokenResult } | null> => {
-    const { data } = await $apollo.mutate<{ updateToken: UpdateTokenResult }>({
+  return async (refreshToken: string): Promise<UpdateTokenResult['updateToken'] | null> => {
+    const { data } = await $apollo.mutate<UpdateTokenResult>({
       mutation: UPDATE_TOKEN,
       context: {
         headers: {
@@ -55,6 +53,6 @@ export const useUpdateToken = () => {
       },
     });
 
-    return data || null;
+    return data?.updateToken || null;
   };
 };

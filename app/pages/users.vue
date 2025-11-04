@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import { useGetUsers } from '~/composables/graphql/hooks';
+import { useGetUsers } from '~/graphql/hooks';
 
 definePageMeta({
   middleware: 'auth',

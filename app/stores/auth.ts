@@ -1,5 +1,5 @@
 import type { User, AuthInput } from 'cv-graphql';
-import { useLogin, useSignup } from '../composables/graphql/hooks';
+import { useLogin, useSignup } from '../graphql/hooks';
 import { defineStore } from 'pinia';
 
 const ACCESS_TOKEN_KEY = 'access_token';
