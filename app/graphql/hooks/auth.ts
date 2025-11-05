@@ -1,6 +1,13 @@
 import { LOGIN } from '../queries';
-import { SIGNUP, UPDATE_TOKEN } from '../mutations';
-import type { LoginResult, LoginArgs, SignupResult, SignupArgs, UpdateTokenResult } from '../types';
+import { SIGNUP, UPDATE_TOKEN, FORGOT_PASSWORD } from '../mutations';
+import type {
+  LoginResult,
+  LoginArgs,
+  SignupResult,
+  SignupArgs,
+  UpdateTokenResult,
+  ForgotPasswordArgs,
+} from '../types';
 
 export const useLogin = () => {
   const { $apollo } = useNuxtApp();
@@ -54,5 +61,20 @@ export const useUpdateToken = () => {
     });
 
     return data?.updateToken || null;
+  };
+};
+
+export const useForgotPassword = () => {
+  const { $apollo } = useNuxtApp();
+
+  if (!$apollo) {
+    throw new Error('Apollo Client is not initialized');
+  }
+
+  return async (auth: ForgotPasswordArgs['auth']): Promise<void> => {
+    await $apollo.mutate<ForgotPasswordArgs>({
+      mutation: FORGOT_PASSWORD,
+      variables: { auth },
+    });
   };
 };

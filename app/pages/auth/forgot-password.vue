@@ -15,6 +15,7 @@
         <template #button-text>RESET PASSWORD</template>
         <template #link-text>CANCEL</template>
       </FormAction>
+      <Toast />
     </form>
   </div>
 </template>
@@ -26,16 +27,35 @@ import {
 } from '~/utils/schemas/authValidationSchema';
 import { useForm } from 'vee-validate';
 import { toTypedSchema } from '@vee-validate/zod';
+import { useForgotPassword } from '~/graphql/hooks/auth';
+import { CombinedGraphQLErrors } from '@apollo/client/errors';
 
 definePageMeta({
   layout: 'auth',
 });
 
-const { handleSubmit } = useForm<ForgotPasswordSchema>({
+const { handleSubmit, setFieldError, resetForm } = useForm<ForgotPasswordSchema>({
   validationSchema: toTypedSchema(forgotPasswordSchema),
 });
 
-const onSubmit = handleSubmit(() => {});
+const forgotPasswordMutation = useForgotPassword();
+
+const onSubmit = handleSubmit(async values => {
+  try {
+    await forgotPasswordMutation(values);
+
+    resetForm();
+    navigateTo('/auth/login');
+  } catch (error) {
+    if (CombinedGraphQLErrors.is(error)) {
+      error.errors.forEach(graphQLError => {
+        if (graphQLError.message.toLowerCase().includes('email')) {
+          setFieldError('email', graphQLError.message);
+        }
+      });
+    }
+  }
+});
 </script>
 
 <style scoped lang="scss">

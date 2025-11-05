@@ -1,4 +1,9 @@
-import type { AuthInput, AuthResult, UpdateTokenResult as UpdateTokenResultType } from 'cv-graphql';
+import type {
+  AuthInput,
+  AuthResult,
+  UpdateTokenResult as UpdateTokenResultType,
+  ForgotPasswordInput,
+} from 'cv-graphql';
 
 export type LoginArgs = {
   auth: AuthInput;
@@ -18,4 +23,8 @@ export type SignupResult = {
 
 export type UpdateTokenResult = {
   updateToken: UpdateTokenResultType;
+};
+
+export type ForgotPasswordArgs = {
+  auth: ForgotPasswordInput;
 };
