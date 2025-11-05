@@ -1,5 +1,5 @@
 <template>
-  <div class="auth-form-container" :class="{ 'auth-form-container--centered': isForgotPassword }">
+  <div class="auth-form-container" :class="{ 'auth-form-container--centered': isCentered }">
     <div class="auth-form-container__content">
       <slot />
     </div>
@@ -8,7 +8,7 @@
 
 <script setup lang="ts">
 defineProps<{
-  isForgotPassword: boolean;
+  isCentered: boolean;
 }>();
 </script>
 

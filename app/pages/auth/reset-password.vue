@@ -1,19 +1,19 @@
 <template>
   <div class="auth-content">
-    <h2 class="auth-content__title">Forgot password</h2>
-    <p class="auth-content__subtitle">We will send you an email with further instructions</p>
+    <h2 class="auth-content__title">Set a new password</h2>
+    <p class="auth-content__subtitle">Almost done! Now create a new password</p>
 
     <form class="auth-form" @submit.prevent="onSubmit">
       <FormFloatLabelInput
-        name="email"
-        type="email"
-        placeholder="example@email.com"
-        label="Email"
+        name="password"
+        type="password"
+        placeholder="Enter new password"
+        label="New Password"
       />
 
       <FormAction link-to="/auth/login">
-        <template #button-text>RESET PASSWORD</template>
-        <template #link-text>CANCEL</template>
+        <template #button-text>SUBMIT</template>
+        <template #link-text>BACK TO LOG IN</template>
       </FormAction>
     </form>
   </div>
@@ -21,8 +21,8 @@
 
 <script setup lang="ts">
 import {
-  forgotPasswordSchema,
-  type ForgotPasswordSchema,
+  resetPasswordSchema,
+  type ResetPasswordSchema,
 } from '~/utils/schemas/authValidationSchema';
 import { useForm } from 'vee-validate';
 import { toTypedSchema } from '@vee-validate/zod';
@@ -31,8 +31,8 @@ definePageMeta({
   layout: 'auth',
 });
 
-const { handleSubmit } = useForm<ForgotPasswordSchema>({
-  validationSchema: toTypedSchema(forgotPasswordSchema),
+const { handleSubmit } = useForm<ResetPasswordSchema>({
+  validationSchema: toTypedSchema(resetPasswordSchema),
 });
 
 const onSubmit = handleSubmit(() => {});
