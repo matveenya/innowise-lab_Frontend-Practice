@@ -62,7 +62,8 @@ defineProps<{
     }
 
     &:focus + .form-input__label,
-    &.has-value + .form-input__label {
+    &.has-value + .form-input__label,
+    &:-webkit-autofill + .form-input__label {
       top: 0;
       left: $space-lg;
       font-size: 0.75em;
@@ -87,6 +88,15 @@ defineProps<{
 
     &.is-error {
       border-color: $color-secondary;
+    }
+
+    &:-webkit-autofill,
+    &:-webkit-autofill:hover,
+    &:-webkit-autofill:focus,
+    &:-webkit-autofill:active {
+      -webkit-box-shadow: 0 0 0 1000px $color-primary inset !important;
+      -webkit-text-fill-color: $color-text-primary !important;
+      caret-color: $color-text-primary;
     }
   }
 
