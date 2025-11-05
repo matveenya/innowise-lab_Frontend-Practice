@@ -1,19 +1,8 @@
-import { GET_USERS } from '../queries';
-import type { GetUsersResult } from '../types/user';
+import { GET_USERS } from '~/graphql/queries';
+import type { GetUsersResult } from '~/graphql/types/user';
+import { apolloQuery } from '~/utils/apollo';
 
-export const useGetUsers = () => {
-  const { $apollo } = useNuxtApp();
-
-  if (!$apollo) {
-    throw new Error('Apollo Client is not initialized');
-  }
-
-  return async (): Promise<GetUsersResult['users']> => {
-    const { data } = await $apollo.query({
-      query: GET_USERS,
-      fetchPolicy: 'cache-first',
-    });
-
-    return data?.users ?? [];
-  };
-};
+export async function useGetUsers() {
+  const data = await apolloQuery<GetUsersResult>(GET_USERS);
+  return data?.users ?? [];
+}

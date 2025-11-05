@@ -17,7 +17,5 @@ definePageMeta({
   middleware: 'auth',
 });
 
-const getUsers = useGetUsers();
-
-const { data: users } = await useLazyAsyncData('users', () => getUsers());
+const { data: users } = await useLazyAsyncData('users', () => useGetUsers());
 </script>
