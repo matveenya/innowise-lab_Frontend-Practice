@@ -9,11 +9,11 @@ export const useGetUsers = () => {
   }
 
   return async (): Promise<GetUsersResult['users']> => {
-    const { data } = await $apollo.query<GetUsersResult>({
+    const { data } = await $apollo.query({
       query: GET_USERS,
       fetchPolicy: 'cache-first',
     });
 
-    return data.users ?? [];
+    return data?.users ?? [];
   };
 };

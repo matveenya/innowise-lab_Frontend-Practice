@@ -1,80 +1,31 @@
-import { LOGIN } from '../queries';
-import { SIGNUP, UPDATE_TOKEN, FORGOT_PASSWORD } from '../mutations';
-import type {
-  LoginResult,
-  LoginArgs,
-  SignupResult,
-  SignupArgs,
-  UpdateTokenResult,
-  ForgotPasswordArgs,
-} from '../types';
+import { LOGIN } from '~/graphql/queries';
+import { SIGNUP, UPDATE_TOKEN, FORGOT_PASSWORD } from '~/graphql/mutations';
+import type { LoginArgs, SignupArgs, ForgotPasswordArgs } from '~/graphql/types';
+import { apolloQuery, apolloMutation } from '~/utils/apollo';
 
-export const useLogin = () => {
-  const { $apollo } = useNuxtApp();
+export async function useLogin(auth: LoginArgs['auth']) {
+  const data = await apolloQuery(LOGIN, { auth });
+  return data?.login ?? null;
+}
 
-  if (!$apollo) {
-    throw new Error('Apollo Client is not initialized');
-  }
+export async function useSignup(auth: SignupArgs['auth']) {
+  const data = await apolloMutation(SIGNUP, { auth });
+  return data?.signup ?? null;
+}
 
-  return async (auth: LoginArgs['auth']): Promise<LoginResult | null> => {
-    const { data } = await $apollo.query<LoginResult, LoginArgs>({
-      query: LOGIN,
-      variables: { auth },
-    });
-
-    return data || null;
-  };
-};
-
-export const useSignup = () => {
-  const { $apollo } = useNuxtApp();
-
-  if (!$apollo) {
-    throw new Error('Apollo Client is not initialized');
-  }
-
-  return async (auth: SignupArgs['auth']): Promise<SignupResult | null> => {
-    const { data } = await $apollo.mutate<SignupResult, SignupArgs>({
-      mutation: SIGNUP,
-      variables: { auth },
-    });
-
-    return data || null;
-  };
-};
-
-export const useUpdateToken = () => {
-  const { $apollo } = useNuxtApp();
-
-  if (!$apollo) {
-    throw new Error('Apollo Client is not initialized');
-  }
-
-  return async (refreshToken: string): Promise<UpdateTokenResult['updateToken'] | null> => {
-    const { data } = await $apollo.mutate<UpdateTokenResult>({
-      mutation: UPDATE_TOKEN,
-      context: {
-        headers: {
-          authorization: `Bearer ${refreshToken}`,
-        },
+export async function useUpdateToken(refreshToken: string) {
+  const data = await apolloMutation(
+    UPDATE_TOKEN,
+    {},
+    {
+      headers: {
+        authorization: `Bearer ${refreshToken}`,
       },
-    });
+    }
+  );
+  return data?.updateToken ?? null;
+}
 
-    return data?.updateToken || null;
-  };
-};
-
-export const useForgotPassword = () => {
-  const { $apollo } = useNuxtApp();
-
-  if (!$apollo) {
-    throw new Error('Apollo Client is not initialized');
-  }
-
-  return async (auth: ForgotPasswordArgs['auth']): Promise<void> => {
-    await $apollo.mutate<ForgotPasswordArgs>({
-      mutation: FORGOT_PASSWORD,
-      variables: { auth },
-    });
-  };
-};
+export async function useForgotPassword(auth: ForgotPasswordArgs['auth']) {
+  await apolloMutation(FORGOT_PASSWORD, { auth });
+}

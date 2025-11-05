@@ -46,8 +46,7 @@ export default defineNuxtPlugin(nuxtApp => {
         return null;
       }
 
-      const updateTokenMutation = await nuxtApp.runWithContext(() => useUpdateToken());
-      const data = await updateTokenMutation(refreshToken);
+      const data = await nuxtApp.runWithContext(() => useUpdateToken(refreshToken));
 
       const newAccess = data?.access_token;
       const newRefresh = data?.refresh_token;
@@ -60,7 +59,8 @@ export default defineNuxtPlugin(nuxtApp => {
       console.warn('[Token Refresh] ⚠️ Failed to get new tokens, clearing auth');
       authStore.clearAuth();
       return null;
-    } catch {
+    } catch (error) {
+      console.error('[Token Refresh] ❌ Error during token refresh:', error);
       authStore.clearAuth();
       return null;
     }

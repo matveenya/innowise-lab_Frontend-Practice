@@ -37,12 +37,11 @@ export const useAuthStore = defineStore('auth', () => {
 
   const login = async (auth: AuthInput) => {
     try {
-      const loginQuery = useLogin();
-      const data = await loginQuery(auth);
+      const data = await useLogin(auth);
 
-      if (data?.login) {
-        setToken(data.login.access_token, data.login.refresh_token);
-        setUser(data.login.user);
+      if (data) {
+        setToken(data.access_token, data.refresh_token);
+        setUser(data.user);
         return true;
       }
       return false;
@@ -54,12 +53,11 @@ export const useAuthStore = defineStore('auth', () => {
 
   const signup = async (auth: AuthInput) => {
     try {
-      const signupMutation = useSignup();
-      const data = await signupMutation(auth);
+      const data = await useSignup(auth);
 
-      if (data?.signup) {
-        setToken(data.signup.access_token, data.signup.refresh_token);
-        setUser(data.signup.user);
+      if (data) {
+        setToken(data.access_token, data.refresh_token);
+        setUser(data.user);
       }
       return { success: true };
     } catch (error) {

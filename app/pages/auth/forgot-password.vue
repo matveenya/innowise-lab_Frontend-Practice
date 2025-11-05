@@ -27,8 +27,8 @@ import {
 } from '~/utils/schemas/authValidationSchema';
 import { useForm } from 'vee-validate';
 import { toTypedSchema } from '@vee-validate/zod';
-import { useForgotPassword } from '~/graphql/hooks/auth';
 import { CombinedGraphQLErrors } from '@apollo/client/errors';
+import { useForgotPassword } from '~/graphql/hooks/auth';
 
 definePageMeta({
   layout: 'auth',
@@ -38,11 +38,9 @@ const { handleSubmit, setFieldError, resetForm } = useForm<ForgotPasswordSchema>
   validationSchema: toTypedSchema(forgotPasswordSchema),
 });
 
-const forgotPasswordMutation = useForgotPassword();
-
 const onSubmit = handleSubmit(async values => {
   try {
-    await forgotPasswordMutation(values);
+    await useForgotPassword(values);
 
     resetForm();
     navigateTo('/auth/login');
