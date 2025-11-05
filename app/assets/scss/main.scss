@@ -9,3 +9,16 @@ body {
   font-weight: $font-weight-regular;
   font-display: swap;
 }
+
+::-webkit-scrollbar {
+  width: $space-2xs;
+  height: $space-2xs;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: $color-text-secondary;
+}
+
+::-webkit-scrollbar-track {
+  background-color: $button-ghost-bg;
+}
