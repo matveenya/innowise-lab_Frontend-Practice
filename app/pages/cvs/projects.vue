@@ -1,28 +1,5 @@
 <template>
-  <main class="cvs-projects">
-    <nav class="breadcrumb">
-      <NuxtLink to="/cvs" class="breadcrumb__link">CVs</NuxtLink>
-      <span class="breadcrumb__separator">›</span>
-      <span class="breadcrumb__current">Cv Name</span>
-      <span class="breadcrumb__separator">›</span>
-      <span class="breadcrumb__active">Projects</span>
-    </nav>
-
-    <nav class="tabs">
-      <ul class="tabs__list">
-        <li
-          v-for="tab in tabs"
-          :key="tab.name"
-          class="tabs__item"
-          :class="{ 'tabs__item--active': currentTab === tab.name }"
-        >
-          <NuxtLink :to="tab.to" class="tabs__link">
-            {{ tab.name }}
-          </NuxtLink>
-        </li>
-      </ul>
-    </nav>
-
+  <div class="cvs-projects">
     <div class="cvs-projects__controls-and-button">
       <div class="search-input-wrapper">
         <Icon name="ic:baseline-search" size="1.5em" mode="svg" class="search-icon" />
@@ -56,94 +33,17 @@
         </tr>
       </tbody>
     </table>
-  </main>
+  </div>
 </template>
 
 <script setup lang="ts">
-const route = useRoute();
-
-const tabs = [
-  { name: 'DETAILS', to: '/cvs/details' },
-  { name: 'SKILLS', to: '/cvs/skills' },
-  { name: 'PROJECTS', to: '/cvs/projects' },
-  { name: 'PREVIEW', to: '/cvs/preview' },
-];
-
-const currentTab = computed(() => {
-  const currentPath = route.path.toLowerCase();
-  const tab = tabs.find(t => currentPath.includes(t.name.toLowerCase()));
-  return tab ? tab.name : 'DETAILS';
+definePageMeta({
+  layout: 'cv-details',
 });
 </script>
 
 <style lang="scss" scoped>
 .cvs-projects {
-  background-color: $color-primary;
-  color: $color-text-primary;
-  padding: $space-lg;
-
-  .breadcrumb {
-    @include d-flex(flex-start, center);
-    gap: $space-md;
-    margin-bottom: $space-xs;
-    font-size: $font-size-md;
-    color: $color-text-muted;
-
-    &__link {
-      color: $color-text-secondary;
-      text-decoration: none;
-      &:hover {
-        text-decoration: underline;
-      }
-    }
-
-    &__separator {
-      color: $color-text-muted;
-      font-size: $font-size-2xl;
-    }
-
-    &__current {
-      color: $color-secondary;
-      font-weight: $font-weight-medium;
-
-      &:hover {
-        text-decoration: underline;
-        cursor: pointer;
-      }
-    }
-  }
-
-  .tabs {
-    margin-bottom: $space-2xl;
-    font-size: $font-size-sm;
-
-    &__list {
-      @include d-flex(flex-start, center);
-      gap: $space-lg;
-    }
-
-    &__item {
-      &--active .tabs__link {
-        color: $color-secondary;
-        @include border-bottom($color-secondary);
-      }
-    }
-
-    &__link {
-      display: inline-block;
-      padding: $space-lg $space-4xl;
-      text-transform: uppercase;
-      font-weight: $font-weight-medium;
-      color: $color-text-primary;
-      @include border-bottom(transparent);
-      transition: all 0.3s ease;
-
-      &:active {
-        background-color: rgba($color-secondary, 0.1);
-      }
-    }
-  }
-
   &__controls-and-button {
     @include d-flex(space-between, center);
     margin-bottom: $space-3xl;
