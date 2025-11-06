@@ -41,15 +41,16 @@
             Name
             <Icon name="ic:baseline-arrow-upward" size="1em" mode="svg" />
           </th>
-          <th class="table-header__item">Education</th>
-          <th class="table-header__item">Employee</th>
+          <th class="table-header__item">Domain</th>
+          <th class="table-header__item">Start Date</th>
+          <th class="table-header__item">End Date</th>
           <th class="table-header__item table-header__item--actions"></th>
         </tr>
       </thead>
 
       <tbody>
         <tr>
-          <td colspan="4" class="no-results-cell">
+          <td colspan="5" class="no-results-cell">
             <p class="no-results">No results found</p>
           </td>
         </tr>
@@ -104,6 +105,11 @@ const currentTab = computed(() => {
     &__current {
       color: $color-secondary;
       font-weight: $font-weight-medium;
+
+      &:hover {
+        text-decoration: underline;
+        cursor: pointer;
+      }
     }
   }
 
@@ -155,6 +161,10 @@ const currentTab = computed(() => {
         color: $color-text-primary;
         font-size: $font-size-md;
         box-shadow: none;
+
+        &:hover {
+          border-color: $color-text-primary;
+        }
 
         &:focus {
           outline: none;
@@ -212,6 +222,11 @@ const currentTab = computed(() => {
       font-weight: $font-weight-medium;
       text-align: left;
       padding-bottom: $space-md;
+      cursor: pointer;
+
+      &:hover {
+        color: $color-text-primary-disabled;
+      }
 
       &.sortable {
         @include d-flex(flex-start, center);

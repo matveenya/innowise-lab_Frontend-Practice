@@ -73,6 +73,10 @@ const isDialogVisible = ref(false);
         font-size: $font-size-md;
         box-shadow: none;
 
+        &:hover {
+          border-color: $color-text-primary;
+        }
+
         &:focus {
           outline: none;
           border: $border-outline-active;
@@ -129,6 +133,11 @@ const isDialogVisible = ref(false);
       font-weight: $font-weight-medium;
       text-align: left;
       padding-bottom: $space-md;
+      cursor: pointer;
+
+      &:hover {
+        color: $color-text-primary-disabled;
+      }
 
       &.sortable {
         @include d-flex(flex-start, center);

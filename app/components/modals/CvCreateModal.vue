@@ -62,6 +62,10 @@ const createCv = () => closeModal();
       box-sizing: border-box;
       transition: border-color 0.2s ease;
 
+      &:hover {
+        border-color: $color-text-primary;
+      }
+
       &:focus {
         border-color: $color-secondary;
       }

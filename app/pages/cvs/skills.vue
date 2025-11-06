@@ -80,6 +80,11 @@ const currentTab = computed(() => {
     &__current {
       color: $color-secondary;
       font-weight: $font-weight-medium;
+
+      &:hover {
+        text-decoration: underline;
+        cursor: pointer;
+      }
     }
   }
 
