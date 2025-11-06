@@ -4,12 +4,7 @@
     <p class="auth-content__subtitle">We will send you an email with further instructions</p>
 
     <form class="auth-form" @submit.prevent="onSubmit">
-      <FormFloatLabelInput
-        name="email"
-        type="email"
-        placeholder="example@email.com"
-        label="Email"
-      />
+      <FormInput name="email" type="email" placeholder="example@email.com" label="Email" />
 
       <FormAction link-to="/auth/login">
         <template #button-text>RESET PASSWORD</template>

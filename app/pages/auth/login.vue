@@ -4,7 +4,7 @@
     <p class="auth-content__subtitle">Hello again! Log in to continue</p>
 
     <form class="auth-form" @submit.prevent="onSubmit">
-      <FormInput name="email" type="email" placeholder="Email" />
+      <FormInput name="email" type="email" placeholder="example@email.com" label="Email" />
       <FormPasswordInput name="password" />
 
       <FormAction link-to="/auth/forgot-password">
