@@ -1,5 +1,5 @@
 import type { User, AuthInput } from 'cv-graphql';
-import { useLogin, useSignup } from '../graphql/hooks';
+import { login as loginService, signup as signupService } from '../services/auth';
 import { defineStore } from 'pinia';
 
 const ACCESS_TOKEN_KEY = 'access_token';
@@ -37,7 +37,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   const login = async (auth: AuthInput) => {
     try {
-      const data = await useLogin(auth);
+      const data = await loginService({ auth });
 
       if (data) {
         setToken(data.access_token, data.refresh_token);
@@ -53,7 +53,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   const signup = async (auth: AuthInput) => {
     try {
-      const data = await useSignup(auth);
+      const data = await signupService({ auth });
 
       if (data) {
         setToken(data.access_token, data.refresh_token);

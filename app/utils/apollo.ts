@@ -1,4 +1,17 @@
-import type { TypedDocumentNode } from '@apollo/client';
+import type {
+  TypedDocumentNode,
+  ApolloCache,
+  DefaultContext,
+  MutationUpdaterFunction,
+  InternalRefetchQueriesInclude,
+  OperationVariables,
+} from '@apollo/client';
+
+export type MutationOpts<TResult, TVariables extends OperationVariables> = {
+  context?: DefaultContext;
+  refetchQueries?: InternalRefetchQueriesInclude;
+  update?: MutationUpdaterFunction<TResult, TVariables, ApolloCache>;
+};
 
 function getApolloClient() {
   const { $apollo } = useNuxtApp();
@@ -10,27 +23,30 @@ function getApolloClient() {
   return $apollo;
 }
 
-export async function apolloQuery<TResult, TVariables = Record<string, never>>(
-  query: TypedDocumentNode<TResult, TVariables>,
-  variables?: TVariables
-): Promise<TResult> {
+export async function apolloQuery<
+  TResult,
+  TVariables extends OperationVariables = Record<string, never>,
+>(query: TypedDocumentNode<TResult, TVariables>, variables?: TVariables): Promise<TResult> {
   const apollo = getApolloClient();
 
   const { data } = await apollo.query<TResult, TVariables>({ query, variables });
   return data as TResult;
 }
 
-export async function apolloMutation<TResult, TVariables = Record<string, never>>(
+export async function apolloMutation<
+  TResult,
+  TVariables extends OperationVariables = Record<string, never>,
+>(
   mutation: TypedDocumentNode<TResult, TVariables>,
   variables?: TVariables,
-  context?: Record<string, unknown>
+  options?: MutationOpts<TResult, TVariables>
 ): Promise<TResult> {
   const apollo = getApolloClient();
 
   const { data } = await apollo.mutate<TResult, TVariables>({
     mutation,
     variables,
-    ...(context && { context }),
+    ...options,
   });
   return data as TResult;
 }
