@@ -1,6 +1,7 @@
-import { gql } from '@apollo/client';
+import { gql, type TypedDocumentNode } from '@apollo/client';
+import type { GetUsersResult } from '../types';
 
-export const GET_USERS = gql`
+export const GET_USERS: TypedDocumentNode<GetUsersResult, Record<string, never>> = gql`
   query GetUsers {
     users {
       id

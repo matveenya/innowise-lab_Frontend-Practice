@@ -1,6 +1,7 @@
-import { gql } from '@apollo/client';
+import { gql, type TypedDocumentNode } from '@apollo/client';
+import type { SignupResult, SignupArgs } from '../types';
 
-export const SIGNUP = gql`
+export const SIGNUP: TypedDocumentNode<SignupResult, SignupArgs> = gql`
   mutation Signup($auth: AuthInput!) {
     signup(auth: $auth) {
       user {

@@ -1,7 +1,7 @@
 <template>
   <div class="auth-layout">
-    <AuthFormContainer :is-forgot-password="isForgotPasswordPage">
-      <AuthLayoutTabs v-if="!isForgotPasswordPage" />
+    <AuthFormContainer :is-centered="isPageCentered">
+      <AuthLayoutTabs v-if="!isPageCentered" />
 
       <slot />
     </AuthFormContainer>
@@ -13,7 +13,9 @@ import { useRoute } from 'vue-router';
 
 const route = useRoute();
 
-const isForgotPasswordPage = computed(() => route.path.includes('/forgot-password'));
+const isPageCentered = computed(
+  () => route.path.includes('/forgot-password') || route.path.includes('/reset-password')
+);
 </script>
 
 <style scoped lang="scss"></style>

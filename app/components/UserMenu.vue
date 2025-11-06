@@ -93,6 +93,7 @@ const toggleMenu = (event: Event) => {
       @include d-flex(start, center);
       gap: $space-md;
       padding: $space-md $space-lg;
+      width: 100%;
       background: transparent;
       color: $color-text-primary;
       font-size: $font-size-md;
@@ -100,6 +101,7 @@ const toggleMenu = (event: Event) => {
       white-space: nowrap;
       cursor: pointer;
       transition: background 0.2s ease;
+      border: none;
 
       &:hover {
         background: $button-bg-disabled;

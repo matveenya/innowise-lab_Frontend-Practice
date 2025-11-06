@@ -23,5 +23,12 @@ export const forgotPasswordSchema = z.object({
     .min(1, REQUIRED_EMAIL_MESSAGE),
 });
 
+export const resetPasswordSchema = z.object({
+  password: z
+    .string({ required_error: REQUIRED_PASSWORD_MESSAGE })
+    .min(6, INVALID_PASSWORD_MESSAGE),
+});
+
 export type AuthSchema = z.infer<typeof authSchema>;
 export type ForgotPasswordSchema = z.infer<typeof forgotPasswordSchema>;
+export type ResetPasswordSchema = z.infer<typeof resetPasswordSchema>;
