@@ -4,7 +4,7 @@
     <p class="auth-content__subtitle">Almost done! Now create a new password</p>
 
     <form class="auth-form" @submit.prevent="onSubmit">
-      <FormInput
+      <FloatLabelInput
         name="password"
         type="password"
         placeholder="Enter new password"
