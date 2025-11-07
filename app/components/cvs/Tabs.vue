@@ -18,14 +18,19 @@
 <script setup lang="ts">
 const route = useRoute();
 
-const tabs = [
+interface Tab {
+  name: string;
+  to: string;
+}
+
+const tabs: Tab[] = [
   { name: 'DETAILS', to: '/cvs/details' },
   { name: 'SKILLS', to: '/cvs/skills' },
   { name: 'PROJECTS', to: '/cvs/projects' },
   { name: 'PREVIEW', to: '/cvs/preview' },
 ];
 
-const currentTab = computed(() => {
+const currentTab = computed<Tab['name']>(() => {
   const currentPath = route.path.toLowerCase();
   const tab = tabs.find(t => currentPath.includes(t.name.toLowerCase()));
   return tab ? tab.name : 'DETAILS';
