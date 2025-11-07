@@ -5,7 +5,7 @@
 
     <form class="auth-form" @submit.prevent="onSubmit">
       <FormInput name="email" type="email" placeholder="example@email.com" label="Email" />
-      <FormPasswordInput name="password" />
+      <FormPasswordInput name="password" label="Password" placeholder="Enter your password" />
 
       <FormAction link-to="/auth/forgot-password">
         <template #button-text>LOG IN</template>
