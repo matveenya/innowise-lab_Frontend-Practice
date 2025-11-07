@@ -5,20 +5,9 @@
     </template>
 
     <template #body>
-      <div class="modal__field">
-        <input id="name" type="text" class="modal__input" placeholder=" " />
-        <label for="name" class="modal__label">Name</label>
-      </div>
-
-      <div class="modal__field">
-        <input id="education" type="text" class="modal__input" placeholder=" " />
-        <label for="education" class="modal__label">Education</label>
-      </div>
-
-      <div class="modal__field">
-        <textarea id="description" class="modal__textarea" placeholder=" " rows="8"></textarea>
-        <label for="description" class="modal__label">Description</label>
-      </div>
+      <Input id="name" v-model="name" label="Name" />
+      <Input id="education" v-model="education" label="Education" />
+      <Textarea id="description" v-model="description" label="Description" />
     </template>
 
     <template #footer>
@@ -29,8 +18,13 @@
 </template>
 
 <script setup lang="ts">
+import Textarea from '../ui/Textarea.vue';
 defineProps<{ isVisible: boolean }>();
 const emit = defineEmits(['update:isVisible']);
+
+const name = ref('');
+const education = ref('');
+const description = ref('');
 
 const closeModal = () => emit('update:isVisible', false);
 const createCv = () => closeModal();
@@ -43,60 +37,6 @@ const createCv = () => closeModal();
     font-weight: $font-weight-medium;
     color: $color-text-primary;
     margin: 0;
-  }
-
-  &__field {
-    position: relative;
-    width: 100%;
-
-    .modal__input,
-    .modal__textarea {
-      width: 100%;
-      background-color: $color-primary;
-      border: $border-subtle;
-      border-radius: $radius-md;
-      padding: $space-xl $space-md $space-sm;
-      color: $color-text-primary;
-      font-size: $font-size-md;
-      outline: none;
-      box-sizing: border-box;
-      transition: border-color 0.2s ease;
-
-      &:hover {
-        border-color: $color-text-primary;
-      }
-
-      &:focus {
-        border-color: $color-secondary;
-      }
-
-      &:focus + .modal__label,
-      &:not(:placeholder-shown) + .modal__label {
-        top: -1 * $modal-distance-top;
-        left: $space-md;
-        font-size: $font-size-sm;
-        color: $color-secondary;
-        background-color: $color-primary;
-        padding: 0 $space-xs;
-      }
-    }
-
-    .modal__textarea {
-      resize: none;
-      padding-top: $space-2xl;
-    }
-
-    .modal__label {
-      position: absolute;
-      top: $modal-distance-top * 2;
-      left: $space-md;
-      color: $color-text-secondary;
-      font-size: $font-size-md;
-      pointer-events: none;
-      background-color: transparent;
-      padding: 0 $space-2xs;
-      transition: all 0.2s ease;
-    }
   }
 }
 

@@ -9,6 +9,18 @@ export default defineNuxtConfig({
     '@vee-validate/nuxt',
     '@primevue/nuxt-module',
   ],
+  components: [
+    {
+      path: '~/components/ui',
+      prefix: '',
+      pathPrefix: false,
+    },
+    {
+      path: '~/components',
+      prefix: '',
+      pathPrefix: true,
+    },
+  ],
   runtimeConfig: {
     public: {
       apiUrl: process.env.NUXT_PUBLIC_API_URL as string,

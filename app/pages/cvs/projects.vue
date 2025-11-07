@@ -1,10 +1,7 @@
 <template>
   <div class="cvs-projects">
     <div class="cvs-projects__controls-and-button">
-      <div class="search-input-wrapper">
-        <Icon name="ic:baseline-search" size="1.5em" mode="svg" class="search-icon" />
-        <input type="text" placeholder="Search" class="search-input" />
-      </div>
+      <SearchInput v-model="searchTerm" placeholder="Search" />
       <button class="create-button">
         <Icon name="ic:baseline-plus" size="1.2em" mode="svg" />
         ADD PROJECT
@@ -40,6 +37,8 @@
 definePageMeta({
   layout: 'cv-details',
 });
+
+const searchTerm = ref('');
 </script>
 
 <style lang="scss" scoped>
@@ -47,43 +46,6 @@ definePageMeta({
   &__controls-and-button {
     @include d-flex(space-between, center);
     margin-bottom: $space-3xl;
-
-    .search-input-wrapper {
-      position: relative;
-      width: $input-width-cvs;
-
-      .search-input {
-        width: 100%;
-        padding: $space-md $space-lg $space-md $space-4xl;
-        border-radius: $radius-2xl;
-        border: $border-outline;
-        background-color: $color-primary;
-        color: $color-text-primary;
-        font-size: $font-size-md;
-        box-shadow: none;
-
-        &:hover {
-          border-color: $color-text-primary;
-        }
-
-        &:focus {
-          outline: none;
-          border: $border-outline-active;
-        }
-
-        &::placeholder {
-          color: $color-text-muted;
-        }
-      }
-
-      .search-icon {
-        position: absolute;
-        left: $space-md;
-        top: 50%;
-        transform: translateY(-50%);
-        color: $color-text-primary;
-      }
-    }
 
     .create-button {
       @include d-flex(center, center);
@@ -112,7 +74,7 @@ definePageMeta({
       @include border-bottom($color-border-subtle, 1px);
     }
 
-    .cvs-page__table-header-row {
+    .cvs-projects__table-header-row {
       height: $space-4xl;
     }
 
