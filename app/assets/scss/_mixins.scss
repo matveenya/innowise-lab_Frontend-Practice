@@ -16,3 +16,9 @@
   grid-template-rows: $rows;
   gap: $gap;
 }
+
+@mixin container($width) {
+  max-width: $width;
+  width: 100%;
+  margin-inline: auto;
+}
