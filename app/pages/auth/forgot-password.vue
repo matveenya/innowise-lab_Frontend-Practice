@@ -35,7 +35,7 @@ const { handleSubmit, setFieldError, resetForm } = useForm<ForgotPasswordSchema>
 
 const onSubmit = handleSubmit(async values => {
   try {
-    await forgotPasswordService({ auth: values });
+    await forgotPasswordService({ email: values.email });
 
     resetForm();
     navigateTo('/auth/login');

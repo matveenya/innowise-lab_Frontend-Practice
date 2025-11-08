@@ -38,6 +38,6 @@ export async function updateToken(refreshToken: string) {
   return result.updateToken;
 }
 
-export async function forgotPassword(args: ForgotPasswordArgs): Promise<void> {
-  await apolloMutation<{ forgotPassword: boolean }, ForgotPasswordArgs>(FORGOT_PASSWORD, args);
+export async function forgotPassword(auth: ForgotPasswordArgs['auth']): Promise<void> {
+  await apolloMutation<{ forgotPassword: null }, ForgotPasswordArgs>(FORGOT_PASSWORD, { auth });
 }
