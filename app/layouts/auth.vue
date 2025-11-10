@@ -1,7 +1,9 @@
 <template>
   <div class="auth-layout">
     <AuthFormContainer :is-centered="isPageCentered">
-      <AuthLayoutTabs v-if="!isPageCentered" />
+      <template v-if="!isPageCentered" #header>
+        <AuthLayoutTabs />
+      </template>
 
       <slot />
     </AuthFormContainer>

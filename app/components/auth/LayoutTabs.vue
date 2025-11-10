@@ -9,15 +9,14 @@
 .auth-tabs {
   @include d-flex(center, flex-start);
   width: 100%;
-  margin-bottom: $space-6xl;
 
   &__link {
-    padding: $space-sm $space-lg;
-    margin-right: $space-2xl;
+    padding: $space-xl $space-5xl;
+
     color: $color-text-muted;
     text-transform: uppercase;
     font-size: $font-size-sm;
-    font-weight: $font-weight-medium;
+    font-weight: $font-weight-bold;
     @include border-bottom(transparent);
     transition: all 0.2s ease;
 

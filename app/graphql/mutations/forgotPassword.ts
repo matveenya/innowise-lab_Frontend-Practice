@@ -2,7 +2,7 @@ import { gql, type TypedDocumentNode } from '@apollo/client';
 import type { ForgotPasswordArgs } from '../types';
 
 export type ForgotPasswordResult = {
-  forgotPassword: boolean;
+  forgotPassword: null;
 };
 
 export const FORGOT_PASSWORD: TypedDocumentNode<ForgotPasswordResult, ForgotPasswordArgs> = gql`
