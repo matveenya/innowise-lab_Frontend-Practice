@@ -23,7 +23,6 @@ const buttonClasses = computed(() => ({
   --background-color: #{$button-primary-bg};
   --text-color: #{$button-primary-text};
   --border-color: #{$button-primary-bg};
-  --hover-background-color: #{$button-primary-hover};
 
   padding: $space-sm $space-lg;
   vertical-align: middle;
@@ -42,22 +41,21 @@ const buttonClasses = computed(() => ({
     --background-color: #{$button-primary-bg};
     --text-color: #{$button-primary-text};
     --border-color: #{$button-primary-bg};
-    --hover-background-color: #{$button-primary-hover};
 
     &:hover {
       --border-color: #{$color-secondary};
-      background-color: var(--hover-background-color);
+      --background-color: #{$button-primary-hover};
     }
   }
 
   &__outline {
     --background-color: #{$button-outline-bg};
     --text-color: #{$button-outline-text};
-    --border-color: rgba(#{$color-secondary}, #{$opacity-50});
-    --hover-background-color: #{$button-outline-hover};
+    --border-color: $border-outline;
 
     &:hover {
-      --border-color: #{$color-secondary};
+      --background-color: #{$button-outline-hover};
+      --border-color: #{$color-text-muted};
     }
   }
 
@@ -65,9 +63,8 @@ const buttonClasses = computed(() => ({
     --background-color: #{$button-ghost-bg};
     --text-color: #{$button-ghost-text};
     --border-color: transparent;
-    --hover-background-color: #{$button-ghost-hover};
     &:hover {
-      background-color: var(--hover-background-color);
+      --background-color: #{$button-ghost-hover};
     }
   }
   &--disabled {
