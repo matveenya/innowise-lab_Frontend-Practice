@@ -28,7 +28,7 @@ const buttonClasses = computed(() => ({
   vertical-align: middle;
   background-color: var(--background-color);
   border-radius: $radius-3xl;
-  border: 1px solid var(--border-color);
+  border: $border-thin-1 var(--border-color);
   cursor: pointer;
   color: var(--text-color);
   font-size: $font-size-sm;
