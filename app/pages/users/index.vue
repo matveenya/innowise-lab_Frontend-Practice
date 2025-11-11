@@ -108,7 +108,7 @@ const { data: users } = await useAsyncData('users', () => getUsers());
     top: 0;
     z-index: 20;
     background-color: $color-primary;
-    padding-block: $space-lg;
+    padding: $space-lg 0 $space-lg $space-xl;
   }
 }
 .table {
@@ -157,15 +157,11 @@ const { data: users } = await useAsyncData('users', () => getUsers());
   padding: 0.5rem;
   margin: 0;
   border-radius: 50%;
-
   display: inline-flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-
   transition: background-color 0.2s ease;
-
-  background-color: transparent;
 
   &:hover {
     background-color: rgba(255, 255, 255, 0.08);

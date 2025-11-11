@@ -66,7 +66,7 @@ const toggleMenu = () => (isMenuOpen.value = !isMenuOpen.value);
 
   &__main {
     width: 100%;
-    overflow-y: scroll;
+    overflow-y: hidden;
   }
 }
 </style>
