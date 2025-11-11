@@ -9,6 +9,7 @@ export const GET_USERS: TypedDocumentNode<GetUsersResult, Record<string, never>>
       profile {
         first_name
         last_name
+        avatar
       }
       department_name
       position_name
