@@ -1,6 +1,8 @@
 <template>
-  <div>
-    <SearchInput v-model="searchQuery" />
+  <div class="users-page">
+    <div class="users-page__sticky-bar">
+      <SearchInput v-model="searchQuery" />
+    </div>
 
     <DataTable
       v-model:sort-field="sortField"
@@ -8,6 +10,8 @@
       :value="users"
       :pt="tablePT"
       sort-mode="single"
+      scrollable
+      scroll-height="calc(100vh - 80px)"
     >
       <Column>
         <template #body="{ data }">
@@ -25,7 +29,7 @@
           <SortIcon :sort-order="columnSortOrder" />
         </template>
       </Column>
-      <Column class="w-24" :sortable="false">
+      <Column :sortable="false">
         <template #body="{ data }">
           <button
             class="icon-button"
@@ -97,6 +101,16 @@ const { data: users } = await useAsyncData('users', () => getUsers());
 </script>
 
 <style lang="scss">
+.users-page {
+  padding-left: $space-2xl;
+  &__sticky-bar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background-color: $color-primary;
+    padding-block: $space-lg;
+  }
+}
 .table {
   width: 100%;
   border: 0;
@@ -111,9 +125,13 @@ const { data: users } = await useAsyncData('users', () => getUsers());
     border-bottom: $border-thin-1 $color-border-table;
   }
   &__header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
     cursor: pointer;
 
     th {
+      background: linear-gradient(to top, transparent 0%, $color-primary 50%);
       .p-column-sort-icon {
         margin-left: 0.5rem;
         vertical-align: text-bottom;

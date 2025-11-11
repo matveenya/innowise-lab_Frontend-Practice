@@ -66,7 +66,6 @@ const toggleMenu = () => (isMenuOpen.value = !isMenuOpen.value);
 
   &__main {
     width: 100%;
-    padding-inline: $space-2xl;
     overflow-y: scroll;
   }
 }
