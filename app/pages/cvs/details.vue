@@ -14,13 +14,35 @@
 
 <script setup lang="ts">
 import Textarea from '~/components/ui/Textarea.vue';
-const name = ref('');
-const education = ref('');
-const description = ref('');
+import { getCvs } from '~/services/cvs';
+import { createQueryAdapter } from '~/utils/apolloAdapters';
 
 definePageMeta({
   layout: 'cv-details',
 });
+
+const route = useRoute();
+const name = ref('');
+const education = ref('');
+const description = ref('');
+
+const { data: cvs } = createQueryAdapter(getCvs);
+
+watch(
+  [cvs, () => route.query.id],
+  ([newCvs, cvId]) => {
+    if (!newCvs || !cvId) return;
+
+    const foundCv = newCvs.find(cv => cv.id === cvId);
+
+    if (foundCv) {
+      name.value = foundCv.name || '';
+      education.value = foundCv.education || '';
+      description.value = foundCv.description || '';
+    }
+  },
+  { immediate: true }
+);
 </script>
 
 <style lang="scss" scoped>
