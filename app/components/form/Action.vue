@@ -22,7 +22,7 @@ defineProps<{
   width: 100%;
 
   .auth-button {
-    width: $button-width-auth;
+    width: $button-width;
     padding: $space-md $space-lg;
     border-radius: $radius-2xl;
     cursor: pointer;

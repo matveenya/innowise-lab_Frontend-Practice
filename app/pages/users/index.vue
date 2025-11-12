@@ -12,6 +12,7 @@
       sort-mode="single"
       scrollable
       scroll-height="calc(100vh - 80px)"
+      role="table"
     >
       <Column>
         <template #body="{ data }">
@@ -38,15 +39,11 @@
             @click="handleIconClick(data)"
           >
             <Icon
-              v-if="data.id === currentUserId"
-              name="material-symbols:more-vert"
-              mode="svg"
-              size="1.5rem"
-              class="icon"
-            />
-            <Icon
-              v-else
-              name="ic:baseline-keyboard-arrow-right"
+              :name="
+                data.id === currentUserId
+                  ? 'material-symbols:more-vert'
+                  : 'ic:baseline-keyboard-arrow-right'
+              "
               mode="svg"
               size="1.5rem"
               class="icon"
@@ -54,6 +51,16 @@
           </button>
         </template>
       </Column>
+
+      <template v-if="!pending" #empty>
+        <div class="users-page__no-results" role="status">
+          <h5 class="users-page__no-results-title">No results found</h5>
+          <p class="users-page__no-results-message">
+            Try another search, check the spelling or use a broader term
+          </p>
+          <Button variant="ghost" @click="resetSearch">Reset search</Button>
+        </div>
+      </template>
     </DataTable>
   </div>
 </template>
@@ -61,7 +68,7 @@
 <script setup lang="ts">
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
-import { getUsers } from '~/services/users';
+import Button from '~/components/ui/Button.vue';
 import type { User } from '~/graphql/types/user';
 import { useAuthStore } from '~/stores/auth';
 import { USERS_TABLE_COLUMNS } from '~/constants/users';
@@ -75,13 +82,7 @@ const searchInput = ref('');
 const searchQuery = refDebounced(searchInput, 300);
 const sortField = ref('department_name');
 const sortOrder = ref(1);
-
 const columns = USERS_TABLE_COLUMNS;
-
-const tablePT = {
-  table: { class: 'table' },
-  thead: { class: 'table__header' },
-};
 
 const auth = useAuthStore();
 const currentUserId = computed(() => auth.user?.id);
@@ -94,21 +95,30 @@ const handleIconClick = (userData: User) => {
   }
 };
 
-const { data: users } = await useAsyncData<User[]>('users', () => getUsers());
+const resetSearch = () => {
+  searchInput.value = '';
+};
 
-const filteredUsers = computed(() => {
+const { users, pending } = await useUsersTable();
+
+const filteredUsers = computed<User[]>(() => {
   if (!users.value) return [];
 
   const query = searchQuery.value.toLowerCase().trim();
-  if (!query) return users.value;
+  if (!query) return users.value ?? [];
 
-  return users.value.filter(user => {
+  return (users.value ?? []).filter(user => {
     const firstName = (user.profile?.first_name ?? '').toLowerCase();
     const lastName = (user.profile?.last_name ?? '').toLowerCase();
     const email = (user.email ?? '').toLowerCase();
     return firstName.includes(query) || lastName.includes(query) || email.includes(query);
   });
 });
+
+const tablePT = {
+  table: { class: 'table' },
+  thead: { class: 'table__header' },
+};
 </script>
 
 <style lang="scss">
@@ -120,6 +130,23 @@ const filteredUsers = computed(() => {
     z-index: 20;
     background-color: $color-primary;
     padding: $space-lg 0 $space-lg $space-xl;
+  }
+  &__no-results {
+    width: 100%;
+    height: calc(100vh - 165px);
+    @include d-flex(center, center, column);
+    gap: $space-lg;
+
+    &-title {
+      font-size: $font-size-2xl;
+
+      line-height: 1.35;
+    }
+    &-message {
+      font-size: $font-size-md;
+
+      line-height: 1.5;
+    }
   }
 }
 .table {
@@ -135,6 +162,7 @@ const filteredUsers = computed(() => {
     line-height: 1.43;
     border-bottom: $border-thin-1 $color-border-table;
   }
+
   &__header {
     position: sticky;
     top: 0;

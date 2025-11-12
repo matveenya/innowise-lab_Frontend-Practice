@@ -23,7 +23,7 @@ const buttonClasses = computed(() => ({
   --background-color: #{$button-primary-bg};
   --text-color: #{$button-primary-text};
   --border-color: #{$button-primary-bg};
-
+  min-width: $button-width;
   padding: $space-sm $space-lg;
   vertical-align: middle;
   background-color: var(--background-color);
