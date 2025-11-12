@@ -6,7 +6,7 @@
       <Textarea id="cv-description" v-model="description" label="Description" />
 
       <div class="cv-form__actions">
-        <button type="submit" class="cv-form__button">Update</button>
+        <button type="submit" class="cv-form__button" :disabled="!isModified">Update</button>
       </div>
     </form>
   </section>
@@ -22,9 +22,14 @@ definePageMeta({
 });
 
 const route = useRoute();
+
 const name = ref('');
 const education = ref('');
 const description = ref('');
+
+const initialName = ref('');
+const initialEducation = ref('');
+const initialDescription = ref('');
 
 const { data: cvs } = createQueryAdapter(getCvs);
 
@@ -39,10 +44,22 @@ watch(
       name.value = foundCv.name || '';
       education.value = foundCv.education || '';
       description.value = foundCv.description || '';
+
+      initialName.value = foundCv.name || '';
+      initialEducation.value = foundCv.education || '';
+      initialDescription.value = foundCv.description || '';
     }
   },
   { immediate: true }
 );
+
+const isModified = computed(() => {
+  return (
+    name.value.trim() !== initialName.value.trim() ||
+    education.value.trim() !== initialEducation.value.trim() ||
+    description.value.trim() !== initialDescription.value.trim()
+  );
+});
 
 const handleUpdate = async () => {
   const cvId = route.query.id?.toString();
@@ -55,6 +72,10 @@ const handleUpdate = async () => {
       education: education.value,
       description: description.value,
     });
+
+    initialName.value = name.value;
+    initialEducation.value = education.value;
+    initialDescription.value = description.value;
   } catch (error) {
     console.error('Failed to update CV:', error);
   }
@@ -91,6 +112,14 @@ const handleUpdate = async () => {
 
     &:hover {
       background-color: $button-primary-hover;
+    }
+
+    &:disabled {
+      background-color: $button-neutral-bg;
+      color: $color-text-primary-disabled;
+      cursor: default;
+      pointer-events: none;
+      box-shadow: none;
     }
   }
 }
