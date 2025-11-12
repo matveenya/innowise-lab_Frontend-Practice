@@ -1,7 +1,7 @@
 import type { Cv, CreateCvInput } from 'cv-graphql';
 
 export interface CreateCvArgs {
-  cv: Omit<CreateCvInput, 'userId'>;
+  cv: CreateCvInput;
 }
 
 export interface CreateCvResult {

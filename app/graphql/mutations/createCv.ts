@@ -3,14 +3,20 @@ import type { CreateCvArgs, CreateCvResult } from '../types';
 
 export const CREATE_CV: TypedDocumentNode<CreateCvResult, CreateCvArgs> = gql`
   mutation CreateCv($cv: CreateCvInput!) {
-    creareCv(cv: $cv) {
+    createCv(cv: $cv) {
       id
+      created_at
       name
       education
       description
       user {
         id
         email
+        profile {
+          first_name
+          last_name
+          full_name
+        }
       }
     }
   }

@@ -12,22 +12,46 @@
 
     <template #footer>
       <button class="button button--cancel" @click="closeModal">Cancel</button>
-      <button class="button button--create" @click="createCv">Create</button>
+      <button class="button button--create" @click="handlecreateCv">Create</button>
     </template>
   </ModalsBaseModal>
 </template>
 
 <script setup lang="ts">
 import Textarea from '../ui/Textarea.vue';
+import { createCv as createCvService } from '~/services/cvs';
+
 defineProps<{ isVisible: boolean }>();
-const emit = defineEmits(['update:isVisible']);
+const emit = defineEmits(['update:isVisible', 'cv-created']);
+
+const authStore = useAuthStore();
 
 const name = ref('');
 const education = ref('');
 const description = ref('');
 
-const closeModal = () => emit('update:isVisible', false);
-const createCv = () => closeModal();
+const closeModal = () => {
+  emit('update:isVisible', false);
+  name.value = '';
+  education.value = '';
+  description.value = '';
+};
+
+const handlecreateCv = async () => {
+  try {
+    await createCvService({
+      name: name.value,
+      education: education.value ? education.value : undefined,
+      description: description.value,
+      userId: authStore.user?.id,
+    });
+
+    emit('cv-created');
+    closeModal();
+  } catch (error) {
+    console.error('Failed to create CV:', error);
+  }
+};
 </script>
 
 <style scoped lang="scss">
