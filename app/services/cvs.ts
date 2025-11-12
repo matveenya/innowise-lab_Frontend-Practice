@@ -12,7 +12,7 @@ export async function createCv(cv: CreateCvArgs['cv']) {
   const result = await apolloMutation<CreateCvResult, CreateCvArgs>(
     CREATE_CV,
     { cv },
-    { refetchQueries: ['GetCvs'] }
+    { refetchQueries: [{ query: GET_CVS }], awaitRefetchQueries: true }
   );
   return result.createCv;
 }

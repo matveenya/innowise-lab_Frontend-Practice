@@ -10,6 +10,7 @@ import type {
 export type MutationOpts<TResult, TVariables extends OperationVariables> = {
   context?: DefaultContext;
   refetchQueries?: InternalRefetchQueriesInclude;
+  awaitRefetchQueries?: boolean;
   update?: MutationUpdaterFunction<TResult, TVariables, ApolloCache>;
 };
 
