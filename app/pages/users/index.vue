@@ -1,13 +1,13 @@
 <template>
   <div class="users-page">
     <div class="users-page__sticky-bar">
-      <SearchInput v-model="searchQuery" />
+      <SearchInput v-model="searchInput" />
     </div>
 
     <DataTable
       v-model:sort-field="sortField"
       v-model:sort-order="sortOrder"
-      :value="users"
+      :value="filteredUsers"
       :pt="tablePT"
       sort-mode="single"
       scrollable
@@ -64,22 +64,19 @@ import Column from 'primevue/column';
 import { getUsers } from '~/services/users';
 import type { User } from '~/graphql/types/user';
 import { useAuthStore } from '~/stores/auth';
+import { USERS_TABLE_COLUMNS } from '~/constants/users';
+import { refDebounced } from '@vueuse/core';
 
 definePageMeta({
   middleware: 'auth',
 });
 
-const searchQuery = ref('');
+const searchInput = ref('');
+const searchQuery = refDebounced(searchInput, 300);
 const sortField = ref('department_name');
 const sortOrder = ref(1);
 
-const columns = [
-  { field: 'profile.first_name', header: 'First Name' },
-  { field: 'profile.last_name', header: 'Last Name' },
-  { field: 'email', header: 'Email' },
-  { field: 'department_name', header: 'Department' },
-  { field: 'position_name', header: 'Position' },
-] as const;
+const columns = USERS_TABLE_COLUMNS;
 
 const tablePT = {
   table: { class: 'table' },
@@ -97,7 +94,21 @@ const handleIconClick = (userData: User) => {
   }
 };
 
-const { data: users } = await useAsyncData('users', () => getUsers());
+const { data: users } = await useAsyncData<User[]>('users', () => getUsers());
+
+const filteredUsers = computed(() => {
+  if (!users.value) return [];
+
+  const query = searchQuery.value.toLowerCase().trim();
+  if (!query) return users.value;
+
+  return users.value.filter(user => {
+    const firstName = (user.profile?.first_name ?? '').toLowerCase();
+    const lastName = (user.profile?.last_name ?? '').toLowerCase();
+    const email = (user.email ?? '').toLowerCase();
+    return firstName.includes(query) || lastName.includes(query) || email.includes(query);
+  });
+});
 </script>
 
 <style lang="scss">
@@ -127,7 +138,7 @@ const { data: users } = await useAsyncData('users', () => getUsers());
   &__header {
     position: sticky;
     top: 0;
-    z-index: 10;
+    z-index: 20;
     cursor: pointer;
 
     th {

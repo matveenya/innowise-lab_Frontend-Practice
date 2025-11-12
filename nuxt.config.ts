@@ -45,4 +45,10 @@ export default defineNuxtConfig({
     },
     usePrimeVue: true,
   },
+  icon: {
+    mode: 'svg',
+    serverBundle: {
+      collections: ['ic', 'material-symbols'],
+    },
+  },
 });
