@@ -10,7 +10,13 @@
       </button>
     </div>
 
-    <CvsTable :cvs="filteredCvs" @open-menu="handleOpenMenu" />
+    <CvsTable
+      :cvs="filteredCvs"
+      :sort-column="sortColumn"
+      :sort-direction="sortDirection"
+      @open-menu="handleOpenMenu"
+      @sort="handleSort"
+    />
 
     <CvsActionMenu
       ref="actionsMenu"
@@ -45,16 +51,47 @@ const searchTerm = ref('');
 const selectedCv = ref<Cv | null>(null);
 const actionsMenu = ref<InstanceType<typeof CvsActionMenu> | null>(null);
 
+const sortColumn = ref('name');
+const sortDirection = ref<'asc' | 'desc'>('asc');
+
 const { data: cvs, refetch: refetchCvs } = createQueryAdapter(getCvsService);
+
+const handleSort = (column: string) => {
+  if (sortColumn.value === column) {
+    sortDirection.value = sortDirection.value === 'asc' ? 'desc' : 'asc';
+  } else {
+    sortColumn.value = column;
+    sortDirection.value = 'asc';
+  }
+};
 
 const filteredCvs = computed(() => {
   if (!cvs.value) return null;
 
+  const sortedCvs = [...cvs.value].sort((a, b) => {
+    let valA = '';
+    let valB = '';
+
+    if (sortColumn.value === 'name') {
+      valA = a.name || '';
+      valB = b.name || '';
+    } else if (sortColumn.value === 'education') {
+      valA = a.education || '';
+      valB = b.education || '';
+    } else if (sortColumn.value === 'user.email') {
+      valA = a.user?.email || '';
+      valB = b.user?.email || '';
+    }
+
+    if (valA < valB) return sortDirection.value === 'asc' ? -1 : 1;
+    if (valA > valB) return sortDirection.value === 'asc' ? 1 : -1;
+    return 0;
+  });
+
   const term = searchTerm.value.trim().toLowerCase();
+  if (!term) return sortedCvs;
 
-  if (!term) return cvs.value;
-
-  return cvs.value.filter(cv => cv.name.toLowerCase().includes(term));
+  return sortedCvs.filter(cv => cv.name.toLowerCase().includes(term));
 });
 
 const handleOpenMenu = (event: Event, cv: Cv) => {
@@ -96,6 +133,7 @@ const handleDetails = () => {
       cursor: pointer;
       padding: $space-lg $space-6xl;
       border-radius: $radius-2xl;
+      border: none;
 
       &:hover {
         background-color: rgba($color-secondary, 0.1);

@@ -2,12 +2,50 @@
   <table class="cvs-table">
     <thead>
       <tr class="cvs-table__header-row">
-        <th class="table-header__item sortable">
-          Name
-          <Icon name="ic:baseline-arrow-upward" size="1em" mode="svg" />
+        <th class="table-header__item sortable" @click="emit('sort', 'name')">
+          <div class="th-content">
+            <span>Name</span>
+            <Icon
+              name="ic:baseline-arrow-upward"
+              size="1em"
+              mode="svg"
+              class="sort-icon"
+              :class="{
+                'sort-icon--rotated': sortColumn === 'name' && sortDirection === 'desc',
+                'sort-icon--hidden': sortColumn !== 'name',
+              }"
+            />
+          </div>
         </th>
-        <th class="table-header__item">Education</th>
-        <th class="table-header__item">Employee</th>
+
+        <th class="table-header__item sortable" @click="emit('sort', 'education')">
+          <div class="th-content">
+            <span>Education</span>
+            <Icon
+              v-if="sortColumn === 'education'"
+              name="ic:baseline-arrow-upward"
+              size="1em"
+              mode="svg"
+              class="sort-icon"
+              :class="{ 'sort-icon--rotated': sortDirection === 'desc' }"
+            />
+          </div>
+        </th>
+
+        <th class="table-header__item sortable" @click="emit('sort', 'user.email')">
+          <div class="th-content">
+            <span>Employee</span>
+            <Icon
+              v-if="sortColumn === 'user.email'"
+              name="ic:baseline-arrow-upward"
+              size="1em"
+              mode="svg"
+              class="sort-icon"
+              :class="{ 'sort-icon--rotated': sortDirection === 'desc' }"
+            />
+          </div>
+        </th>
+
         <th class="table-header__item table-header__item--actions"></th>
       </tr>
     </thead>
@@ -49,10 +87,13 @@ import type { Cv } from 'cv-graphql';
 
 defineProps<{
   cvs: Cv[] | null;
+  sortColumn: string;
+  sortDirection: 'asc' | 'desc';
 }>();
 
 const emit = defineEmits<{
   'open-menu': [event: Event, cv: Cv];
+  sort: [column: string];
 }>();
 </script>
 
@@ -71,25 +112,38 @@ const emit = defineEmits<{
   }
 
   .table-header__item {
-    color: $color-text-primary;
     font-size: $font-size-sm;
     font-weight: $font-weight-medium;
     text-align: left;
     padding-bottom: $space-md;
-    cursor: pointer;
-
-    &:hover {
-      color: $color-text-primary-disabled;
-    }
+    color: $color-text-primary;
+    transition: color 0.2s ease;
 
     &.sortable {
-      @include d-flex(flex-start, center);
-      gap: $space-2xs;
-      color: $color-text-primary;
       cursor: pointer;
+      user-select: none;
 
-      svg {
-        color: $color-text-primary;
+      &:hover {
+        color: $color-text-secondary;
+      }
+    }
+
+    .th-content {
+      @include d-flex(flex-start, center);
+      gap: $space-xs;
+    }
+
+    .sort-icon {
+      transition:
+        transform 0.2s ease,
+        opacity 0.2s ease;
+
+      &--rotated {
+        transform: rotate(180deg);
+      }
+
+      &--hidden {
+        opacity: 0;
       }
     }
 
@@ -120,6 +174,7 @@ const emit = defineEmits<{
         cursor: pointer;
         border-radius: $radius-full;
         padding: $space-xs;
+        border: none;
         &:hover {
           background-color: $button-bg-disabled;
         }
