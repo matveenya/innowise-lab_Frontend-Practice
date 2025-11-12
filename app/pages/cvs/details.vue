@@ -1,6 +1,6 @@
 <template>
   <section class="cv-details__content">
-    <form class="cv-form">
+    <form class="cv-form" @submit.prevent="handleUpdate">
       <Input id="cv-name" v-model="name" label="Name" />
       <Input id="cv-education" v-model="education" label="Education" />
       <Textarea id="cv-description" v-model="description" label="Description" />
@@ -14,7 +14,7 @@
 
 <script setup lang="ts">
 import Textarea from '~/components/ui/Textarea.vue';
-import { getCvs } from '~/services/cvs';
+import { getCvs, updateCv } from '~/services/cvs';
 import { createQueryAdapter } from '~/utils/apolloAdapters';
 
 definePageMeta({
@@ -43,6 +43,22 @@ watch(
   },
   { immediate: true }
 );
+
+const handleUpdate = async () => {
+  const cvId = route.query.id?.toString();
+  if (!cvId) return;
+
+  try {
+    await updateCv({
+      cvId,
+      name: name.value,
+      education: education.value,
+      description: description.value,
+    });
+  } catch (error) {
+    console.error('Failed to update CV:', error);
+  }
+};
 </script>
 
 <style lang="scss" scoped>

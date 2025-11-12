@@ -1,4 +1,4 @@
-import type { Cv, CreateCvInput } from 'cv-graphql';
+import type { Cv, CreateCvInput, UpdateCvInput } from 'cv-graphql';
 
 export interface CreateCvArgs {
   cv: CreateCvInput;
@@ -24,4 +24,12 @@ export interface DeleteCvResult {
   deleteCv: {
     affected: number;
   };
+}
+
+export interface UpdateCvArgs {
+  cv: UpdateCvInput;
+}
+
+export interface UpdateCvResult {
+  updateCv: Cv;
 }
