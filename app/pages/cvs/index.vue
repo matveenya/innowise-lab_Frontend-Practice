@@ -32,8 +32,8 @@
             <td class="cv-row__cell">{{ cv.education }}</td>
             <td class="cv-row__cell">{{ cv.user?.email }}</td>
             <td class="cv-row__cell cv-row__cell--actions">
-              <button class="actions-button">
-                <Icon name="mdi:dots-horizontal" size="1.5em" mode="svg" />
+              <button class="actions-button" @click="event => toggleMenu(event, cv)">
+                <Icon name="mdi:dots-vertical" size="1.5em" mode="svg" />
               </button>
             </td>
           </tr>
@@ -54,22 +54,94 @@
       </tbody>
     </table>
 
+    <Menu id="overlay_menu" ref="menu" :model="menuItems" :popup="true" class="cv-actions-menu">
+      <template #item="{ item }">
+        <button
+          class="cv-actions-menu__item"
+          @click="e => item.command && item.command({ originalEvent: e, item })"
+        >
+          <span>{{ item.label }}</span>
+        </button>
+      </template>
+    </Menu>
+
     <ModalsCvCreateModal v-model:is-visible="isDialogVisible" @cv-created="refetchCvs" />
+
+    <ModalsBaseModal
+      :is-visible="isDeleteModalVisible"
+      @update:is-visible="isDeleteModalVisible = $event"
+    >
+      <template #header>
+        <h3 class="modal-title">Delete CV</h3>
+      </template>
+      <template #body>
+        <p class="delete-confirmation-text">
+          Are you sure you want to delete CV
+          <span class="highlight-text">{{ selectedCv?.name }}</span
+          >?
+        </p>
+      </template>
+      <template #footer>
+        <button class="button button--cancel" @click="isDeleteModalVisible = false">CANCEL</button>
+        <button class="button button--confirm" @click="handleDeleteCv">CONFIRM</button>
+      </template>
+    </ModalsBaseModal>
   </section>
 </template>
 
 <script setup lang="ts">
-import { getCvs as getCvsService } from '~/services/cvs';
+import { ref } from 'vue';
+import { getCvs as getCvsService, deleteCv as deleteCvService } from '~/services/cvs';
 import { createQueryAdapter } from '~/utils/apolloAdapters';
+import type { Cv } from 'cv-graphql';
+import Menu from 'primevue/menu';
 
 definePageMeta({
   middleware: 'auth',
 });
 
 const isDialogVisible = ref(false);
+const isDeleteModalVisible = ref(false);
 const searchTerm = ref('');
+const selectedCv = ref<Cv | null>(null);
+const menu = ref();
 
 const { data: cvs, refetch: refetchCvs } = createQueryAdapter(getCvsService);
+
+const menuItems = ref([
+  {
+    label: 'Details',
+    command: () => {
+      if (selectedCv.value) {
+        navigateTo({ path: '/cvs/details', query: { id: selectedCv.value.id } });
+      }
+    },
+  },
+  {
+    label: 'Delete CV',
+    command: () => {
+      isDeleteModalVisible.value = true;
+    },
+  },
+]);
+
+const toggleMenu = (event: Event, cv: Cv) => {
+  selectedCv.value = cv;
+  menu.value.toggle(event);
+};
+
+const handleDeleteCv = async () => {
+  if (!selectedCv.value) return;
+
+  try {
+    await deleteCvService(selectedCv.value.id);
+    await refetchCvs();
+    isDeleteModalVisible.value = false;
+    selectedCv.value = null;
+  } catch (err) {
+    console.error('Error deleting CV:', err);
+  }
+};
 </script>
 
 <style scoped lang="scss">
@@ -198,6 +270,94 @@ const { data: cvs, refetch: refetchCvs } = createQueryAdapter(getCvsService);
       color: $color-text-primary;
       font-size: $font-size-2xl;
       font-weight: $font-weight-medium;
+    }
+  }
+}
+
+.modal-title {
+  font-size: $font-size-xl;
+  font-weight: $font-weight-bold;
+  color: $color-text-primary;
+  margin: 0;
+}
+
+.delete-confirmation-text {
+  font-size: $font-size-md;
+  color: $color-text-secondary;
+  line-height: 1.5;
+
+  .highlight-text {
+    font-weight: $font-weight-bold;
+    color: $color-text-primary;
+  }
+}
+
+.button {
+  padding: $space-md $space-6xl;
+  border-radius: $radius-2xl;
+  font-weight: $font-weight-bold;
+  cursor: pointer;
+  font-size: $font-size-sm;
+  text-transform: uppercase;
+  border: none;
+  min-width: 120px;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
+
+  &--cancel {
+    background-color: transparent;
+    color: $color-text-muted;
+    border: $border-outline;
+
+    &:hover {
+      background-color: $button-outline-hover;
+      color: $color-text-primary;
+      border-color: $color-text-primary;
+    }
+  }
+
+  &--confirm {
+    background-color: $color-secondary;
+    color: $color-text-primary;
+
+    &:hover {
+      background-color: $color-secondary-hover;
+    }
+  }
+}
+</style>
+
+<style lang="scss">
+.cv-actions-menu {
+  position: absolute;
+  min-width: $sidebar-width-open / 2;
+  background-color: $color-bg-action-cv;
+  box-shadow: $shadow-md;
+  border-radius: $radius-sm;
+  overflow: hidden;
+  padding: $space-xs 0;
+
+  &__item {
+    @include d-flex(flex-start, center);
+    gap: $space-md;
+    width: 100%;
+    padding: $space-md $space-lg;
+    color: $color-text-primary;
+    font-size: $font-size-md;
+    font-weight: $font-weight-regular;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s ease;
+
+    &:hover {
+      background: $button-bg-disabled;
+    }
+
+    svg {
+      flex-shrink: 0;
     }
   }
 }

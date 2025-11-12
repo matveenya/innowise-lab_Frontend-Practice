@@ -11,3 +11,17 @@ export interface CreateCvResult {
 export interface GetCvsResult {
   cvs: Cv[];
 }
+
+export interface DeleteCvInput {
+  cvId: string;
+}
+
+export interface DeleteCvArgs {
+  cv: DeleteCvInput;
+}
+
+export interface DeleteCvResult {
+  deleteCv: {
+    affected: number;
+  };
+}
