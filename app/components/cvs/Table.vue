@@ -189,7 +189,7 @@ const emit = defineEmits<{
 
 .cv-description-cell {
   padding-bottom: $space-lg;
-  font-size: $font-size-sm;
+  font-size: $font-size-md;
   color: $color-text-muted;
   white-space: pre-wrap;
   word-break: break-word;
