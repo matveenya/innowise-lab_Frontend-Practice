@@ -10,7 +10,7 @@
       </button>
     </div>
 
-    <CvsTable :cvs="cvs" @open-menu="handleOpenMenu" />
+    <CvsTable :cvs="filteredCvs" @open-menu="handleOpenMenu" />
 
     <CvsActionMenu
       ref="actionsMenu"
@@ -46,6 +46,16 @@ const selectedCv = ref<Cv | null>(null);
 const actionsMenu = ref<InstanceType<typeof CvsActionMenu> | null>(null);
 
 const { data: cvs, refetch: refetchCvs } = createQueryAdapter(getCvsService);
+
+const filteredCvs = computed(() => {
+  if (!cvs.value) return null;
+
+  const term = searchTerm.value.trim().toLowerCase();
+
+  if (!term) return cvs.value;
+
+  return cvs.value.filter(cv => cv.name.toLowerCase().includes(term));
+});
 
 const handleOpenMenu = (event: Event, cv: Cv) => {
   selectedCv.value = cv;
