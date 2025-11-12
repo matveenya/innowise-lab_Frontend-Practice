@@ -93,11 +93,11 @@ const handlecreateCv = async () => {
   }
 
   &--create {
-    background-color: $color-secondary;
-    color: $color-text-primary;
+    background-color: $button-primary-bg;
+    color: $button-primary-text;
 
     &:hover {
-      background-color: $color-secondary-hover;
+      background-color: $button-primary-hover;
     }
 
     &:disabled {

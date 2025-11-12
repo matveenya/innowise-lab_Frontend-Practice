@@ -72,15 +72,10 @@ const handleDelete = async () => {
   font-size: $font-size-sm;
   text-transform: uppercase;
   border: none;
-  min-width: 120px;
-  transition:
-    background-color 0.2s ease,
-    color 0.2s ease,
-    border-color 0.2s ease;
 
   &--cancel {
-    background-color: transparent;
-    color: $color-text-muted;
+    background-color: $button-outline-bg;
+    color: $button-outline-text;
     border: $border-outline;
 
     &:hover {
@@ -91,11 +86,11 @@ const handleDelete = async () => {
   }
 
   &--confirm {
-    background-color: $color-secondary;
-    color: $color-text-primary;
+    background-color: $button-primary-bg;
+    color: $button-primary-text;
 
     &:hover {
-      background-color: $color-secondary-hover;
+      background-color: $button-primary-hover;
     }
   }
 }
