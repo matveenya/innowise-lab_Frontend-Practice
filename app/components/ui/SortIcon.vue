@@ -1,11 +1,13 @@
 <template>
-  <Icon
-    :name="iconName"
-    class="p-column-sort-icon"
-    :class="{ 'sort-icon-neutral': normalizedSortOrder === 0 }"
-    mode="svg"
-    size="1.1rem"
-  />
+  <ClientOnly>
+    <Icon
+      :name="iconName"
+      class="p-column-sort-icon"
+      :class="{ 'sort-icon-neutral': normalizedSortOrder === 0 }"
+      mode="svg"
+      size="1.1rem"
+    />
+  </ClientOnly>
 </template>
 
 <script setup lang="ts">

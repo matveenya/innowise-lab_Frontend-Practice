@@ -38,16 +38,18 @@
             :aria-label="data.id === currentUserId ? 'Open user menu' : 'View user profile'"
             @click="handleIconClick(data)"
           >
-            <Icon
-              :name="
-                data.id === currentUserId
-                  ? 'material-symbols:more-vert'
-                  : 'ic:baseline-keyboard-arrow-right'
-              "
-              mode="svg"
-              size="1.5rem"
-              class="icon"
-            />
+            <ClientOnly>
+              <Icon
+                :name="
+                  data.id === currentUserId
+                    ? 'material-symbols:more-vert'
+                    : 'ic:baseline-keyboard-arrow-right'
+                "
+                mode="svg"
+                size="1.5rem"
+                class="icon"
+              />
+            </ClientOnly>
           </button>
         </template>
       </Column>
