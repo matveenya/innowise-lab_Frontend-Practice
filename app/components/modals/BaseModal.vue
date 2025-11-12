@@ -25,7 +25,9 @@ defineProps<{
 }>();
 const emit = defineEmits(['update:isVisible']);
 
-const closeModal = () => emit('update:isVisible', false);
+const closeModal = () => {
+  emit('update:isVisible', false);
+};
 </script>
 
 <style scoped lang="scss">

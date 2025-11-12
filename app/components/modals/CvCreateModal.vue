@@ -12,7 +12,9 @@
 
     <template #footer>
       <button class="button button--cancel" @click="closeModal">Cancel</button>
-      <button class="button button--create" @click="handlecreateCv">Create</button>
+      <button class="button button--create" :disabled="!isFormValid" @click="handlecreateCv">
+        Create
+      </button>
     </template>
   </ModalsBaseModal>
 </template>
@@ -30,6 +32,10 @@ const name = ref('');
 const education = ref('');
 const description = ref('');
 
+const isFormValid = computed(() => {
+  return name.value.trim().length > 0;
+});
+
 const closeModal = () => {
   emit('update:isVisible', false);
   name.value = '';
@@ -38,6 +44,8 @@ const closeModal = () => {
 };
 
 const handlecreateCv = async () => {
+  if (!isFormValid.value) return;
+
   try {
     await createCvService({
       name: name.value,
@@ -80,16 +88,23 @@ const handlecreateCv = async () => {
     &:hover {
       background-color: $button-outline-hover;
       border: $border-outline-hover;
+      color: $color-text-primary;
     }
   }
 
   &--create {
-    background-color: $button-neutral-bg;
-    color: $color-text-primary-disabled;
+    background-color: $color-secondary;
+    color: $color-text-primary;
 
     &:hover {
-      background-color: $button-neutral-hover;
-      color: $color-text-primary;
+      background-color: $color-secondary-hover;
+    }
+
+    &:disabled {
+      background-color: $button-neutral-bg;
+      color: $color-text-primary-disabled;
+      cursor: default;
+      pointer-events: none;
     }
   }
 }
