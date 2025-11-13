@@ -114,6 +114,7 @@ const tablePT = {
 <style lang="scss">
 .users-page {
   padding-left: $space-2xl;
+
   &__sticky-bar {
     position: sticky;
     top: 0;
@@ -122,45 +123,9 @@ const tablePT = {
     padding: $space-lg 0 $space-lg $space-xl;
   }
 }
-.table {
-  width: 100%;
-  border: 0;
-  border-collapse: collapse;
-  th,
-  td {
-    text-align: left;
-    padding: $space-lg;
-    font-size: $font-size-sm;
-    font-weight: $font-weight-regular;
-    line-height: 1.43;
-    border-bottom: $border-thin-1 $color-border-table;
-  }
 
-  &__header {
-    position: sticky;
-    top: 0;
-    z-index: 20;
-    cursor: pointer;
-
-    th {
-      background: linear-gradient(to top, transparent 0%, $color-primary 50%);
-      .p-column-sort-icon {
-        margin-left: $space-sm;
-        vertical-align: text-bottom;
-      }
-
-      &:hover {
-        color: rgba($color-text-primary, 0.7);
-        .sort-icon-neutral {
-          opacity: 1;
-        }
-      }
-    }
-    th.p-sorted {
-      .sort-icon-neutral {
-        opacity: 0 !important;
-      }
-    }
-  }
+.table th,
+td {
+  border-bottom: $border-thin-1 $color-border-table;
 }
 </style>
