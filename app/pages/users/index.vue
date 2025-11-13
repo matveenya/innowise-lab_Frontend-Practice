@@ -36,7 +36,6 @@
           <ActionIcon
             :icon-name="renderActionIconName(data)"
             :is-current-user="data.id === currentUserId"
-            :aria-label="data.id === currentUserId ? 'Open user menu' : 'View user profile'"
             @click="handleIconClick(data)"
           />
         </template>
@@ -128,6 +127,7 @@ const tablePT = {
 td {
   border-bottom: $border-thin-1 $color-border-table;
 }
+
 td:has(.no-results) {
   border-bottom: none;
 }
