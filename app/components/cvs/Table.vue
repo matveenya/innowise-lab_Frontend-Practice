@@ -1,206 +1,233 @@
 <template>
-  <table class="cvs-table">
-    <thead>
-      <tr class="cvs-table__header-row">
-        <th class="table-header__item sortable" @click="emit('sort', 'name')">
-          <div class="th-content">
-            <span>Name</span>
-            <Icon
-              name="ic:baseline-arrow-upward"
-              size="1em"
-              mode="svg"
-              class="sort-icon"
-              :class="{
-                'sort-icon--rotated': sortColumn === 'name' && sortDirection === 'desc',
-                'sort-icon--hidden': sortColumn !== 'name',
-              }"
-            />
-          </div>
-        </th>
+  <div class="cvs-table-container">
+    <DataTable
+      v-model:expanded-rows="expandedRows"
+      :value="cvs"
+      data-key="id"
+      :pt="tablePT"
+      sort-mode="single"
+      scrollable
+      scroll-height="calc(100vh - 80px)"
+    >
+      <Column
+        field="name"
+        header="Name"
+        sortable
+        header-class="table-header__item"
+        body-class="cv-row__cell cv-row__cell--name"
+      >
+        <template #sorticon="{ sortOrder }">
+          <Icon
+            name="ic:baseline-arrow-upward"
+            size="1em"
+            mode="svg"
+            class="sort-icon"
+            :class="{ 'sort-icon--desc': sortOrder === -1 }"
+          />
+        </template>
+      </Column>
 
-        <th class="table-header__item sortable" @click="emit('sort', 'education')">
-          <div class="th-content">
-            <span>Education</span>
-            <Icon
-              v-if="sortColumn === 'education'"
-              name="ic:baseline-arrow-upward"
-              size="1em"
-              mode="svg"
-              class="sort-icon"
-              :class="{ 'sort-icon--rotated': sortDirection === 'desc' }"
-            />
-          </div>
-        </th>
+      <Column
+        field="education"
+        header="Education"
+        sortable
+        header-class="table-header__item"
+        body-class="cv-row__cell"
+      >
+        <template #sorticon="{ sortOrder }">
+          <Icon
+            name="ic:baseline-arrow-upward"
+            size="1em"
+            mode="svg"
+            class="sort-icon"
+            :class="{ 'sort-icon--desc': sortOrder === -1 }"
+          />
+        </template>
+      </Column>
 
-        <th class="table-header__item sortable" @click="emit('sort', 'user.email')">
-          <div class="th-content">
-            <span>Employee</span>
-            <Icon
-              v-if="sortColumn === 'user.email'"
-              name="ic:baseline-arrow-upward"
-              size="1em"
-              mode="svg"
-              class="sort-icon"
-              :class="{ 'sort-icon--rotated': sortDirection === 'desc' }"
-            />
-          </div>
-        </th>
+      <Column
+        field="user.email"
+        header="Employee"
+        sortable
+        header-class="table-header__item"
+        body-class="cv-row__cell"
+      >
+        <template #sorticon="{ sortOrder }">
+          <Icon
+            name="ic:baseline-arrow-upward"
+            size="1em"
+            mode="svg"
+            class="sort-icon"
+            :class="{ 'sort-icon--desc': sortOrder === -1 }"
+          />
+        </template>
+      </Column>
 
-        <th class="table-header__item table-header__item--actions"></th>
-      </tr>
-    </thead>
+      <Column
+        header-class="table-header__item table-header__item--actions"
+        body-class="cv-row__cell cv-row__cell--actions"
+      >
+        <template #body="{ data }">
+          <button class="actions-button" @click="event => emit('open-menu', event, data)">
+            <Icon name="mdi:dots-vertical" size="1.5em" mode="svg" />
+          </button>
+        </template>
+      </Column>
 
-    <tbody v-if="cvs && cvs.length > 0">
-      <template v-for="cv in cvs" :key="cv.id">
-        <tr class="cv-row">
-          <td class="cv-row__cell cv-row__cell--name">
-            {{ cv.name }}
-          </td>
-          <td class="cv-row__cell">{{ cv.education }}</td>
-          <td class="cv-row__cell">{{ cv.user?.email }}</td>
-          <td class="cv-row__cell cv-row__cell--actions">
-            <button class="actions-button" @click="event => emit('open-menu', event, cv)">
-              <Icon name="mdi:dots-vertical" size="1.5em" mode="svg" />
-            </button>
-          </td>
-        </tr>
-        <tr class="cv-description-row">
-          <td colspan="4" class="cv-description-cell">
-            {{ cv.description }}
-          </td>
-        </tr>
+      <template #expansion="{ data }">
+        <div class="cv-description-cell">
+          {{ data.description }}
+        </div>
       </template>
-    </tbody>
 
-    <tbody v-else>
-      <tr>
-        <td colspan="4" class="no-results-cell">
+      <template #empty>
+        <div class="no-results-cell">
           <p class="no-results">No results found</p>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+        </div>
+      </template>
+    </DataTable>
+  </div>
 </template>
 
 <script setup lang="ts">
 import type { Cv } from 'cv-graphql';
+import type { DataTablePassThroughOptions } from 'primevue/datatable';
 
-defineProps<{
+const props = defineProps<{
   cvs: Cv[] | null;
-  sortColumn: string;
-  sortDirection: 'asc' | 'desc';
 }>();
 
 const emit = defineEmits<{
   'open-menu': [event: Event, cv: Cv];
-  sort: [column: string];
 }>();
+
+const expandedRows = ref({});
+
+watch(
+  () => props.cvs,
+  newCvs => {
+    if (newCvs) {
+      expandedRows.value = newCvs.reduce(
+        (acc, cv) => {
+          acc[cv.id] = true;
+          return acc;
+        },
+        {} as Record<string, boolean>
+      );
+    }
+  },
+  { immediate: true }
+);
+
+const tablePT: DataTablePassThroughOptions = {
+  table: { class: 'cvs-table' },
+  thead: { class: 'cvs-table__header' },
+  headerRow: { class: 'cvs-table__header-row' },
+  tbody: { class: 'cvs-table__body' },
+  row: { class: 'cv-row' },
+  rowExpansion: { class: 'cv-description-row' },
+};
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 .cvs-table {
   width: 100%;
   border-collapse: collapse;
   margin-bottom: $space-md;
+}
 
-  thead {
-    @include border-bottom($color-border-subtle, 1px);
+.cvs-table__header-row {
+  height: $space-4xl;
+  @include border-bottom($color-border-subtle, 1px);
+}
+
+.table-header__item {
+  color: $color-text-primary;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  text-align: left;
+  padding: $space-md;
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+
+  &:hover {
+    color: $color-text-secondary;
   }
 
-  &__header-row {
-    height: $space-4xl;
-  }
-
-  .table-header__item {
-    font-size: $font-size-sm;
-    font-weight: $font-weight-medium;
-    text-align: left;
-    padding-bottom: $space-md;
-    color: $color-text-primary;
-    transition: color 0.2s ease;
-
-    &.sortable {
-      cursor: pointer;
-      user-select: none;
-
-      &:hover {
-        color: $color-text-secondary;
-      }
-    }
-
-    .th-content {
-      @include d-flex(flex-start, center);
-      gap: $space-xs;
-    }
-
-    .sort-icon {
-      transition:
-        transform 0.2s ease,
-        opacity 0.2s ease;
-
-      &--rotated {
-        transform: rotate(180deg);
-      }
-
-      &--hidden {
-        opacity: 0;
-      }
-    }
-
-    &--actions {
-      width: 5%;
-    }
+  .p-column-header-content {
+    display: flex;
+    align-items: center;
+    gap: $space-xs;
   }
 }
 
-.cv-row {
-  &__cell {
-    padding-top: $space-lg;
-    padding-bottom: $space-sm;
-    font-size: $font-size-md;
-    color: $color-text-primary;
-    vertical-align: top;
+.sort-icon {
+  transition: transform 0.2s ease;
+  color: $color-text-primary;
 
-    &--name {
-      width: 40%;
-    }
+  &--desc {
+    transform: rotate(180deg);
+  }
+}
 
-    &--actions {
-      text-align: right;
+.cv-row__cell {
+  padding-top: $space-lg;
+  padding-bottom: $space-sm;
+  padding-inline: $space-md;
+  font-size: $font-size-md;
+  color: $color-text-primary;
+  vertical-align: top;
+  background-color: transparent;
+  border: none;
 
-      .actions-button {
-        background: transparent;
-        color: $color-text-secondary;
-        cursor: pointer;
-        border-radius: $radius-full;
-        padding: $space-xs;
-        border: none;
-        &:hover {
-          background-color: $button-bg-disabled;
-        }
-      }
-    }
+  &--name {
+    width: 40%;
+  }
+
+  &--actions {
+    text-align: right;
+    width: 5%;
+  }
+}
+
+.actions-button {
+  background: transparent;
+  color: $color-text-secondary;
+  cursor: pointer;
+  border-radius: $radius-full;
+  padding: $space-xs;
+  border: none;
+  display: inline-flex;
+
+  &:hover {
+    background-color: $button-bg-disabled;
   }
 }
 
 .cv-description-row {
   @include border-bottom($color-border-subtle, 1px);
+  background-color: transparent;
+
+  & > td {
+    padding: 0 $space-md $space-lg $space-md;
+    border: none;
+  }
 }
 
 .cv-description-cell {
-  padding-bottom: $space-lg;
-  font-size: $font-size-md;
+  font-size: $font-size-sm;
   color: $color-text-muted;
   white-space: pre-wrap;
   word-break: break-word;
 }
 
 .no-results-cell {
-  padding-top: $space-6xl;
+  padding: $space-6xl;
   text-align: center;
+  width: 100%;
 
   .no-results {
-    text-align: center;
     color: $color-text-primary;
     font-size: $font-size-2xl;
     font-weight: $font-weight-medium;

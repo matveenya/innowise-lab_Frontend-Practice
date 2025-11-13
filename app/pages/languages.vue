@@ -18,6 +18,7 @@
 <style scoped lang="scss">
 .languages-page {
   padding-top: $space-lg;
+  padding-inline: $space-2xl;
 
   .page-title {
     font-size: $font-size-md;
