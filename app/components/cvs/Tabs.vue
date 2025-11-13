@@ -7,7 +7,7 @@
         class="tabs__item"
         :class="{ 'tabs__item--active': currentTab === tab.name }"
       >
-        <NuxtLink :to="tab.to" class="tabs__link">
+        <NuxtLink :to="{ path: tab.to, query: { id: route.query.id } }" class="tabs__link">
           {{ tab.name }}
         </NuxtLink>
       </li>
@@ -32,7 +32,7 @@ const tabs: Tab[] = [
 
 const currentTab = computed<Tab['name']>(() => {
   const currentPath = route.path.toLowerCase();
-  const tab = tabs.find(t => currentPath.includes(t.name.toLowerCase()));
+  const tab = tabs.find(t => currentPath.includes(t.to.toLowerCase()));
   return tab ? tab.name : 'DETAILS';
 });
 </script>

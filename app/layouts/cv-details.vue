@@ -1,7 +1,7 @@
 <template>
   <NuxtLayout name="default">
     <div class="cv-details-layout">
-      <CvsBreadcrumbs :active-page="activePage" />
+      <CvsBreadcrumbs :active-page="activePage" :cv-name="currentCv?.name" :cv-id="currentCv?.id" />
       <CvsTabs />
       <main class="cv-details-layout__content">
         <slot />
@@ -11,11 +11,22 @@
 </template>
 
 <script setup lang="ts">
+import { getCvs } from '~/services/cvs';
+import { createQueryAdapter } from '~/utils/apolloAdapters';
+
 definePageMeta({
   layout: false,
 });
 
 const route = useRoute();
+
+const { data: cvs } = createQueryAdapter(getCvs);
+
+const currentCv = computed(() => {
+  const cvId = route.query.id;
+  if (!cvs.value || !cvId) return null;
+  return cvs.value.find(cv => cv.id === cvId);
+});
 
 const activePage = computed(() => {
   const segments = route.path.split('/').filter(s => s.length > 0);
