@@ -1,9 +1,18 @@
 import type { User, AuthInput } from 'cv-graphql';
+import { jwtDecode } from 'jwt-decode';
 import { login as loginService, signup as signupService } from '../services/auth';
 import { defineStore } from 'pinia';
 
 const ACCESS_TOKEN_KEY = 'access_token';
 const REFRESH_TOKEN_KEY = 'refresh_token';
+
+type JwtPayload = {
+  sub: number;
+  email: string;
+  role: string;
+  iat: number;
+  exp: number;
+};
 
 export const useAuthStore = defineStore('auth', () => {
   const user = ref<User | null>(null);
@@ -34,6 +43,23 @@ export const useAuthStore = defineStore('auth', () => {
     accessTokenCookie.value = null;
     refreshTokenCookie.value = null;
   };
+
+  const restoreUserFromToken = () => {
+    if (accessTokenCookie.value && !user.value) {
+      try {
+        const decoded = jwtDecode<JwtPayload>(accessTokenCookie.value);
+        user.value = {
+          id: decoded.sub.toString(),
+          email: decoded.email,
+          role: decoded.role as User['role'],
+        } as User;
+      } catch (error) {
+        console.warn('Failed to decode token', error);
+      }
+    }
+  };
+
+  restoreUserFromToken();
 
   const login = async (auth: AuthInput) => {
     try {
@@ -93,5 +119,6 @@ export const useAuthStore = defineStore('auth', () => {
     login,
     signup,
     logout,
+    restoreUserFromToken,
   };
 });

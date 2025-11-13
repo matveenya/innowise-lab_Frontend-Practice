@@ -1,7 +1,22 @@
 <template>
   <div class="search-input-wrapper">
     <Icon name="ic:baseline-search" size="1.5em" mode="svg" class="search-icon" />
-    <input v-model="model" type="text" :placeholder="placeholder" class="search-input" />
+    <input
+      v-model="model"
+      type="text"
+      :placeholder="placeholder"
+      class="search-input"
+      @keydown.esc="clearInput"
+    />
+    <button
+      v-if="model"
+      class="clear-button"
+      type="button"
+      aria-label="Clear search"
+      @click="clearInput"
+    >
+      <Icon name="material-symbols:close-rounded" size="1.25em" mode="svg" />
+    </button>
   </div>
 </template>
 
@@ -16,6 +31,10 @@ withDefaults(
     placeholder: 'Search',
   }
 );
+
+const clearInput = () => {
+  model.value = '';
+};
 </script>
 
 <style scoped lang="scss">
@@ -54,5 +73,27 @@ withDefaults(
   top: 50%;
   transform: translateY(-50%);
   color: $color-text-primary;
+}
+
+.clear-button {
+  position: absolute;
+  right: $space-md;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  padding: $space-xs;
+  @include d-flex(center, center);
+  color: $color-text-secondary;
+  cursor: pointer;
+  border-radius: $radius-rounded;
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
+
+  &:hover {
+    color: $color-text-primary;
+    background-color: rgba($color-text-primary, 0.08);
+  }
 }
 </style>
