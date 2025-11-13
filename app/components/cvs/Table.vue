@@ -19,14 +19,7 @@
         body-class="cv-row__cell cv-row__cell--name"
       >
         <template #sorticon="{ sortOrder }">
-          <Icon
-            v-if="sortOrder"
-            name="ic:baseline-arrow-upward"
-            size="1em"
-            mode="svg"
-            class="sort-icon"
-            :class="{ 'sort-icon--desc': sortOrder === -1 }"
-          />
+          <SortIcon :sort-order="sortOrder" />
         </template>
       </Column>
 
@@ -38,14 +31,7 @@
         body-class="cv-row__cell"
       >
         <template #sorticon="{ sortOrder }">
-          <Icon
-            v-if="sortOrder"
-            name="ic:baseline-arrow-upward"
-            size="1em"
-            mode="svg"
-            class="sort-icon"
-            :class="{ 'sort-icon--desc': sortOrder === -1 }"
-          />
+          <SortIcon :sort-order="sortOrder" />
         </template>
       </Column>
 
@@ -57,14 +43,7 @@
         body-class="cv-row__cell"
       >
         <template #sorticon="{ sortOrder }">
-          <Icon
-            v-if="sortOrder"
-            name="ic:baseline-arrow-upward"
-            size="1em"
-            mode="svg"
-            class="sort-icon"
-            :class="{ 'sort-icon--desc': sortOrder === -1 }"
-          />
+          <SortIcon :sort-order="sortOrder" />
         </template>
       </Column>
 
@@ -156,23 +135,22 @@ const tablePT: DataTablePassThroughOptions = {
   user-select: none;
   position: relative;
 
+  .p-column-header-content {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .p-column-sort-icon {
+    vertical-align: text-bottom;
+  }
+
   &:hover {
     color: $color-text-secondary;
-  }
 
-  .p-column-header-content {
-    display: flex;
-    align-items: center;
-    gap: $space-xs;
-  }
-}
-
-.sort-icon {
-  transition: transform 0.2s ease;
-  color: $color-text-primary;
-
-  &--desc {
-    transform: rotate(180deg);
+    .sort-icon-neutral {
+      opacity: 1;
+    }
   }
 }
 
@@ -221,7 +199,7 @@ const tablePT: DataTablePassThroughOptions = {
 }
 
 .cv-description-cell {
-  font-size: $font-size-sm;
+  font-size: $font-size-md;
   color: $color-text-muted;
   white-space: pre-wrap;
   word-break: break-word;
