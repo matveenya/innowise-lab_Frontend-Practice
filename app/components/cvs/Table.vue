@@ -6,6 +6,8 @@
       data-key="id"
       :pt="tablePT"
       sort-mode="single"
+      sort-field="name"
+      :sort-order="1"
       scrollable
       scroll-height="calc(100vh - 80px)"
     >
@@ -18,6 +20,7 @@
       >
         <template #sorticon="{ sortOrder }">
           <Icon
+            v-if="sortOrder"
             name="ic:baseline-arrow-upward"
             size="1em"
             mode="svg"
@@ -36,6 +39,7 @@
       >
         <template #sorticon="{ sortOrder }">
           <Icon
+            v-if="sortOrder"
             name="ic:baseline-arrow-upward"
             size="1em"
             mode="svg"
@@ -54,6 +58,7 @@
       >
         <template #sorticon="{ sortOrder }">
           <Icon
+            v-if="sortOrder"
             name="ic:baseline-arrow-upward"
             size="1em"
             mode="svg"
