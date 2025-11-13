@@ -1,26 +1,24 @@
 <template>
-  <div>
-    <ModalsBaseModal :is-visible="isVisible" @update:is-visible="emit('update:isVisible', $event)">
-      <template #header>
-        <h3 class="modal__title">Create CV</h3>
-      </template>
+  <ModalsBaseModal :is-visible="isVisible" @update:is-visible="emit('update:isVisible', $event)">
+    <template #header>
+      <h3 class="modal__title">Create CV</h3>
+    </template>
 
-      <template #body>
-        <Input id="name" v-model="name" label="Name" />
-        <Input id="education" v-model="education" label="Education" />
-        <Textarea id="description" v-model="description" label="Description" />
-      </template>
+    <template #body>
+      <Input id="name" v-model="name" label="Name" />
+      <Input id="education" v-model="education" label="Education" />
+      <Textarea id="description" v-model="description" label="Description" />
+    </template>
 
-      <template #footer>
-        <button class="button button--cancel" @click="closeModal">Cancel</button>
-        <button class="button button--create" :disabled="!isFormValid" @click="handlecreateCv">
-          Create
-        </button>
-      </template>
-    </ModalsBaseModal>
+    <template #footer>
+      <button class="button button--cancel" @click="closeModal">Cancel</button>
+      <button class="button button--create" :disabled="!isFormValid" @click="handlecreateCv">
+        Create
+      </button>
+    </template>
+  </ModalsBaseModal>
 
-    <AppToast />
-  </div>
+  <AppToast />
 </template>
 
 <script setup lang="ts">

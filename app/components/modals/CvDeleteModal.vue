@@ -1,24 +1,22 @@
 <template>
-  <div>
-    <ModalsBaseModal :is-visible="isVisible" @update:is-visible="emit('update:isVisible', $event)">
-      <template #header>
-        <h3 class="modal-title">Delete CV</h3>
-      </template>
-      <template #body>
-        <p class="delete-confirmation-text">
-          Are you sure you want to delete CV
-          <span class="highlight-text">{{ cvName }}</span
-          >?
-        </p>
-      </template>
-      <template #footer>
-        <button class="button button--cancel" @click="closeModal">CANCEL</button>
-        <button class="button button--confirm" @click="handleDelete">CONFIRM</button>
-      </template>
-    </ModalsBaseModal>
+  <ModalsBaseModal :is-visible="isVisible" @update:is-visible="emit('update:isVisible', $event)">
+    <template #header>
+      <h3 class="modal-title">Delete CV</h3>
+    </template>
+    <template #body>
+      <p class="delete-confirmation-text">
+        Are you sure you want to delete CV
+        <span class="highlight-text">{{ cvName }}</span
+        >?
+      </p>
+    </template>
+    <template #footer>
+      <button class="button button--cancel" @click="closeModal">CANCEL</button>
+      <button class="button button--confirm" @click="handleDelete">CONFIRM</button>
+    </template>
+  </ModalsBaseModal>
 
-    <AppToast />
-  </div>
+  <AppToast />
 </template>
 
 <script setup lang="ts">
