@@ -138,7 +138,7 @@ const tablePT: DataTablePassThroughOptions = {
   .p-column-header-content {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: $space-sm;
   }
 
   .p-column-sort-icon {
