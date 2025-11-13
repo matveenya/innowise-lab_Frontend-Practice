@@ -30,38 +30,20 @@
           <SortIcon :sort-order="columnSortOrder" />
         </template>
       </Column>
+
       <Column :sortable="false">
         <template #body="{ data }">
-          <button
-            class="icon-button"
-            :class="{ 'is-current-user': data.id === currentUserId }"
+          <ActionIcon
+            :icon-name="renderActionIconName(data)"
+            :is-current-user="data.id === currentUserId"
             :aria-label="data.id === currentUserId ? 'Open user menu' : 'View user profile'"
             @click="handleIconClick(data)"
-          >
-            <ClientOnly>
-              <Icon
-                :name="
-                  data.id === currentUserId
-                    ? 'material-symbols:more-vert'
-                    : 'ic:baseline-keyboard-arrow-right'
-                "
-                mode="svg"
-                size="1.5rem"
-                class="icon"
-              />
-            </ClientOnly>
-          </button>
+          />
         </template>
       </Column>
 
       <template v-if="!pending" #empty>
-        <div class="users-page__no-results" role="status">
-          <h5 class="users-page__no-results-title">No results found</h5>
-          <p class="users-page__no-results-message">
-            Try another search, check the spelling or use a broader term
-          </p>
-          <Button variant="ghost" @click="resetSearch">Reset search</Button>
-        </div>
+        <NoSearchResult @reset-search="resetSearch" />
       </template>
     </DataTable>
   </div>
@@ -70,7 +52,7 @@
 <script setup lang="ts">
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
-import Button from '~/components/ui/Button.vue';
+import ActionIcon from '~/components/ui/ActionIcon.vue';
 import type { User } from '~/graphql/types/user';
 import { useAuthStore } from '~/stores/auth';
 import { USERS_TABLE_COLUMNS } from '~/constants/users';
@@ -89,6 +71,14 @@ const columns = USERS_TABLE_COLUMNS;
 const auth = useAuthStore();
 const currentUserId = computed(() => auth.user?.id);
 
+const { users, pending } = await useUsersTable();
+
+const renderActionIconName = (userData: User): string => {
+  return userData.id === currentUserId.value
+    ? 'material-symbols:more-vert'
+    : 'ic:baseline-keyboard-arrow-right';
+};
+
 const handleIconClick = (userData: User) => {
   if (userData.id === currentUserId.value) {
     alert('Open user menu');
@@ -100,8 +90,6 @@ const handleIconClick = (userData: User) => {
 const resetSearch = () => {
   searchInput.value = '';
 };
-
-const { users, pending } = await useUsersTable();
 
 const filteredUsers = computed<User[]>(() => {
   if (!users.value) return [];
@@ -133,23 +121,6 @@ const tablePT = {
     background-color: $color-primary;
     padding: $space-lg 0 $space-lg $space-xl;
   }
-  &__no-results {
-    width: 100%;
-    height: calc(100vh - 165px);
-    @include d-flex(center, center, column);
-    gap: $space-lg;
-
-    &-title {
-      font-size: $font-size-2xl;
-
-      line-height: 1.35;
-    }
-    &-message {
-      font-size: $font-size-md;
-
-      line-height: 1.5;
-    }
-  }
 }
 .table {
   width: 100%;
@@ -174,7 +145,7 @@ const tablePT = {
     th {
       background: linear-gradient(to top, transparent 0%, $color-primary 50%);
       .p-column-sort-icon {
-        margin-left: 0.5rem;
+        margin-left: $space-sm;
         vertical-align: text-bottom;
       }
 
@@ -190,36 +161,6 @@ const tablePT = {
         opacity: 0 !important;
       }
     }
-  }
-}
-
-.icon-button {
-  background: transparent;
-  padding: 0.5rem;
-  margin: 0;
-  border-radius: 50%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.08);
-  }
-
-  .icon {
-    color: $color-text-secondary;
-    transition: color 0.2s ease;
-  }
-
-  &:hover .icon {
-    color: $color-text-primary;
-  }
-
-  &:focus-visible {
-    outline: 2px solid $color-primary;
-    outline-offset: 2px;
   }
 }
 </style>
