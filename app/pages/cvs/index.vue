@@ -86,6 +86,7 @@ const handleDetails = () => {
   &__controls-and-button {
     @include d-flex(space-between, center);
     margin-bottom: $space-3xl;
+    margin-right: $space-2xl;
 
     .create-button {
       @include d-flex(center, center);

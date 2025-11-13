@@ -32,6 +32,7 @@ definePageMeta({
     padding: $space-lg;
     border-radius: $radius-2xl;
     transition: background 0.2s ease;
+    margin-right: $space-2xl;
 
     &:hover {
       background-color: $button-ghost-hover;
