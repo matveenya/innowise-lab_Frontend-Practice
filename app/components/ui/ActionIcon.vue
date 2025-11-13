@@ -2,7 +2,6 @@
   <button
     class="icon-button"
     :class="{ 'is-current-user': props.isCurrentUser }"
-    :aria-label="props.ariaLabel"
     @click="handleClick"
   >
     <ClientOnly>
@@ -15,7 +14,6 @@
 const props = defineProps<{
   iconName: string;
   isCurrentUser: boolean;
-  ariaLabel: string;
 }>();
 
 const emit = defineEmits(['click']);
