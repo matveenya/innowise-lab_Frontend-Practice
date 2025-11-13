@@ -1,27 +1,28 @@
 <template>
-  <ModalsBaseModal :is-visible="isVisible" @update:is-visible="emit('update:isVisible', $event)">
-    <template #header>
-      <h3 class="modal-title">Delete CV</h3>
-    </template>
-    <template #body>
-      <p class="delete-confirmation-text">
-        Are you sure you want to delete CV
-        <span class="highlight-text">{{ cvName }}</span
-        >?
-      </p>
-    </template>
-    <template #footer>
-      <button class="button button--cancel" @click="closeModal">CANCEL</button>
-      <button class="button button--confirm" @click="handleDelete">CONFIRM</button>
-    </template>
-  </ModalsBaseModal>
+  <div>
+    <ModalsBaseModal :is-visible="isVisible" @update:is-visible="emit('update:isVisible', $event)">
+      <template #header>
+        <h3 class="modal-title">Delete CV</h3>
+      </template>
+      <template #body>
+        <p class="delete-confirmation-text">
+          Are you sure you want to delete CV
+          <span class="highlight-text">{{ cvName }}</span
+          >?
+        </p>
+      </template>
+      <template #footer>
+        <button class="button button--cancel" @click="closeModal">CANCEL</button>
+        <button class="button button--confirm" @click="handleDelete">CONFIRM</button>
+      </template>
+    </ModalsBaseModal>
 
-  <Toast position="top-right" :pt="toastPT" />
+    <AppToast />
+  </div>
 </template>
 
 <script setup lang="ts">
 import { deleteCv as deleteCvService } from '~/services/cvs';
-import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
 
 const props = defineProps<{
@@ -59,18 +60,9 @@ const handleDelete = async () => {
     });
   }
 };
-
-const toastPT = {
-  root: { class: 'toast-root' },
-  message: { class: 'toast-message' },
-  content: { class: 'toast-content' },
-  summary: { class: 'toast-summary' },
-  icon: { class: 'hidden' },
-  closeButton: { class: 'hidden' },
-};
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
 .modal-title {
   font-size: $font-size-xl;
   font-weight: $font-weight-bold;
@@ -118,33 +110,5 @@ const toastPT = {
       background-color: $button-primary-hover;
     }
   }
-}
-.toast-root {
-  opacity: 0.95;
-  width: auto;
-}
-
-.toast-message {
-  background-color: $color-text-primary;
-  border-radius: $radius-sm;
-  box-shadow: $shadow-md;
-  overflow: hidden;
-  padding-bottom: $space-lg;
-}
-
-.toast-content {
-  @include d-flex(center, flex-start);
-  border: none;
-}
-
-.toast-summary {
-  color: $color-primary;
-  font-size: $font-size-md;
-  font-weight: $font-weight-regular;
-  padding: $space-2xs $space-5xl;
-}
-
-.hidden {
-  display: none;
 }
 </style>

@@ -10,13 +10,12 @@
       </div>
     </form>
 
-    <Toast position="top-right" :pt="toastPT" />
+    <AppToast />
   </section>
 </template>
 
 <script setup lang="ts">
 import Textarea from '~/components/ui/Textarea.vue';
-import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
 import { getCvs, updateCv } from '~/services/cvs';
 import { createQueryAdapter } from '~/utils/apolloAdapters';
@@ -96,18 +95,9 @@ const handleUpdate = async () => {
     });
   }
 };
-
-const toastPT = {
-  root: { class: 'toast-root' },
-  message: { class: 'toast-message' },
-  content: { class: 'toast-content' },
-  summary: { class: 'toast-summary' },
-  icon: { class: 'hidden' },
-  closeButton: { class: 'hidden' },
-};
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
 .cv-details {
   &__content {
     @include container($cv-details-width);
@@ -147,34 +137,5 @@ const toastPT = {
       box-shadow: none;
     }
   }
-}
-
-.toast-root {
-  opacity: 0.95;
-  width: auto;
-}
-
-.toast-message {
-  background-color: $color-text-primary;
-  border-radius: $radius-sm;
-  box-shadow: $shadow-md;
-  overflow: hidden;
-  padding-bottom: $space-lg;
-}
-
-.toast-content {
-  @include d-flex(center, flex-start);
-  border: none;
-}
-
-.toast-summary {
-  color: $color-primary;
-  font-size: $font-size-md;
-  font-weight: $font-weight-regular;
-  padding: $space-2xs $space-5xl;
-}
-
-.hidden {
-  display: none;
 }
 </style>
