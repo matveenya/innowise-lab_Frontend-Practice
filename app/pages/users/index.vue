@@ -128,4 +128,8 @@ const tablePT = {
 td {
   border-bottom: $border-thin-1 $color-border-table;
 }
+
+td:has(.no-results) {
+  border-bottom: none;
+}
 </style>
