@@ -89,8 +89,6 @@ const tablePT: DataTablePassThroughOptions = {
 
 <style lang="scss">
 .cv-row__cell {
-  vertical-align: top;
-  background-color: transparent;
   border: none;
 
   &--name {
@@ -118,12 +116,8 @@ const tablePT: DataTablePassThroughOptions = {
 }
 
 .cv-description-row {
-  @include border-bottom($color-border-subtle, 1px);
-  background-color: transparent;
-
   & > td {
     padding: 0 $space-lg $space-lg $space-lg;
-    border: none;
   }
 }
 
