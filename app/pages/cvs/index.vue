@@ -10,7 +10,7 @@
       </button>
     </div>
 
-    <CvsTable :cvs="filteredCvs" @open-menu="handleOpenMenu" />
+    <CvsTable :cvs="filteredCvs" @open-menu="handleOpenMenu" @reset-search="searchTerm = ''" />
 
     <CvsActionMenu
       ref="actionsMenu"
