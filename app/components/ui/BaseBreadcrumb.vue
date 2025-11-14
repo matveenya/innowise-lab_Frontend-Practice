@@ -1,32 +1,30 @@
 <template>
   <nav class="breadcrumb">
-    <NuxtLink to="/cvs" class="breadcrumb__link">CVs</NuxtLink>
-    <span class="breadcrumb__separator">›</span>
+    <template v-for="(item, index) in items" :key="index">
+      <span v-if="index > 0" class="breadcrumb__separator">›</span>
 
-    <NuxtLink
-      v-if="cvId"
-      :to="{ path: '/cvs/details', query: { id: cvId } }"
-      class="breadcrumb__cv-name"
-      :class="{
-        'breadcrumb__cv-name--details': !activePage,
-        'breadcrumb__cv-name--link': activePage,
-      }"
-    >
-      {{ cvName }}
-    </NuxtLink>
+      <NuxtLink v-if="item.to" :to="item.to" :class="item.class || 'breadcrumb__link'">
+        {{ item.label }}
+      </NuxtLink>
 
-    <template v-if="activePage">
-      <span class="breadcrumb__separator">›</span>
-      <span class="breadcrumb__active">{{ activePage }}</span>
+      <span v-else :class="item.class || 'breadcrumb__active'">
+        {{ item.label }}
+      </span>
     </template>
   </nav>
 </template>
 
 <script setup lang="ts">
+import type { RouteLocationRaw } from 'vue-router';
+
+export interface BreadcrumbItem {
+  label: string;
+  to?: RouteLocationRaw;
+  class?: string;
+}
+
 defineProps<{
-  activePage?: string;
-  cvName?: string;
-  cvId?: string;
+  items: BreadcrumbItem[];
 }>();
 </script>
 
