@@ -10,6 +10,7 @@ $color-text-muted: rgb(118, 118, 118);
 
 $color-nav-link: rgb(245, 245, 247);
 $color-nav-link-active: $color-secondary;
+$color-border-table: rgb(81, 81, 81);
 
 /* SKILLS SECTION */
 $color-novice: $color-text-muted;
@@ -32,15 +33,15 @@ $button-primary-hover: $color-secondary-hover;
 $button-primary-text: $color-text-primary;
 
 $button-ghost-bg: transparent;
-$button-ghost-hover: rgba(118, 118, 118, 0.08);
+$button-ghost-hover: rgba($color-text-muted, 0.08);
 $button-ghost-text: $color-text-muted;
 
 $button-outline-bg: transparent;
-$button-outline-hover: rgba(118, 118, 118, 0.08);
+$button-outline-hover: rgba($color-text-muted, 0.08);
 $button-outline-text: $color-text-muted;
 
 /* BUTTON SIZES */
-$button-width-auth: 220px;
+$button-width: 220px;
 $button-width-details: 410px;
 
 /* INPUT SIZES */
@@ -57,11 +58,15 @@ $color-bg-modal: rgba(0, 0, 0, 0.66);
 $color-bg-action-cv: rgba(47,47,47);
 
 /* BORDERS */
+$border-thin-1: 1px solid;
 $border-outline: 1px solid rgba(118, 118, 118, 0.5);
 $border-outline-hover: 1px solid rgb(118, 118, 118);
 $border-outline-active: 1px solid $color-secondary;
 $color-border-subtle: #565656;
 $border-subtle: 1px solid $color-border-subtle;
+
+/* OPACITY */
+$opacity-50: 0.5;
 
 /* BORDER RADIUS */
 $radius-sm: 0.25em;
@@ -69,6 +74,7 @@ $radius-md: 0.5em;
 $radius-lg: 0.6em;
 $radius-xl: 1em;
 $radius-2xl: 2em;
+$radius-3xl: 2.5em;
 $radius-rounded: 50%;
 $radius-full: 100%;
 

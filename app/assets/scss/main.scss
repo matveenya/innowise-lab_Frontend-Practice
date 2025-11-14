@@ -1,6 +1,7 @@
 @use './_reset.scss' as *;
 @use './_variables.scss' as *;
 @use './_mixins.scss' as *;
+@use './_table.scss' as *;
 
 body {
   background-color: $color-primary;
