@@ -1,16 +1,23 @@
 <template>
-  <button type="button" class="button" :class="buttonClasses">
+  <button :type="type" class="button" :class="buttonClasses">
     <slot />
   </button>
 </template>
 
 <script setup lang="ts">
 type Variant = 'primary' | 'outline' | 'ghost';
+type ButtonType = 'button' | 'submit';
 
-const props = defineProps<{
-  variant: Variant;
-  disabled?: boolean;
-}>();
+const props = withDefaults(
+  defineProps<{
+    variant: Variant;
+    disabled?: boolean;
+    type?: ButtonType;
+  }>(),
+  {
+    type: 'button',
+  }
+);
 
 const buttonClasses = computed(() => ({
   [`button__${props.variant}`]: props.variant,
@@ -51,7 +58,7 @@ const buttonClasses = computed(() => ({
   &__outline {
     --background-color: #{$button-outline-bg};
     --text-color: #{$button-outline-text};
-    --border-color: $border-outline;
+    --border-color: #{$border-outline-color};
 
     &:hover {
       --background-color: #{$button-outline-hover};

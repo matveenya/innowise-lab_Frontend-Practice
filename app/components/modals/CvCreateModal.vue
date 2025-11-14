@@ -11,10 +11,8 @@
     </template>
 
     <template #footer>
-      <button class="button button--cancel" @click="closeModal">Cancel</button>
-      <button class="button button--create" :disabled="!isFormValid" @click="handlecreateCv">
-        Create
-      </button>
+      <Button variant="outline" @click="closeModal">Cancel</Button>
+      <Button variant="primary" :disabled="!isFormValid" @click="handlecreateCv"> Create </Button>
     </template>
   </ModalsBaseModal>
 
@@ -25,6 +23,7 @@
 import Textarea from '../ui/Textarea.vue';
 import { createCv as createCvService } from '~/services/cvs';
 import { useToast } from 'primevue/usetoast';
+import Button from '../ui/Button.vue';
 
 defineProps<{ isVisible: boolean }>();
 const emit = defineEmits(['update:isVisible', 'cv-created']);
@@ -84,43 +83,6 @@ const handlecreateCv = async () => {
     font-weight: $font-weight-medium;
     color: $color-text-primary;
     margin: 0;
-  }
-}
-
-.button {
-  padding: $space-md $space-6xl;
-  border-radius: $radius-2xl;
-  font-weight: $font-weight-medium;
-  cursor: pointer;
-  font-size: $font-size-md;
-  border: none;
-
-  &--cancel {
-    background-color: $button-outline-bg;
-    color: $button-outline-text;
-    border: $border-outline;
-
-    &:hover {
-      background-color: $button-outline-hover;
-      border: $border-outline-hover;
-      color: $color-text-primary;
-    }
-  }
-
-  &--create {
-    background-color: $button-primary-bg;
-    color: $button-primary-text;
-
-    &:hover {
-      background-color: $button-primary-hover;
-    }
-
-    &:disabled {
-      background-color: $button-neutral-bg;
-      color: $color-text-primary-disabled;
-      cursor: default;
-      pointer-events: none;
-    }
   }
 }
 </style>
