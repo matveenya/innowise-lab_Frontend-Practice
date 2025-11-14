@@ -36,6 +36,9 @@ $button-ghost-bg: transparent;
 $button-ghost-hover: rgba($color-text-muted, 0.08);
 $button-ghost-text: $color-text-muted;
 
+$button-ghost-secondary-text: $color-secondary;
+$button-ghost-secondary-hover: rgba($color-secondary, 0.1);
+
 $button-outline-bg: transparent;
 $button-outline-hover: rgba($color-text-muted, 0.08);
 $button-outline-text: $color-text-muted;

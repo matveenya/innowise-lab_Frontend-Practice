@@ -3,17 +3,19 @@
     <h2 class="page-title">Languages</h2>
 
     <div class="languages-page__button-container">
-      <button class="add-button">
+      <Button variant="ghost" class="add-button">
         <Icon name="ic:baseline-plus" size="1.2em" mode="svg" />
         ADD LANGUAGE
-      </button>
+      </Button>
     </div>
 
     <div class="languages-page__content"></div>
   </section>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import Button from '~/components/ui/Button.vue';
+</script>
 
 <style scoped lang="scss">
 .languages-page {
@@ -33,22 +35,7 @@
     margin-bottom: $space-4xl;
 
     .add-button {
-      @include d-flex(center, center);
       width: 100%;
-      gap: $space-xs;
-      background-color: $button-ghost-bg;
-      color: $button-ghost-text;
-      text-transform: uppercase;
-      font-size: $font-size-sm;
-      font-weight: $font-weight-medium;
-      cursor: pointer;
-      padding: $space-lg;
-      border-radius: $radius-2xl;
-      transition: background 0.2s ease;
-
-      &:hover {
-        background-color: $button-ghost-hover;
-      }
     }
   }
 
