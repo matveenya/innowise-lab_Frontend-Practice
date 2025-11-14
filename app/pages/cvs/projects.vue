@@ -58,6 +58,7 @@ const searchTerm = ref('');
       cursor: pointer;
       padding: $space-lg $space-6xl;
       border-radius: $radius-2xl;
+      margin-right: $space-2xl;
 
       &:hover {
         background-color: rgba($color-secondary, 0.1);

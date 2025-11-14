@@ -23,8 +23,8 @@ definePageMeta({
     @include d-flex(center, center);
     width: 100%;
     gap: $space-xs;
-    background-color: transparent;
-    color: $color-text-muted;
+    background-color: $button-ghost-bg;
+    color: $button-ghost-text;
     text-transform: uppercase;
     font-size: $font-size-sm;
     font-weight: $font-weight-medium;
@@ -32,9 +32,10 @@ definePageMeta({
     padding: $space-lg;
     border-radius: $radius-2xl;
     transition: background 0.2s ease;
+    margin-right: $space-2xl;
 
     &:hover {
-      background-color: rgba($color-text-muted, 0.1);
+      background-color: $button-ghost-hover;
     }
   }
 

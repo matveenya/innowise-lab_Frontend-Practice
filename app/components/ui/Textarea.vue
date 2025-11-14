@@ -54,6 +54,7 @@ const placeholder = ' ';
     outline: none;
     transition: border-color 0.2s ease;
     border-radius: $radius-sm;
+    resize: none;
 
     &:hover {
       border-color: $color-nav-link;

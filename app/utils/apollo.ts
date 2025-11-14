@@ -5,11 +5,13 @@ import type {
   MutationUpdaterFunction,
   InternalRefetchQueriesInclude,
   OperationVariables,
+  FetchPolicy,
 } from '@apollo/client';
 
 export type MutationOpts<TResult, TVariables extends OperationVariables> = {
   context?: DefaultContext;
   refetchQueries?: InternalRefetchQueriesInclude;
+  awaitRefetchQueries?: boolean;
   update?: MutationUpdaterFunction<TResult, TVariables, ApolloCache>;
 };
 
@@ -26,10 +28,18 @@ function getApolloClient() {
 export async function apolloQuery<
   TResult,
   TVariables extends OperationVariables = Record<string, never>,
->(query: TypedDocumentNode<TResult, TVariables>, variables?: TVariables): Promise<TResult> {
+>(
+  query: TypedDocumentNode<TResult, TVariables>,
+  variables?: TVariables,
+  fetchPolicy: FetchPolicy = 'cache-first'
+): Promise<TResult> {
   const apollo = getApolloClient();
 
-  const { data } = await apollo.query<TResult, TVariables>({ query, variables });
+  const { data } = await apollo.query<TResult, TVariables>({
+    query,
+    variables,
+    fetchPolicy,
+  });
   return data as TResult;
 }
 

@@ -1,40 +1,34 @@
 <template>
   <nav class="tabs">
     <ul class="tabs__list">
-      <li
-        v-for="tab in tabs"
-        :key="tab.name"
-        class="tabs__item"
-        :class="{ 'tabs__item--active': currentTab === tab.name }"
+      <NuxtLink
+        v-for="tab in items"
+        :key="tab.label"
+        v-slot="{ href, navigate, isActive }"
+        :to="tab.to"
+        custom
       >
-        <NuxtLink :to="tab.to" class="tabs__link">
-          {{ tab.name }}
-        </NuxtLink>
-      </li>
+        <li class="tabs__item" :class="{ 'tabs__item--active': isActive }">
+          <a :href="href" class="tabs__link" @click="navigate">
+            {{ tab.label }}
+          </a>
+        </li>
+      </NuxtLink>
     </ul>
   </nav>
 </template>
 
 <script setup lang="ts">
-const route = useRoute();
+import type { RouteLocationRaw } from 'vue-router';
 
-interface Tab {
-  name: string;
-  to: string;
+export interface TabItem {
+  label: string;
+  to: RouteLocationRaw;
 }
 
-const tabs: Tab[] = [
-  { name: 'DETAILS', to: '/cvs/details' },
-  { name: 'SKILLS', to: '/cvs/skills' },
-  { name: 'PROJECTS', to: '/cvs/projects' },
-  { name: 'PREVIEW', to: '/cvs/preview' },
-];
-
-const currentTab = computed<Tab['name']>(() => {
-  const currentPath = route.path.toLowerCase();
-  const tab = tabs.find(t => currentPath.includes(t.name.toLowerCase()));
-  return tab ? tab.name : 'DETAILS';
-});
+defineProps<{
+  items: TabItem[];
+}>();
 </script>
 
 <style lang="scss" scoped>

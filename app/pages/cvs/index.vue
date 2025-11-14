@@ -10,40 +10,70 @@
       </button>
     </div>
 
-    <table class="cvs-page__table">
-      <thead>
-        <tr class="cvs-page__table-header-row">
-          <th class="table-header__item sortable">
-            Name
-            <Icon name="ic:baseline-arrow-upward" size="1em" mode="svg" />
-          </th>
-          <th class="table-header__item">Education</th>
-          <th class="table-header__item">Employee</th>
-          <th class="table-header__item table-header__item--actions"></th>
-        </tr>
-      </thead>
+    <CvsTable :cvs="filteredCvs" @open-menu="handleOpenMenu" />
 
-      <tbody>
-        <tr>
-          <td colspan="4" class="no-results-cell">
-            <p class="no-results">No results found</p>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <CvsActionMenu
+      ref="actionsMenu"
+      @details="handleDetails"
+      @delete="isDeleteModalVisible = true"
+    />
 
-    <ModalsCvCreateModal v-model:is-visible="isDialogVisible" />
+    <ModalsCvCreateModal v-model:is-visible="isDialogVisible" @cv-created="refetchCvs" />
+
+    <ModalsCvDeleteModal
+      v-model:is-visible="isDeleteModalVisible"
+      :cv-id="selectedCv?.id"
+      :cv-name="selectedCv?.name"
+      @cv-deleted="refetchCvs"
+    />
   </section>
 </template>
 
 <script setup lang="ts">
+import { getCvs as getCvsService } from '~/services/cvs';
+import { createQueryAdapter } from '~/utils/apolloAdapters';
+import type { Cv } from 'cv-graphql';
+import CvsActionMenu from '~/components/cvs/ActionMenu.vue';
+
+definePageMeta({
+  middleware: 'auth',
+});
+
 const isDialogVisible = ref(false);
+const isDeleteModalVisible = ref(false);
 const searchTerm = ref('');
+const selectedCv = ref<Cv | null>(null);
+const actionsMenu = ref<InstanceType<typeof CvsActionMenu> | null>(null);
+
+const { data: cvs, refetch: refetchCvs } = createQueryAdapter(getCvsService);
+
+const filteredCvs = computed(() => {
+  if (!cvs.value) return null;
+
+  const term = searchTerm.value.trim().toLowerCase();
+  if (!term) return cvs.value;
+
+  return cvs.value.filter(cv => cv.name.toLowerCase().includes(term));
+});
+
+const handleOpenMenu = (event: Event, cv: Cv) => {
+  selectedCv.value = cv;
+  actionsMenu.value?.toggle(event);
+};
+
+const handleDetails = () => {
+  if (selectedCv.value) {
+    navigateTo({ path: '/cvs/details', query: { id: selectedCv.value.id } });
+  }
+};
 </script>
 
 <style scoped lang="scss">
 .cvs-page {
+  padding-left: $space-2xl;
   padding-top: $space-lg;
+  height: 100%;
+  @include d-flex(flex-start, stretch, column);
 
   .page-title-small {
     font-size: $font-size-md;
@@ -56,6 +86,7 @@ const searchTerm = ref('');
   &__controls-and-button {
     @include d-flex(space-between, center);
     margin-bottom: $space-3xl;
+    margin-right: $space-2xl;
 
     .create-button {
       @include d-flex(center, center);
@@ -68,60 +99,11 @@ const searchTerm = ref('');
       cursor: pointer;
       padding: $space-lg $space-6xl;
       border-radius: $radius-2xl;
+      border: none;
 
       &:hover {
         background-color: rgba($color-secondary, 0.1);
       }
-    }
-  }
-
-  &__table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: $space-md;
-
-    thead {
-      @include border-bottom($color-border-subtle, 1px);
-    }
-
-    .cvs-page__table-header-row {
-      height: $space-4xl;
-    }
-
-    .table-header__item {
-      color: $color-text-primary;
-      font-size: $font-size-sm;
-      font-weight: $font-weight-medium;
-      text-align: left;
-      padding-bottom: $space-md;
-      cursor: pointer;
-
-      &:hover {
-        color: $color-text-primary-disabled;
-      }
-
-      &.sortable {
-        @include d-flex(flex-start, center);
-        gap: $space-2xs;
-        color: $color-text-primary;
-        cursor: pointer;
-
-        svg {
-          color: $color-text-primary;
-        }
-      }
-    }
-  }
-
-  .no-results-cell {
-    padding-top: $space-3xl;
-    text-align: center;
-
-    .no-results {
-      text-align: center;
-      color: $color-text-primary;
-      font-size: $font-size-2xl;
-      font-weight: $font-weight-medium;
     }
   }
 }
