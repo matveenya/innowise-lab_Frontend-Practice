@@ -4,13 +4,13 @@
 
     <div class="cvs-page__controls-and-button">
       <SearchInput v-model="searchTerm" placeholder="Search" />
-      <button class="create-button" @click="isDialogVisible = true">
+      <Button variant="ghost-secondary" class="create-button" @click="isDialogVisible = true">
         <Icon name="ic:baseline-plus" size="1.2em" mode="svg" />
         CREATE CV
-      </button>
+      </Button>
     </div>
 
-    <CvsTable :cvs="filteredCvs" @open-menu="handleOpenMenu" />
+    <CvsTable :cvs="filteredCvs" @open-menu="handleOpenMenu" @reset-search="searchTerm = ''" />
 
     <CvsActionMenu
       ref="actionsMenu"
@@ -34,6 +34,7 @@ import { getCvs as getCvsService } from '~/services/cvs';
 import { createQueryAdapter } from '~/utils/apolloAdapters';
 import type { Cv } from 'cv-graphql';
 import CvsActionMenu from '~/components/cvs/ActionMenu.vue';
+import Button from '~/components/ui/Button.vue';
 
 definePageMeta({
   middleware: 'auth',
@@ -89,21 +90,8 @@ const handleDetails = () => {
     margin-right: $space-2xl;
 
     .create-button {
-      @include d-flex(center, center);
-      gap: $space-xs;
-      background-color: transparent;
-      color: $color-secondary;
-      text-transform: uppercase;
-      font-size: $font-size-sm;
-      font-weight: $font-weight-medium;
-      cursor: pointer;
       padding: $space-lg $space-6xl;
       border-radius: $radius-2xl;
-      border: none;
-
-      &:hover {
-        background-color: rgba($color-secondary, 0.1);
-      }
     }
   }
 }

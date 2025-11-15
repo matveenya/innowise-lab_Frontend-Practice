@@ -1,8 +1,8 @@
 <template>
   <div class="form-action-wrapper">
-    <button type="submit" class="auth-button auth-button--primary">
+    <Button variant="primary" type="submit" class="auth-button">
       <slot name="button-text"></slot>
-    </button>
+    </Button>
 
     <NuxtLink :to="linkTo" class="auth-link auth-link--muted">
       <slot name="link-text"></slot>
@@ -11,6 +11,7 @@
 </template>
 
 <script setup lang="ts">
+import Button from '../ui/Button.vue';
 defineProps<{
   linkTo: string;
 }>();
@@ -22,23 +23,8 @@ defineProps<{
   width: 100%;
 
   .auth-button {
-    width: $button-width;
-    padding: $space-md $space-lg;
-    border-radius: $radius-2xl;
-    cursor: pointer;
-    text-transform: uppercase;
-    font-weight: $font-weight-medium;
-    transition: background-color 0.2s ease;
     margin-top: $space-xl;
-
-    &--primary {
-      background-color: $button-primary-bg;
-      color: $button-primary-text;
-
-      &:hover {
-        background-color: $button-primary-hover;
-      }
-    }
+    width: $button-width;
   }
 
   .auth-link {

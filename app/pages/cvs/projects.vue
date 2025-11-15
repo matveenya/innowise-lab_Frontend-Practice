@@ -2,10 +2,10 @@
   <div class="cvs-projects">
     <div class="cvs-projects__controls-and-button">
       <SearchInput v-model="searchTerm" placeholder="Search" />
-      <button class="create-button">
+      <Button variant="ghost-secondary" class="create-button">
         <Icon name="ic:baseline-plus" size="1.2em" mode="svg" />
         ADD PROJECT
-      </button>
+      </Button>
     </div>
 
     <table class="cvs-projects__table">
@@ -34,6 +34,7 @@
 </template>
 
 <script setup lang="ts">
+import Button from '~/components/ui/Button.vue';
 definePageMeta({
   layout: 'cv-details',
 });
@@ -48,21 +49,9 @@ const searchTerm = ref('');
     margin-bottom: $space-3xl;
 
     .create-button {
-      @include d-flex(center, center);
-      gap: $space-xs;
-      background-color: transparent;
-      color: $color-secondary;
-      text-transform: uppercase;
-      font-size: $font-size-sm;
-      font-weight: $font-weight-medium;
-      cursor: pointer;
       padding: $space-lg $space-6xl;
       border-radius: $radius-2xl;
       margin-right: $space-2xl;
-
-      &:hover {
-        background-color: rgba($color-secondary, 0.1);
-      }
     }
   }
 

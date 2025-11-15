@@ -1,9 +1,8 @@
 <template>
-  <PrimeToast :position="position" :pt="toastPT" />
+  <Toast :position="position" :pt="toastPT" />
 </template>
 
 <script setup lang="ts">
-import PrimeToast from 'primevue/toast';
 withDefaults(
   defineProps<{
     position?:

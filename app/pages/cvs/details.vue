@@ -6,7 +6,9 @@
       <Textarea id="cv-description" v-model="description" label="Description" />
 
       <div class="cv-form__actions">
-        <button type="submit" class="cv-form__button" :disabled="!isModified">Update</button>
+        <Button variant="primary" type="submit" class="cv-form__button" :disabled="!isModified">
+          Update
+        </Button>
       </div>
     </form>
 
@@ -15,6 +17,7 @@
 </template>
 
 <script setup lang="ts">
+import Button from '~/components/ui/Button.vue';
 import Textarea from '~/components/ui/Textarea.vue';
 import { useToast } from 'primevue/usetoast';
 import { getCvs, updateCv } from '~/services/cvs';
@@ -114,26 +117,8 @@ const handleUpdate = async () => {
 
   &__button {
     width: $button-width-details;
-    background-color: $button-primary-bg;
-    color: $button-primary-text;
-    border: none;
-    border-radius: $radius-2xl;
-    box-shadow: $shadow-md;
-    padding: $space-lg;
-    font-weight: $font-weight-bold;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-
-    &:hover {
-      background-color: $button-primary-hover;
-    }
 
     &:disabled {
-      background-color: $button-neutral-bg;
-      color: $color-text-primary-disabled;
-      cursor: default;
-      pointer-events: none;
       box-shadow: none;
     }
   }

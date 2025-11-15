@@ -11,8 +11,8 @@
       </p>
     </template>
     <template #footer>
-      <button class="button button--cancel" @click="closeModal">CANCEL</button>
-      <button class="button button--confirm" @click="handleDelete">CONFIRM</button>
+      <Button variant="outline" @click="closeModal">CANCEL</Button>
+      <Button variant="primary" @click="handleDelete">CONFIRM</Button>
     </template>
   </ModalsBaseModal>
 
@@ -22,6 +22,7 @@
 <script setup lang="ts">
 import { deleteCv as deleteCvService } from '~/services/cvs';
 import { useToast } from 'primevue/usetoast';
+import Button from '../ui/Button.vue';
 
 const props = defineProps<{
   isVisible: boolean;
@@ -76,37 +77,6 @@ const handleDelete = async () => {
   .highlight-text {
     font-weight: $font-weight-bold;
     color: $color-text-primary;
-  }
-}
-
-.button {
-  padding: $space-md $space-6xl;
-  border-radius: $radius-2xl;
-  font-weight: $font-weight-bold;
-  cursor: pointer;
-  font-size: $font-size-sm;
-  text-transform: uppercase;
-  border: none;
-
-  &--cancel {
-    background-color: $button-outline-bg;
-    color: $button-outline-text;
-    border: $border-outline;
-
-    &:hover {
-      background-color: $button-outline-hover;
-      color: $color-text-primary;
-      border-color: $color-text-primary;
-    }
-  }
-
-  &--confirm {
-    background-color: $button-primary-bg;
-    color: $button-primary-text;
-
-    &:hover {
-      background-color: $button-primary-hover;
-    }
   }
 }
 </style>
