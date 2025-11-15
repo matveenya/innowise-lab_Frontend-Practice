@@ -13,6 +13,7 @@ export const GET_USERS: TypedDocumentNode<GetUsersResult, Record<string, never>>
       }
       department_name
       position_name
+      role
     }
   }
 `;
@@ -33,6 +34,7 @@ export const GET_USER_BY_ID: TypedDocumentNode<GetUserByIdResult, { id: string }
           name
         }
       }
+      role
     }
   }
 `;

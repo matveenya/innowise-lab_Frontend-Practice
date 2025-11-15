@@ -84,7 +84,6 @@ const toggleMenu = (event: Event) => {
   }
   &-menu {
     position: absolute;
-    width: $sidebar-width-open;
     margin-inline: $space-xl;
     background-color: $color-primary;
     box-shadow: $shadow-md;
@@ -97,7 +96,6 @@ const toggleMenu = (event: Event) => {
       background: transparent;
       color: $color-text-primary;
       font-size: $font-size-md;
-      font-weight: $font-weight-regular;
       white-space: nowrap;
       cursor: pointer;
       transition: background 0.2s ease;
