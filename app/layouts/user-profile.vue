@@ -29,12 +29,13 @@ const breadcrumbItems = computed<BreadcrumbItem[]>(() => {
     {
       label: `${user?.value?.profile.first_name} ${user?.value?.profile.last_name}`,
       to: `/users/${userId}/`,
-      class: 'breadcrumb__cv-name--details',
+      class: 'breadcrumb__cv-name--link',
+      icon: 'material-symbols:person-outline',
     },
   ];
 
-  const lastItem = route.path.split('/').pop() as UserProfileTab;
-  if (lastItem && userProfileTabs.includes(lastItem)) {
+  const lastItem = route.path.split('/').pop();
+  if (lastItem && userProfileTabs.includes(lastItem as UserProfileTab)) {
     base.push({ label: lastItem.charAt(0).toUpperCase() + lastItem.slice(1) });
   }
 
