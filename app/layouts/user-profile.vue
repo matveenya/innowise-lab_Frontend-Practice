@@ -20,6 +20,16 @@ const route = useRoute();
 const userId = route.params.id as string;
 const { user } = await useUser(userId);
 
+const userName = computed(() => {
+  if (user.value?.profile.first_name && user.value?.profile.last_name) {
+    return `${user.value.profile.first_name} ${user.value.profile.last_name}`;
+  } else if (user.value?.profile.first_name) {
+    return user.value.profile.first_name;
+  } else {
+    return user.value?.email || '';
+  }
+});
+
 type UserProfileTab = 'profile' | 'skills' | 'languages';
 const userProfileTabs: UserProfileTab[] = ['profile', 'skills', 'languages'];
 
@@ -27,7 +37,7 @@ const breadcrumbItems = computed<BreadcrumbItem[]>(() => {
   const base: BreadcrumbItem[] = [
     { label: 'Employees', to: '/users' },
     {
-      label: `${user?.value?.profile.first_name} ${user?.value?.profile.last_name}`,
+      label: userName.value,
       to: `/users/${userId}/`,
       class: 'breadcrumb__cv-name--link',
       icon: 'material-symbols:person-outline',
@@ -55,6 +65,8 @@ const tabItems = computed<TabItem[]>(() => {
 
 <style scoped lang="scss">
 .user-profile {
-  padding-top: $space-lg;
+  max-width: $container-wide;
+  margin-inline: auto;
+  padding: $space-lg $space-2xl;
 }
 </style>

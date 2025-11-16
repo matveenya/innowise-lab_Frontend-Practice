@@ -1,12 +1,12 @@
 <template>
   <div>
     <h2>Languages</h2>
-    <pre>{{ user?.profile.languages }}</pre>
+    <pre>{{ profile?.languages }}</pre>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useUser } from '~/composables/useUser';
+import { useUserProfile } from '~/composables/useUserProfile';
 
 definePageMeta({
   layout: 'user-profile',
@@ -14,5 +14,5 @@ definePageMeta({
 });
 
 const route = useRoute();
-const { user } = await useUser(route.params.id as string);
+const { profile } = await useUserProfile(route.params.id as string);
 </script>

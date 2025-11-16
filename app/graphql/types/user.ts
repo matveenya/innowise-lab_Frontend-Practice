@@ -1,4 +1,4 @@
-import type { User } from 'cv-graphql';
+import type { User, Profile } from 'cv-graphql';
 
 export type GetUsersResult = {
   users: User[];
@@ -6,6 +6,10 @@ export type GetUsersResult = {
 
 export type GetUserByIdResult = {
   user: User;
+};
+
+export type GetUserProfileResult = {
+  profile: Profile;
 };
 
 export type { User };

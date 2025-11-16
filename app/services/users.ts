@@ -1,6 +1,6 @@
 import { apolloQuery } from '~/utils/apollo';
-import { GET_USER_BY_ID, GET_USERS } from '~/graphql/queries';
-import type { GetUserByIdResult, GetUsersResult } from '~/graphql/types';
+import { GET_USER_BY_ID, GET_USER_PROFILE, GET_USERS } from '~/graphql/queries';
+import type { GetUserByIdResult, GetUserProfileResult, GetUsersResult } from '~/graphql/types';
 import type { FetchPolicy } from '@apollo/client';
 
 export async function getUsers() {
@@ -19,4 +19,16 @@ export async function getUserById(args?: { id: string }, fetchPolicy?: FetchPoli
   );
 
   return result.user;
+}
+
+export async function getUserProfile(args?: { id: string }, fetchPolicy?: FetchPolicy) {
+  if (!args?.id) throw new Error('User ID is required');
+
+  const result = await apolloQuery<GetUserProfileResult, { id: string }>(
+    GET_USER_PROFILE,
+    { id: args.id },
+    fetchPolicy
+  );
+
+  return result.profile;
 }

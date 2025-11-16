@@ -1,5 +1,5 @@
 import { gql, type TypedDocumentNode } from '@apollo/client';
-import type { GetUsersResult, GetUserByIdResult } from '../types';
+import type { GetUsersResult, GetUserByIdResult, GetUserProfileResult } from '../types';
 
 export const GET_USERS: TypedDocumentNode<GetUsersResult, Record<string, never>> = gql`
   query GetUsers {
@@ -35,6 +35,28 @@ export const GET_USER_BY_ID: TypedDocumentNode<GetUserByIdResult, { id: string }
         }
       }
       role
+    }
+  }
+`;
+
+export const GET_USER_PROFILE: TypedDocumentNode<GetUserProfileResult, { id: string }> = gql`
+  query GetUserProfile($id: ID!) {
+    profile(userId: $id) {
+      id
+      created_at
+      first_name
+      last_name
+      full_name
+      avatar
+      skills {
+        name
+        categoryId
+        mastery
+      }
+      languages {
+        name
+        proficiency
+      }
     }
   }
 `;
