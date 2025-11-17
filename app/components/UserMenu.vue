@@ -35,7 +35,7 @@ interface UserMenuLink {
 }
 
 const items: UserMenuLink[] = [
-  { label: 'Profile', icon: 'ic:account-circle', to: '/profile' },
+  { label: 'Profile', icon: 'ic:account-circle', to: `/users/${authStore.user?.id}` },
   { label: 'Settings', icon: 'ic:baseline-settings', to: '/settings' },
   { label: 'Logout', icon: 'ic:baseline-logout', command: () => authStore.logout() },
 ];

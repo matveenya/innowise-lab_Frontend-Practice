@@ -89,4 +89,12 @@ const placeholder = ' ';
     }
   }
 }
+:deep(.floating-label-field:-webkit-autofill),
+:deep(.floating-label-field:-webkit-autofill:hover),
+:deep(.floating-label-field:-webkit-autofill:focus) {
+  -webkit-box-shadow: 0 0 0 1000px $color-primary inset;
+  box-shadow: 0 0 0 1000px $color-primary inset;
+  -webkit-text-fill-color: $color-text-primary;
+  caret-color: $color-text-primary;
+}
 </style>
