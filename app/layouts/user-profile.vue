@@ -14,20 +14,21 @@
 <script setup lang="ts">
 import type { BreadcrumbItem } from '~/components/ui/BaseBreadcrumb.vue';
 import type { TabItem } from '~/components/ui/BaseTabs.vue';
-import { useUser } from '~/composables/useUser';
+import { getUserById } from '~/services/users';
+import { createQueryAdapter } from '~/utils/apolloAdapters';
 
 const route = useRoute();
 const userId = route.params.id as string;
-const { user } = await useUser(userId);
+
+const { data: user } = createQueryAdapter(getUserById, {
+  variables: { id: userId },
+});
 
 const userName = computed(() => {
   if (user.value?.profile.first_name && user.value?.profile.last_name) {
     return `${user.value.profile.first_name} ${user.value.profile.last_name}`;
-  } else if (user.value?.profile.first_name) {
-    return user.value.profile.first_name;
-  } else {
-    return user.value?.email || '';
   }
+  return user.value?.profile.first_name || user.value?.email || '';
 });
 
 type UserProfileTab = 'profile' | 'skills' | 'languages';

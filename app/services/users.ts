@@ -1,6 +1,18 @@
 import { apolloQuery } from '~/utils/apollo';
-import { GET_USER_BY_ID, GET_USER_PROFILE, GET_USERS } from '~/graphql/queries';
-import type { GetUserByIdResult, GetUserProfileResult, GetUsersResult } from '~/graphql/types';
+import {
+  GET_USER_BY_ID,
+  GET_USER_PROFILE,
+  GET_USERS,
+  GET_DEPARTMENTS,
+  GET_POSITIONS,
+} from '~/graphql/queries';
+import type {
+  GetUserByIdResult,
+  GetUserProfileResult,
+  GetUsersResult,
+  GetDepartmentsResult,
+  GetPositionsResult,
+} from '~/graphql/types';
 import type { FetchPolicy } from '@apollo/client';
 
 export async function getUsers() {
@@ -31,4 +43,16 @@ export async function getUserProfile(args?: { id: string }, fetchPolicy?: FetchP
   );
 
   return result.profile;
+}
+
+export async function getDepartments(fetchPolicy?: FetchPolicy) {
+  const result = await apolloQuery<GetDepartmentsResult>(GET_DEPARTMENTS, {}, fetchPolicy);
+
+  return result.departments;
+}
+
+export async function getPositions(fetchPolicy?: FetchPolicy) {
+  const result = await apolloQuery<GetPositionsResult>(GET_POSITIONS, {}, fetchPolicy);
+
+  return result.positions;
 }
