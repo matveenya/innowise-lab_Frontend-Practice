@@ -136,6 +136,8 @@ const hasValue = computed(() => !isEmpty(displayValue.value));
 </script>
 
 <style scoped lang="scss">
+@use 'sass:color';
+
 .select {
   position: relative;
   width: 100%;
@@ -182,7 +184,7 @@ const hasValue = computed(() => !isEmpty(displayValue.value));
     @include d-flex(flex-start, center);
 
     &:not(&--disabled) {
-      &:hover:not(.p-focus) {
+      &:hover:not(.p-focus):not(.select__field--focused):not(:focus-within) {
         border-color: $color-nav-link;
       }
 
@@ -271,17 +273,24 @@ const hasValue = computed(() => !isEmpty(displayValue.value));
     padding: $space-sm $space-md;
     color: $color-text-primary;
     cursor: pointer;
-    background-color: rgba($overlay-bg-color, 0.2);
+    background-color: color.adjust($color-primary, $lightness: -2%);
     transition: background-color 0.2s ease;
 
     &:hover:not(&--selected) {
-      background-color: rgba($color-text-primary, 0.08);
+      background-color: color.adjust($color-text-muted, $lightness: -15%);
     }
 
     &--selected {
-      background-color: rgba($color-secondary, 0.16);
+      background:
+        linear-gradient(rgba($color-secondary, 0.16), rgba($color-secondary, 0.16)),
+        color.adjust($color-primary, $lightness: -2%);
       color: $color-text-primary;
       font-weight: $font-weight-medium;
+      &:hover {
+        background:
+          linear-gradient(rgba($color-secondary, 0.24), rgba($color-secondary, 0.24)),
+          color.adjust($color-primary, $lightness: -2%);
+      }
     }
   }
 }

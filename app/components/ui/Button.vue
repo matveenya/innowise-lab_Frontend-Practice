@@ -1,5 +1,5 @@
 <template>
-  <button type="button" class="button" :class="buttonClasses">
+  <button :type="type" class="button" :class="buttonClasses">
     <slot />
   </button>
 </template>
@@ -7,10 +7,17 @@
 <script setup lang="ts">
 type Variant = 'primary' | 'outline' | 'ghost';
 
-const props = defineProps<{
-  variant: Variant;
-  disabled?: boolean;
-}>();
+const props = withDefaults(
+  defineProps<{
+    variant: Variant;
+    disabled?: boolean;
+    type?: 'button' | 'submit' | 'reset';
+  }>(),
+  {
+    type: 'button',
+    disabled: false,
+  }
+);
 
 const buttonClasses = computed(() => ({
   [`button__${props.variant}`]: props.variant,

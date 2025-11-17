@@ -29,6 +29,9 @@
         option-value="id"
         :disabled="!isMyProfile"
       />
+      <Button v-if="isMyProfile" type="submit" variant="primary" class="user-profile__button"
+        >Update</Button
+      >
     </form>
   </div>
 </template>
@@ -39,6 +42,7 @@ import { createQueryAdapter } from '~/utils/apolloAdapters';
 import { formatDate } from '~/utils/dateUtils';
 import { useAuthStore } from '~/stores/auth';
 import Select from '~/components/ui/Select.vue';
+import Button from '~/components/ui/Button.vue';
 
 definePageMeta({
   layout: 'user-profile',
@@ -124,6 +128,9 @@ const avatarPT = {
   &__details {
     @include grid-layout(1fr 1fr, none, $space-2xl $space-2xl);
     width: 100%;
+  }
+  &__button {
+    grid-column: 2;
   }
 }
 .avatar__root {
