@@ -165,18 +165,33 @@ const memberSince = computed(() => {
   return user.value?.created_at ? formatDate(user.value.created_at) : '';
 });
 
-const onSubmit = handleSubmit(async () => {
-  // try {
-  //   await updateUserProfile(userId, values);
-  // } catch (error) {
-  //   console.error(error);
-  // }
-  toast.add({
-    severity: 'success',
-    summary: 'Profile was updated',
-    life: 3000,
-  });
-  resetForm();
+const onSubmit = handleSubmit(async values => {
+  try {
+    const formData = new FormData();
+
+    Object.entries(values).forEach(([key, value]) => {
+      if (value !== null && value !== undefined) {
+        formData.append(key, value);
+      }
+    });
+
+    if (selectedFile.value) {
+      formData.append('avatar', selectedFile.value);
+    }
+
+    toast.add({
+      severity: 'success',
+      summary: 'Profile was updated',
+      life: 3000,
+    });
+    resetForm({ values });
+  } catch {
+    toast.add({
+      severity: 'error',
+      summary: 'Failed to update profile',
+      life: 3000,
+    });
+  }
 });
 
 const avatarPT = {
@@ -187,6 +202,7 @@ const avatarPT = {
 
 const fileInput = ref<HTMLInputElement | null>(null);
 const avatarPreview = ref<string>('');
+const selectedFile = ref<File | null>(null);
 
 const triggerFileInput = () => {
   fileInput.value?.click();
@@ -217,19 +233,30 @@ const handleFileSelect = (event: Event) => {
     return;
   }
 
-  const reader = new FileReader();
-  reader.onload = e => {
-    avatarPreview.value = e.target?.result as string;
-  };
-  reader.readAsDataURL(file);
+  selectedFile.value = file;
+
+  if (avatarPreview.value && avatarPreview.value.startsWith('blob:')) {
+    URL.revokeObjectURL(avatarPreview.value);
+  }
+  avatarPreview.value = URL.createObjectURL(file);
 };
 
 const removeAvatar = () => {
+  if (avatarPreview.value && avatarPreview.value.startsWith('blob:')) {
+    URL.revokeObjectURL(avatarPreview.value);
+  }
   avatarPreview.value = '';
+  selectedFile.value = null;
   if (fileInput.value) {
     fileInput.value.value = '';
   }
 };
+
+onUnmounted(() => {
+  if (avatarPreview.value && avatarPreview.value.startsWith('blob:')) {
+    URL.revokeObjectURL(avatarPreview.value);
+  }
+});
 </script>
 
 <style lang="scss">
