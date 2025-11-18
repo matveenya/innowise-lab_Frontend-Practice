@@ -12,7 +12,13 @@
 
     <template #footer>
       <Button variant="outline" @click="closeModal">Cancel</Button>
-      <Button variant="primary" :disabled="!meta.valid" @click="handleCreateCv"> Create </Button>
+      <Button
+        variant="primary"
+        :disabled="!values.name && !values.education && !values.description"
+        @click="handleCreateCv"
+      >
+        Create
+      </Button>
     </template>
   </ModalsBaseModal>
 
@@ -34,7 +40,7 @@ const emit = defineEmits(['cv-created']);
 const authStore = useAuthStore();
 const toast = useToast();
 
-const { handleSubmit, resetForm, meta } = useForm<CvForm>({
+const { handleSubmit, resetForm, values } = useForm<CvForm>({
   validationSchema: toTypedSchema(cvSchema),
   initialValues: {
     name: '',
