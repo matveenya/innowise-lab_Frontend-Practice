@@ -6,7 +6,12 @@
       <Textarea id="cv-description" v-model="description" label="Description" />
 
       <div class="cv-form__actions">
-        <Button variant="primary" type="submit" class="cv-form__button" :disabled="!isModified">
+        <Button
+          variant="primary"
+          type="submit"
+          class="cv-form__button"
+          :disabled="!meta.dirty || !meta.valid || isSubmitting"
+        >
           Update
         </Button>
       </div>
@@ -19,9 +24,12 @@
 <script setup lang="ts">
 import Button from '~/components/ui/Button.vue';
 import Textarea from '~/components/ui/Textarea.vue';
-import { useToast } from 'primevue/usetoast';
+import { useForm, useField } from 'vee-validate';
+import { toTypedSchema } from '@vee-validate/zod';
+import { cvSchema, type CvForm } from '~/utils/schemas/cvValidationSchema';
 import { getCvs, updateCv } from '~/services/cvs';
 import { createQueryAdapter } from '~/utils/apolloAdapters';
+import { useToast } from 'primevue/usetoast';
 
 definePageMeta({
   layout: 'cv-details',
@@ -30,15 +38,15 @@ definePageMeta({
 const route = useRoute();
 const toast = useToast();
 
-const name = ref('');
-const education = ref('');
-const description = ref('');
-
-const initialName = ref('');
-const initialEducation = ref('');
-const initialDescription = ref('');
-
 const { data: cvs } = createQueryAdapter(getCvs);
+
+const { handleSubmit, resetForm, meta, isSubmitting } = useForm<CvForm>({
+  validationSchema: toTypedSchema(cvSchema),
+});
+
+const { value: name } = useField<string>('name');
+const { value: education } = useField<string>('education');
+const { value: description } = useField<string>('description');
 
 watch(
   [cvs, () => route.query.id],
@@ -48,41 +56,31 @@ watch(
     const foundCv = newCvs.find(cv => cv.id === cvId);
 
     if (foundCv) {
-      name.value = foundCv.name || '';
-      education.value = foundCv.education || '';
-      description.value = foundCv.description || '';
-
-      initialName.value = foundCv.name || '';
-      initialEducation.value = foundCv.education || '';
-      initialDescription.value = foundCv.description || '';
+      resetForm({
+        values: {
+          name: foundCv.name || '',
+          education: foundCv.education || '',
+          description: foundCv.description || '',
+        },
+      });
     }
   },
   { immediate: true }
 );
 
-const isModified = computed(() => {
-  return (
-    name.value.trim() !== initialName.value.trim() ||
-    education.value.trim() !== initialEducation.value.trim() ||
-    description.value.trim() !== initialDescription.value.trim()
-  );
-});
-
-const handleUpdate = async () => {
+const handleUpdate = handleSubmit(async values => {
   const cvId = route.query.id?.toString();
   if (!cvId) return;
 
   try {
     await updateCv({
       cvId,
-      name: name.value,
-      education: education.value,
-      description: description.value,
+      name: values.name,
+      education: values.education || undefined,
+      description: values.description || '',
     });
 
-    initialName.value = name.value;
-    initialEducation.value = education.value;
-    initialDescription.value = description.value;
+    resetForm({ values });
 
     toast.add({
       severity: 'success',
@@ -97,7 +95,7 @@ const handleUpdate = async () => {
       life: 3000,
     });
   }
-};
+});
 </script>
 
 <style scoped lang="scss">

@@ -12,7 +12,7 @@
 
     <template #footer>
       <Button variant="outline" @click="closeModal">Cancel</Button>
-      <Button variant="primary" :disabled="!isFormValid" @click="handlecreateCv"> Create </Button>
+      <Button variant="primary" :disabled="!meta.valid" @click="handleCreateCv"> Create </Button>
     </template>
   </ModalsBaseModal>
 
@@ -20,7 +20,9 @@
 </template>
 
 <script setup lang="ts">
-import Textarea from '../ui/Textarea.vue';
+import { useForm, useField } from 'vee-validate';
+import { toTypedSchema } from '@vee-validate/zod';
+import { cvSchema, type CvForm } from '~/utils/schemas/cvValidationSchema';
 import { createCv as createCvService } from '~/services/cvs';
 import { useToast } from 'primevue/usetoast';
 import Button from '../ui/Button.vue';
@@ -31,29 +33,30 @@ const emit = defineEmits(['cv-created']);
 const authStore = useAuthStore();
 const toast = useToast();
 
-const name = ref('');
-const education = ref('');
-const description = ref('');
-
-const isFormValid = computed(() => {
-  return name.value.trim().length > 0;
+const { handleSubmit, resetForm, meta } = useForm<CvForm>({
+  validationSchema: toTypedSchema(cvSchema),
+  initialValues: {
+    name: '',
+    education: '',
+    description: '',
+  },
 });
+
+const { value: name } = useField<string>('name');
+const { value: education } = useField<string>('education');
+const { value: description } = useField<string>('description');
 
 const closeModal = () => {
   isVisible.value = false;
-  name.value = '';
-  education.value = '';
-  description.value = '';
+  resetForm();
 };
 
-const handlecreateCv = async () => {
-  if (!isFormValid.value) return;
-
+const handleCreateCv = handleSubmit(async values => {
   try {
     await createCvService({
-      name: name.value,
-      education: education.value ? education.value : undefined,
-      description: description.value,
+      name: values.name,
+      education: values.education || undefined,
+      description: values.description || '',
       userId: authStore.user?.id,
     });
 
@@ -73,7 +76,7 @@ const handlecreateCv = async () => {
       life: 3000,
     });
   }
-};
+});
 </script>
 
 <style scoped lang="scss">
