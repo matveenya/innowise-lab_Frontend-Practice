@@ -6,16 +6,16 @@
 
 <script setup lang="ts">
 type Variant = 'primary' | 'outline' | 'ghost';
+type ButtonType = 'button' | 'submit';
 
 const props = withDefaults(
   defineProps<{
     variant: Variant;
     disabled?: boolean;
-    type?: 'button' | 'submit' | 'reset';
+    type?: ButtonType;
   }>(),
   {
     type: 'button',
-    disabled: false,
   }
 );
 
