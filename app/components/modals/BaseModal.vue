@@ -46,7 +46,8 @@ const closeModal = () => {
     color: $color-text-primary;
     box-shadow: $shadow-md;
     @include d-flex(flex-start, stretch, column);
-    overflow: hidden;
+    overflow: auto;
+    height: 100%;
 
     &__header {
       @include d-flex(space-between, center);

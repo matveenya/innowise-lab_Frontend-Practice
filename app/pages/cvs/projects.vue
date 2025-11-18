@@ -2,7 +2,7 @@
   <div class="cvs-projects">
     <div class="cvs-projects__controls-and-button">
       <SearchInput v-model="searchTerm" placeholder="Search" />
-      <Button variant="ghost-secondary" class="create-button">
+      <Button variant="ghost-secondary" class="create-button" @click="isAddModalVisible = true">
         <Icon name="ic:baseline-plus" size="1.2em" mode="svg" />
         ADD PROJECT
       </Button>
@@ -30,16 +30,25 @@
         </tr>
       </tbody>
     </table>
+
+    <ModalsCvAddProjectModal
+      v-model:is-visible="isAddModalVisible"
+      @add-project="handleProjectAdded"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
 import Button from '~/components/ui/Button.vue';
+
 definePageMeta({
   layout: 'cv-details',
 });
 
 const searchTerm = ref('');
+const isAddModalVisible = ref(false);
+
+const handleProjectAdded = () => {};
 </script>
 
 <style lang="scss" scoped>
