@@ -4,6 +4,13 @@
       <span v-if="index > 0" class="breadcrumb__separator">›</span>
 
       <NuxtLink v-if="item.to" :to="item.to" :class="item.class || 'breadcrumb__link'">
+        <Icon
+          v-if="item.icon"
+          :name="item.icon"
+          mode="svg"
+          size="1.3rem"
+          style="vertical-align: text-bottom"
+        />
         {{ item.label }}
       </NuxtLink>
 
@@ -21,6 +28,7 @@ export interface BreadcrumbItem {
   label: string;
   to?: RouteLocationRaw;
   class?: string;
+  icon?: string;
 }
 
 defineProps<{
@@ -47,7 +55,7 @@ defineProps<{
     }
   }
 
-  &__cv-name {
+  &__highlight {
     font-weight: $font-weight-medium;
     text-decoration: none;
     transition: color 0.2s ease;
@@ -60,7 +68,7 @@ defineProps<{
       }
     }
 
-    &--details {
+    &--static {
       color: $color-secondary-hover;
       pointer-events: none;
     }

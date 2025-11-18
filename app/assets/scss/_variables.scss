@@ -1,6 +1,7 @@
 $color-primary: rgb(53, 53, 53);
 $color-secondary: rgb(197, 48, 49);
 $color-secondary-hover: rgb(138, 33, 34);
+$overlay-bg-color: rgb(18, 18, 18);
 
 /* TEXT COLORS */
 $color-text-primary: rgb(255, 255, 255);
@@ -53,12 +54,13 @@ $input-width-cvs: 320px;
 /* LAYOUT */
 $sidebar-width-open: 200px;
 $cv-details-width: 850px;
+$container-wide: 1536px;
 
 /* MODAL */
 $modal-width: 600px;
 $modal-distance-top: 0.55rem;
 $color-bg-modal: rgba(0, 0, 0, 0.66);
-$color-bg-action-cv: rgba(47,47,47);
+$color-bg-action-cv: rgba(47, 47, 47);
 
 /* BORDERS */
 $border-thin-1: 1px solid;
@@ -100,6 +102,7 @@ $space-3xl: 2rem;
 $space-4xl: 2.5rem;
 $space-5xl: 3.5rem;
 $space-6xl: 5rem;
+$space-7xl: 7.5rem;
 
 /* FONTS*/
 $font-size-sm: 0.875rem; // 14px

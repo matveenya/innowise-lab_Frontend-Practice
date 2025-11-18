@@ -5,6 +5,7 @@
       v-model="model"
       :type="type"
       :placeholder="placeholder"
+      :disabled="disabled"
       class="floating-label-field"
     />
     <label :for="id" class="floating-label">{{ label }}</label>
@@ -12,16 +13,18 @@
 </template>
 
 <script setup lang="ts">
-const model = defineModel<string | number>({ required: true });
+const model = defineModel<string | number | null>({ required: true });
 
 withDefaults(
   defineProps<{
     id: string;
     label: string;
     type?: string;
+    disabled?: boolean;
   }>(),
   {
     type: 'text',
+    disabled: false,
   }
 );
 
@@ -55,7 +58,7 @@ const placeholder = ' ';
     transition: border-color 0.2s ease;
     border-radius: $radius-sm;
 
-    &:hover {
+    &:hover:not(:disabled) {
       border-color: $color-nav-link;
     }
 
@@ -85,5 +88,13 @@ const placeholder = ' ';
       color: $color-text-secondary;
     }
   }
+}
+:deep(.floating-label-field:-webkit-autofill),
+:deep(.floating-label-field:-webkit-autofill:hover),
+:deep(.floating-label-field:-webkit-autofill:focus) {
+  -webkit-box-shadow: 0 0 0 1000px $color-primary inset;
+  box-shadow: 0 0 0 1000px $color-primary inset;
+  -webkit-text-fill-color: $color-text-primary;
+  caret-color: $color-text-primary;
 }
 </style>

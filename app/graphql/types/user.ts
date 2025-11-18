@@ -1,4 +1,13 @@
-import type { User } from 'cv-graphql';
+import type {
+  User,
+  Profile,
+  Department,
+  Position,
+  UpdateUserInput,
+  UploadAvatarInput,
+  UpdateProfileInput,
+  DeleteAvatarInput,
+} from 'cv-graphql';
 
 export type GetUsersResult = {
   users: User[];
@@ -6,6 +15,50 @@ export type GetUsersResult = {
 
 export type GetUserByIdResult = {
   user: User;
+};
+
+export type GetUserProfileResult = {
+  profile: Profile;
+};
+
+export type GetDepartmentsResult = {
+  departments: Department[];
+};
+
+export type GetPositionsResult = {
+  positions: Position[];
+};
+
+export type UpdateUserResult = {
+  updateUser: User;
+};
+
+export type UpdateUserArgs = {
+  user: UpdateUserInput;
+};
+
+export type UploadAvatarResult = {
+  uploadAvatar: string;
+};
+
+export type UploadAvatarArgs = {
+  avatar: UploadAvatarInput;
+};
+
+export type UpdateProfileResult = {
+  updateProfile: Profile;
+};
+
+export type UpdateProfileArgs = {
+  profile: UpdateProfileInput;
+};
+
+export type DeleteAvatarResult = {
+  deleteAvatar: null;
+};
+
+export type DeleteAvatarArgs = {
+  avatar: DeleteAvatarInput;
 };
 
 export type { User };
