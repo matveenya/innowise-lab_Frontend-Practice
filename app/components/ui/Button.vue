@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-type Variant = 'primary' | 'outline' | 'ghost';
+type Variant = 'primary' | 'outline' | 'ghost' | 'ghost-secondary';
 type ButtonType = 'button' | 'submit';
 
 const props = withDefaults(
