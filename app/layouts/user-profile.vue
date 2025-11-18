@@ -35,19 +35,22 @@ type UserProfileTab = 'profile' | 'skills' | 'languages';
 const userProfileTabs: UserProfileTab[] = ['profile', 'skills', 'languages'];
 
 const breadcrumbItems = computed<BreadcrumbItem[]>(() => {
-  const base: BreadcrumbItem[] = [
-    { label: 'Employees', to: '/users' },
-    {
-      label: userName.value,
-      to: `/users/${userId}/`,
-      class: 'breadcrumb__cv-name--link',
-      icon: 'material-symbols:person-outline',
-    },
-  ];
+  const base: BreadcrumbItem[] = [{ label: 'Employees', to: '/users' }];
 
-  const lastItem = route.path.split('/').pop();
-  if (lastItem && userProfileTabs.includes(lastItem as UserProfileTab)) {
-    base.push({ label: lastItem.charAt(0).toUpperCase() + lastItem.slice(1) });
+  const lastSegment = route.path.split('/').filter(Boolean).pop();
+  const isRootProfilePage = lastSegment === userId || lastSegment === undefined;
+
+  base.push({
+    label: userName.value,
+    to: `/users/${userId}/`,
+    class: isRootProfilePage
+      ? 'breadcrumb__highlight breadcrumb__highlight--static'
+      : 'breadcrumb__highlight breadcrumb__highlight--link',
+    icon: 'material-symbols:person-outline',
+  });
+
+  if (!isRootProfilePage && userProfileTabs.includes(lastSegment as UserProfileTab)) {
+    base.push({ label: lastSegment!.charAt(0).toUpperCase() + lastSegment!.slice(1) });
   }
 
   return base;
@@ -69,5 +72,6 @@ const tabItems = computed<TabItem[]>(() => {
   max-width: $container-wide;
   margin-inline: auto;
   padding: $space-lg $space-2xl;
+  overflow-y: auto;
 }
 </style>

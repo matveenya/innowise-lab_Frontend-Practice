@@ -170,8 +170,9 @@ const onSubmit = handleSubmit(async values => {
     const formData = new FormData();
 
     Object.entries(values).forEach(([key, value]) => {
-      if (value !== null && value !== undefined) {
-        formData.append(key, value);
+      if (value !== undefined) {
+        const val = value === null ? '' : value;
+        formData.append(key, val);
       }
     });
 

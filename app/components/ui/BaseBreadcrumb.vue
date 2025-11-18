@@ -55,7 +55,7 @@ defineProps<{
     }
   }
 
-  &__cv-name {
+  &__highlight {
     font-weight: $font-weight-medium;
     text-decoration: none;
     transition: color 0.2s ease;
@@ -68,7 +68,7 @@ defineProps<{
       }
     }
 
-    &--details {
+    &--static {
       color: $color-secondary-hover;
       pointer-events: none;
     }
