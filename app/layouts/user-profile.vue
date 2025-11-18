@@ -75,5 +75,6 @@ const tabItems = computed<TabItem[]>(() => {
   margin-inline: auto;
   padding: $space-lg $space-2xl;
   overflow-y: auto;
+  height: 100%;
 }
 </style>

@@ -48,8 +48,8 @@ const breadcrumbItems = computed<BreadcrumbItem[]>(() => {
       label: currentCv.value.name,
       to: { path: '/cvs/details', query: { id: currentCv.value.id } },
       class: !isDetailsPage
-        ? 'breadcrumb__cv-name breadcrumb__cv-name--link'
-        : 'breadcrumb__cv-name breadcrumb__cv-name--details',
+        ? 'breadcrumb__highlight breadcrumb__highlight--static'
+        : 'breadcrumb__highlight breadcrumb__highlight--link',
     });
 
     if (!isDetailsPage) {
