@@ -1,6 +1,6 @@
 <template>
   <div class="form-group">
-    <Field v-slot="{ field, errorMessage }" :name="name">
+    <Field v-slot="{ field, errorMessage }" :name="name" :validate-on-blur="validateOnBlur">
       <div class="form-input-wrapper">
         <input
           :id="name"
@@ -23,12 +23,17 @@
 </template>
 
 <script setup lang="ts">
-defineProps<{
+interface Props {
   name: string;
   type: string;
   placeholder: string;
   label: string;
-}>();
+  validateOnBlur?: boolean;
+}
+
+withDefaults(defineProps<Props>(), {
+  validateOnBlur: true,
+});
 </script>
 
 <style scoped lang="scss">

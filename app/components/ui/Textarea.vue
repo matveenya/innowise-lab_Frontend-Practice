@@ -1,6 +1,6 @@
 <template>
   <div class="form-group">
-    <Field v-slot="{ field, errorMessage }" :name="name">
+    <Field v-slot="{ field, errorMessage }" :name="name" :validate-on-blur="validateOnBlur">
       <div class="floating-label-group">
         <textarea
           :id="name"
@@ -27,10 +27,12 @@ withDefaults(
     label: string;
     rows?: number;
     placeholder?: string;
+    validateOnBlur?: boolean;
   }>(),
   {
     rows: 8,
     placeholder: ' ',
+    validateOnBlur: true,
   }
 );
 </script>

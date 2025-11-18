@@ -5,9 +5,15 @@
     </template>
 
     <template #body>
-      <FloatLabelInput name="name" label="Name" placeholder=" " type="text" />
+      <FloatLabelInput
+        name="name"
+        label="Name"
+        placeholder=" "
+        type="text"
+        :validate-on-blur="false"
+      />
       <FloatLabelInput name="education" label="Education" placeholder=" " type="text" />
-      <Textarea name="description" label="Description" />
+      <Textarea name="description" label="Description" :validate-on-blur="false" />
     </template>
 
     <template #footer>
