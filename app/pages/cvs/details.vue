@@ -3,7 +3,7 @@
     <form class="cv-form" @submit.prevent="handleUpdate">
       <FloatLabelInput name="name" label="Name" placeholder=" " type="text" />
       <FloatLabelInput name="education" label="Education" placeholder=" " type="text" />
-      <Textarea id="cv-description" v-model="description" label="Description" />
+      <Textarea name="description" label="Description" />
 
       <div class="cv-form__actions">
         <Button
@@ -24,7 +24,7 @@
 <script setup lang="ts">
 import Button from '~/components/ui/Button.vue';
 import Textarea from '~/components/ui/Textarea.vue';
-import { useForm, useField } from 'vee-validate';
+import { useForm } from 'vee-validate';
 import { toTypedSchema } from '@vee-validate/zod';
 import { cvSchema, type CvForm } from '~/utils/schemas/cvValidationSchema';
 import { getCvs, updateCv } from '~/services/cvs';
@@ -43,8 +43,6 @@ const { data: cvs } = createQueryAdapter(getCvs);
 const { handleSubmit, resetForm, meta, isSubmitting } = useForm<CvForm>({
   validationSchema: toTypedSchema(cvSchema),
 });
-
-const { value: description } = useField<string>('description');
 
 watch(
   [cvs, () => route.query.id],

@@ -24,7 +24,7 @@
         </div>
 
         <div class="form-row form-row--full">
-          <Textarea id="description" v-model="form.description" label="Description" :rows="8" />
+          <Textarea id="description" name="form.description" label="Description" :rows="8" />
         </div>
 
         <div class="form-row form-row--full">
@@ -41,7 +41,7 @@
         <div class="form-row form-row--full">
           <Textarea
             id="responsibilities"
-            v-model="form.responsibilities"
+            name="form.responsibilities"
             label="Responsibilities"
             :rows="1"
           />

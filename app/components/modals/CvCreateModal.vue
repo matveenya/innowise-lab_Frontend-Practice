@@ -7,7 +7,7 @@
     <template #body>
       <FloatLabelInput name="name" label="Name" placeholder=" " type="text" />
       <FloatLabelInput name="education" label="Education" placeholder=" " type="text" />
-      <Textarea id="description" v-model="description" label="Description" />
+      <Textarea name="description" label="Description" />
     </template>
 
     <template #footer>
@@ -20,7 +20,7 @@
 </template>
 
 <script setup lang="ts">
-import { useForm, useField } from 'vee-validate';
+import { useForm } from 'vee-validate';
 import { toTypedSchema } from '@vee-validate/zod';
 import { cvSchema, type CvForm } from '~/utils/schemas/cvValidationSchema';
 import { createCv as createCvService } from '~/services/cvs';
@@ -42,8 +42,6 @@ const { handleSubmit, resetForm, meta } = useForm<CvForm>({
     description: '',
   },
 });
-
-const { value: description } = useField<string>('description');
 
 const closeModal = () => {
   isVisible.value = false;
