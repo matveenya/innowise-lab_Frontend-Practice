@@ -5,8 +5,8 @@
     </template>
 
     <template #body>
-      <Input id="name" v-model="name" label="Name" />
-      <Input id="education" v-model="education" label="Education" />
+      <FloatLabelInput name="name" label="Name" placeholder=" " type="text" />
+      <FloatLabelInput name="education" label="Education" placeholder=" " type="text" />
       <Textarea id="description" v-model="description" label="Description" />
     </template>
 
@@ -25,6 +25,7 @@ import { toTypedSchema } from '@vee-validate/zod';
 import { cvSchema, type CvForm } from '~/utils/schemas/cvValidationSchema';
 import { createCv as createCvService } from '~/services/cvs';
 import { useToast } from 'primevue/usetoast';
+import Textarea from '../ui/Textarea.vue';
 import Button from '../ui/Button.vue';
 
 const isVisible = defineModel<boolean>('isVisible', { required: true });
@@ -42,8 +43,6 @@ const { handleSubmit, resetForm, meta } = useForm<CvForm>({
   },
 });
 
-const { value: name } = useField<string>('name');
-const { value: education } = useField<string>('education');
 const { value: description } = useField<string>('description');
 
 const closeModal = () => {

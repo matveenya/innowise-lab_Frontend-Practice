@@ -116,6 +116,8 @@ const handleCreate = () => {
 
 <style lang="scss">
 .cv-add-project-modal {
+  padding: $space-2xl 0;
+
   .modal {
     width: $modal-width * 1.5 !important;
 

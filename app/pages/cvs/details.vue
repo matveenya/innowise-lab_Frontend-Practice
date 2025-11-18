@@ -1,8 +1,8 @@
 <template>
   <section class="cv-details__content">
     <form class="cv-form" @submit.prevent="handleUpdate">
-      <Input id="cv-name" v-model="name" label="Name" />
-      <Input id="cv-education" v-model="education" label="Education" />
+      <FloatLabelInput name="name" label="Name" placeholder=" " type="text" />
+      <FloatLabelInput name="education" label="Education" placeholder=" " type="text" />
       <Textarea id="cv-description" v-model="description" label="Description" />
 
       <div class="cv-form__actions">
@@ -44,8 +44,6 @@ const { handleSubmit, resetForm, meta, isSubmitting } = useForm<CvForm>({
   validationSchema: toTypedSchema(cvSchema),
 });
 
-const { value: name } = useField<string>('name');
-const { value: education } = useField<string>('education');
 const { value: description } = useField<string>('description');
 
 watch(
