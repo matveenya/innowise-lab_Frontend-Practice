@@ -1,6 +1,6 @@
 <template>
   <Teleport to="body">
-    <div v-if="isVisible" class="modal-overlay" @click.self="closeModal">
+    <div v-if="isVisible" class="modal-overlay" v-bind="$attrs" @click.self="closeModal">
       <div class="modal">
         <header v-if="$slots.header" class="modal__header">
           <slot name="header" />
@@ -20,13 +20,14 @@
 </template>
 
 <script setup lang="ts">
-defineProps<{
-  isVisible: boolean;
-}>();
-const emit = defineEmits(['update:isVisible']);
+defineOptions({
+  inheritAttrs: false,
+});
+
+const isVisible = defineModel<boolean>('isVisible', { required: true });
 
 const closeModal = () => {
-  emit('update:isVisible', false);
+  isVisible.value = false;
 };
 </script>
 
@@ -47,7 +48,7 @@ const closeModal = () => {
     box-shadow: $shadow-md;
     @include d-flex(flex-start, stretch, column);
     overflow: auto;
-    height: 100%;
+    max-height: 100%;
 
     &__header {
       @include d-flex(space-between, center);

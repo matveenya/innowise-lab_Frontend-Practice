@@ -1,5 +1,5 @@
 <template>
-  <ModalsBaseModal :is-visible="isVisible" @update:is-visible="emit('update:isVisible', $event)">
+  <ModalsBaseModal v-model:is-visible="isVisible">
     <template #header>
       <h3 class="modal__title">Create CV</h3>
     </template>
@@ -25,8 +25,8 @@ import { createCv as createCvService } from '~/services/cvs';
 import { useToast } from 'primevue/usetoast';
 import Button from '../ui/Button.vue';
 
-defineProps<{ isVisible: boolean }>();
-const emit = defineEmits(['update:isVisible', 'cv-created']);
+const isVisible = defineModel<boolean>('isVisible', { required: true });
+const emit = defineEmits(['cv-created']);
 
 const authStore = useAuthStore();
 const toast = useToast();
@@ -40,7 +40,7 @@ const isFormValid = computed(() => {
 });
 
 const closeModal = () => {
-  emit('update:isVisible', false);
+  isVisible.value = false;
   name.value = '';
   education.value = '';
   description.value = '';

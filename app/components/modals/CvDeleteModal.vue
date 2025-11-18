@@ -1,5 +1,5 @@
 <template>
-  <ModalsBaseModal :is-visible="isVisible" @update:is-visible="emit('update:isVisible', $event)">
+  <ModalsBaseModal v-model:is-visible="isVisible">
     <template #header>
       <h3 class="modal-title">Delete CV</h3>
     </template>
@@ -25,16 +25,16 @@ import { useToast } from 'primevue/usetoast';
 import Button from '../ui/Button.vue';
 
 const props = defineProps<{
-  isVisible: boolean;
   cvId?: string;
   cvName?: string;
 }>();
 
-const emit = defineEmits(['update:isVisible', 'cv-deleted']);
+const isVisible = defineModel<boolean>('isVisible', { required: true });
+const emit = defineEmits(['cv-deleted']);
 const toast = useToast();
 
 const closeModal = () => {
-  emit('update:isVisible', false);
+  isVisible.value = false;
 };
 
 const handleDelete = async () => {

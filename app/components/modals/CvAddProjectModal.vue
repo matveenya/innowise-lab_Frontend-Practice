@@ -1,5 +1,5 @@
 <template>
-  <ModalsBaseModal :is-visible="isVisible" @update:is-visible="emit('update:isVisible', $event)">
+  <ModalsBaseModal v-model:is-visible="isVisible" class="cv-add-project-modal">
     <template #header>
       <h3 class="modal-title">Add project</h3>
     </template>
@@ -62,11 +62,8 @@ import Button from '~/components/ui/Button.vue';
 import Select from '~/components/ui/Select.vue';
 import Textarea from '~/components/ui/Textarea.vue';
 
-defineProps<{
-  isVisible: boolean;
-}>();
-
-const emit = defineEmits(['update:isVisible', 'create']);
+const isVisible = defineModel<boolean>('isVisible', { required: true });
+const emit = defineEmits(['create']);
 
 const form = reactive({
   projectId: null as string | null,
@@ -95,7 +92,7 @@ const isFormValid = computed(() => {
 });
 
 const closeModal = () => {
-  emit('update:isVisible', false);
+  isVisible.value = false;
   resetForm();
 };
 
@@ -118,14 +115,16 @@ const handleCreate = () => {
 </script>
 
 <style lang="scss">
-.modal {
-  width: $modal-width * 1.5 !important;
+.cv-add-project-modal {
+  .modal {
+    width: $modal-width * 1.5 !important;
 
-  &-title {
-    font-size: $font-size-xl;
-    font-weight: $font-weight-bold;
-    color: $color-text-primary;
-    margin: 0;
+    &-title {
+      font-size: $font-size-xl;
+      font-weight: $font-weight-bold;
+      color: $color-text-primary;
+      margin: 0;
+    }
   }
 }
 
