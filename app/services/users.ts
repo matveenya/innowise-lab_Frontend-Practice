@@ -1,4 +1,5 @@
-import { apolloQuery } from '~/utils/apollo';
+import type { FetchPolicy } from '@apollo/client';
+import { apolloQuery, apolloMutation } from '~/utils/apollo';
 import {
   GET_USER_BY_ID,
   GET_USER_PROFILE,
@@ -6,14 +7,27 @@ import {
   GET_DEPARTMENTS,
   GET_POSITIONS,
 } from '~/graphql/queries';
+import {
+  UPDATE_USER_MUTATION,
+  UPLOAD_AVATAR_MUTATION,
+  UPDATE_PROFILE_MUTATION,
+  DELETE_AVATAR_MUTATION,
+} from '~/graphql/mutations';
 import type {
   GetUserByIdResult,
   GetUserProfileResult,
   GetUsersResult,
   GetDepartmentsResult,
   GetPositionsResult,
+  UpdateUserResult,
+  UpdateUserArgs,
+  UploadAvatarResult,
+  UploadAvatarArgs,
+  UpdateProfileResult,
+  UpdateProfileArgs,
+  DeleteAvatarResult,
+  DeleteAvatarArgs,
 } from '~/graphql/types';
-import type { FetchPolicy } from '@apollo/client';
 
 export async function getUsers() {
   const result = await apolloQuery<GetUsersResult>(GET_USERS, {});
@@ -55,4 +69,37 @@ export async function getPositions(fetchPolicy?: FetchPolicy) {
   const result = await apolloQuery<GetPositionsResult>(GET_POSITIONS, {}, fetchPolicy);
 
   return result.positions;
+}
+
+export async function updateUser(args: UpdateUserArgs) {
+  const result = await apolloMutation<UpdateUserResult, UpdateUserArgs>(UPDATE_USER_MUTATION, args);
+
+  return result.updateUser;
+}
+
+export async function uploadAvatar(args: UploadAvatarArgs) {
+  const result = await apolloMutation<UploadAvatarResult, UploadAvatarArgs>(
+    UPLOAD_AVATAR_MUTATION,
+    args
+  );
+
+  return result.uploadAvatar;
+}
+
+export async function deleteAvatar(args: DeleteAvatarArgs) {
+  const result = await apolloMutation<DeleteAvatarResult, DeleteAvatarArgs>(
+    DELETE_AVATAR_MUTATION,
+    args
+  );
+
+  return result.deleteAvatar;
+}
+
+export async function updateProfile(args: UpdateProfileArgs) {
+  const result = await apolloMutation<UpdateProfileResult, UpdateProfileArgs>(
+    UPDATE_PROFILE_MUTATION,
+    args
+  );
+
+  return result.updateProfile;
 }

@@ -13,7 +13,7 @@
 </template>
 
 <script setup lang="ts">
-const model = defineModel<string | number>({ required: true });
+const model = defineModel<string | number | null>({ required: true });
 
 withDefaults(
   defineProps<{

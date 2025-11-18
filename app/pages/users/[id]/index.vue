@@ -77,7 +77,7 @@
         type="submit"
         variant="primary"
         class="user-profile__button"
-        :disabled="!meta.dirty || isSubmitting"
+        :disabled="(!meta.dirty && !selectedFile) || !meta.valid || isSubmitting"
         >Update</Button
       >
     </form>
@@ -89,15 +89,26 @@
 import { useForm, useField } from 'vee-validate';
 import { toTypedSchema } from '@vee-validate/zod';
 import { useToast } from 'primevue/usetoast';
-import { getUserById, getUserProfile, getDepartments, getPositions } from '~/services/users';
+import {
+  getUserById,
+  getUserProfile,
+  getDepartments,
+  getPositions,
+  updateUser,
+  updateProfile,
+  uploadAvatar,
+  deleteAvatar,
+} from '~/services/users';
 import { createQueryAdapter } from '~/utils/apolloAdapters';
 import { formatDate } from '~/utils/dateUtils';
+import { fileToBase64, validateFileSize, validateFileType } from '~/utils/fileUtils';
 import { useAuthStore } from '~/stores/auth';
 import Select from '~/components/ui/Select.vue';
 import Button from '~/components/ui/Button.vue';
 import AppToast from '~/components/ui/AppToast.vue';
 import { userProfileSchema } from '~/utils/schemas/userValidationSchema';
 import type { UserProfileForm } from '~/utils/schemas/userValidationSchema';
+import { MAX_AVATAR_SIZE, ALLOWED_AVATAR_TYPES } from '~/constants/users';
 
 definePageMeta({
   layout: 'user-profile',
@@ -115,8 +126,10 @@ const { data: user } = createQueryAdapter(getUserById, {
 const { data: profile } = createQueryAdapter(getUserProfile, {
   variables: { id: userId },
 });
+
 const { data: departments } = createQueryAdapter(getDepartments);
 const { data: positions } = createQueryAdapter(getPositions);
+const refetchUserInLayout = inject<(() => Promise<unknown>) | null>('refetchUserInLayout', null);
 
 const { handleSubmit, meta, resetForm, isSubmitting } = useForm<UserProfileForm>({
   validationSchema: toTypedSchema(userProfileSchema),
@@ -167,17 +180,52 @@ const memberSince = computed(() => {
 
 const onSubmit = handleSubmit(async values => {
   try {
-    const formData = new FormData();
+    await Promise.all([
+      updateProfile({
+        profile: {
+          userId,
+          first_name: values.firstName?.trim() || '',
+          last_name: values.lastName?.trim() || '',
+        },
+      }),
+      updateUser({
+        user: {
+          userId,
+          departmentId: values.departmentId || '',
+          positionId: values.positionId || '',
+        },
+      }),
+    ]);
 
-    Object.entries(values).forEach(([key, value]) => {
-      if (value !== undefined) {
-        const val = value === null ? '' : value;
-        formData.append(key, val);
-      }
-    });
+    if (refetchUserInLayout) {
+      await refetchUserInLayout();
+    }
 
     if (selectedFile.value) {
-      formData.append('avatar', selectedFile.value);
+      const file = selectedFile.value;
+      const base64 = await fileToBase64(file);
+      const avatarUrl = await uploadAvatar({
+        avatar: {
+          userId,
+          base64,
+          size: file.size,
+          type: file.type,
+        },
+      });
+
+      if (avatarPreview.value && avatarPreview.value.startsWith('blob:')) {
+        URL.revokeObjectURL(avatarPreview.value);
+      }
+      avatarPreview.value = avatarUrl;
+
+      if (profile.value) {
+        profile.value.avatar = avatarUrl;
+      }
+
+      selectedFile.value = null;
+      if (fileInput.value) {
+        fileInput.value.value = '';
+      }
     }
 
     toast.add({
@@ -186,7 +234,8 @@ const onSubmit = handleSubmit(async values => {
       life: 3000,
     });
     resetForm({ values });
-  } catch {
+  } catch (error) {
+    console.error('Profile update failed:', error);
     toast.add({
       severity: 'error',
       summary: 'Failed to update profile',
@@ -215,8 +264,7 @@ const handleFileSelect = (event: Event) => {
 
   if (!file) return;
 
-  const maxSize = 0.5 * 1024 * 1024;
-  if (file.size > maxSize) {
+  if (!validateFileSize(file, MAX_AVATAR_SIZE)) {
     toast.add({
       severity: 'error',
       summary: 'File size exceeds 0.5MB',
@@ -225,10 +273,10 @@ const handleFileSelect = (event: Event) => {
     return;
   }
 
-  if (!['image/jpeg', 'image/jpg', 'image/png', 'image/gif'].includes(file.type)) {
+  if (!validateFileType(file, ALLOWED_AVATAR_TYPES)) {
     toast.add({
       severity: 'error',
-      summary: 'Please select a PNG, JPG or GIF image',
+      summary: `Please select a ${ALLOWED_AVATAR_TYPES.join(', ')} image`,
       life: 3000,
     });
     return;
@@ -242,14 +290,38 @@ const handleFileSelect = (event: Event) => {
   avatarPreview.value = URL.createObjectURL(file);
 };
 
-const removeAvatar = () => {
-  if (avatarPreview.value && avatarPreview.value.startsWith('blob:')) {
-    URL.revokeObjectURL(avatarPreview.value);
+const removeAvatar = async () => {
+  if (selectedFile.value) {
+    if (avatarPreview.value && avatarPreview.value.startsWith('blob:')) {
+      URL.revokeObjectURL(avatarPreview.value);
+    }
+    avatarPreview.value = '';
+    selectedFile.value = null;
+    if (fileInput.value) {
+      fileInput.value.value = '';
+    }
+    return;
   }
-  avatarPreview.value = '';
-  selectedFile.value = null;
-  if (fileInput.value) {
-    fileInput.value.value = '';
+  try {
+    await deleteAvatar({ avatar: { userId } });
+
+    avatarPreview.value = '';
+    if (profile.value) {
+      profile.value.avatar = null;
+    }
+
+    toast.add({
+      severity: 'success',
+      summary: 'Avatar was removed',
+      life: 3000,
+    });
+  } catch (error) {
+    console.error('Failed to remove avatar:', error);
+    toast.add({
+      severity: 'error',
+      summary: 'Failed to remove avatar. Please contact support.',
+      life: 3000,
+    });
   }
 };
 

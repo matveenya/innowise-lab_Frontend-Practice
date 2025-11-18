@@ -20,9 +20,11 @@ import { createQueryAdapter } from '~/utils/apolloAdapters';
 const route = useRoute();
 const userId = route.params.id as string;
 
-const { data: user } = createQueryAdapter(getUserById, {
+const { data: user, refetch: refetchUser } = createQueryAdapter(getUserById, {
   variables: { id: userId },
 });
+
+provide('refetchUserInLayout', refetchUser);
 
 const userName = computed(() => {
   if (user.value?.profile.first_name && user.value?.profile.last_name) {
