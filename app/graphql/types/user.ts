@@ -61,4 +61,4 @@ export type DeleteAvatarArgs = {
   avatar: DeleteAvatarInput;
 };
 
-export type { User };
+export type { User, UpdateUserInput, Department, Position };

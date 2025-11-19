@@ -87,6 +87,10 @@ const placeholder = ' ';
     &:not(:focus):not(:placeholder-shown) + .floating-label {
       color: $color-text-secondary;
     }
+
+    &:disabled {
+      color: rgba($color-text-primary, $opacity-50);
+    }
   }
 }
 :deep(.floating-label-field:-webkit-autofill),
