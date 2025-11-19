@@ -2,6 +2,7 @@
   <div class="floating-label-group">
     <input
       :id="id"
+      ref="inputRef"
       v-model="model"
       :type="type"
       :placeholder="placeholder"
@@ -27,6 +28,16 @@ withDefaults(
     disabled: false,
   }
 );
+
+const inputRef = ref<HTMLInputElement | null>(null);
+
+const focus = () => {
+  inputRef.value?.focus();
+};
+
+defineExpose({
+  focus,
+});
 
 const placeholder = ' ';
 </script>

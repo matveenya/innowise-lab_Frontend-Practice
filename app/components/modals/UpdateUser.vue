@@ -6,7 +6,7 @@
 
     <template #body>
       <form class="update-user-form" @submit.prevent="onSubmit">
-        <Input id="firstName" v-model="firstName" label="First Name" />
+        <Input id="firstName" ref="firstNameInput" v-model="firstName" label="First Name" />
         <Input id="lastName" v-model="lastName" label="Last Name" />
         <Select
           id="department"
@@ -74,6 +74,8 @@ const { value: departmentId } = useField<string | null>('departmentId');
 const { value: positionId } = useField<string | null>('positionId');
 const { value: role } = useField<string>('role');
 
+const firstNameInput = ref<{ focus: () => void } | null>(null);
+
 const open = async (user: User) => {
   currentUser.value = user;
 
@@ -92,6 +94,10 @@ const open = async (user: User) => {
     });
 
     isVisible.value = true;
+
+    await nextTick();
+
+    firstNameInput.value?.focus();
   } catch (error) {
     console.error('Failed to load dependencies for user update', error);
   }

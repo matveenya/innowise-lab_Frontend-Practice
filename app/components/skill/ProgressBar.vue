@@ -7,8 +7,8 @@
 
 <script setup lang="ts">
 import ProgressBar from 'primevue/progressbar';
-
-type SkillLevel = 'novice' | 'advanced' | 'competent' | 'proficient' | 'expert';
+import type { SkillLevel } from '~/graphql/types/skill';
+import { SKILL_LEVEL_SETTINGS } from '~/constants/skills';
 
 const props = defineProps({
   level: {
@@ -17,20 +17,12 @@ const props = defineProps({
   },
   skillLabel: {
     type: String,
-    default: 'Python',
+    default: 'Vue',
   },
 });
-// TODO: move to constants
-const LEVEL_SETTINGS: Record<SkillLevel, number> = {
-  novice: 20,
-  advanced: 40,
-  competent: 60,
-  proficient: 80,
-  expert: 100,
-};
 
 const currentPercentage = computed(() => {
-  return LEVEL_SETTINGS[props.level as SkillLevel] || LEVEL_SETTINGS.novice;
+  return SKILL_LEVEL_SETTINGS[props.level as SkillLevel] || SKILL_LEVEL_SETTINGS.novice;
 });
 
 const skillPT = {
@@ -41,7 +33,6 @@ const skillPT = {
 
 <style scoped lang="scss">
 .skill-container {
-  // min-width: 220px;
   height: $space-5xl;
   @include d-flex(center, center);
   padding: $space-sm $space-xl;
@@ -67,39 +58,39 @@ const skillPT = {
   height: 100%;
 }
 
-:deep(.type-novice) {
-  background-color: $color-novice-max;
+$skill-colors: (
+  novice: (
+    $color-novice-max,
+    $color-novice,
+  ),
+  advanced: (
+    $color-advanced-max,
+    $color-advanced,
+  ),
+  competent: (
+    $color-competent-max,
+    $color-competent,
+  ),
+  proficient: (
+    $color-proficient-max,
+    $color-proficient,
+  ),
+  expert: (
+    $color-expert,
+    $color-expert,
+  ),
+);
 
-  .skill-bar-value {
-    background-color: $color-novice;
-  }
-}
-:deep(.type-advanced) {
-  background-color: $color-advanced-max;
+@each $name, $pair in $skill-colors {
+  $bg-max: nth($pair, 1);
+  $bg-value: nth($pair, 2);
 
-  .skill-bar-value {
-    background-color: $color-advanced;
-  }
-}
-:deep(.type-competent) {
-  background-color: $color-competent-max;
+  :deep(.type-#{$name}) {
+    background-color: $bg-max;
 
-  .skill-bar-value {
-    background-color: $color-competent;
-  }
-}
-:deep(.type-proficient) {
-  background-color: $color-proficient-max;
-
-  .skill-bar-value {
-    background-color: $color-proficient;
-  }
-}
-:deep(.type-expert) {
-  background-color: $color-expert;
-
-  .skill-bar-value {
-    background-color: $color-expert;
+    .skill-bar-value {
+      background-color: $bg-value;
+    }
   }
 }
 </style>

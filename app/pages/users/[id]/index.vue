@@ -52,7 +52,13 @@
       <p class="user-profile__member-since">A member since {{ memberSince }}</p>
     </div>
     <form class="user-profile__details" @submit.prevent="onSubmit">
-      <Input id="first-name" v-model="firstName" label="First Name" :disabled="!isMyProfile" />
+      <Input
+        id="first-name"
+        ref="firstNameInput"
+        v-model="firstName"
+        label="First Name"
+        :disabled="!isMyProfile"
+      />
       <Input id="last-name" v-model="lastName" label="Last Name" :disabled="!isMyProfile" />
       <Select
         id="department"
@@ -128,10 +134,6 @@ const { data: profile } = createQueryAdapter(getUserProfile, {
 
 const referencesStore = useReferencesStore();
 const refetchUserInLayout = inject<(() => Promise<unknown>) | null>('refetchUserInLayout', null);
-
-onMounted(async () => {
-  await referencesStore.loadReferences();
-});
 
 const { handleSubmit, meta, resetForm, isSubmitting } = useForm<UserProfileForm>({
   validationSchema: toTypedSchema(userProfileSchema),
@@ -326,6 +328,17 @@ const removeAvatar = async () => {
     });
   }
 };
+
+const firstNameInput = ref<{ focus: () => void } | null>(null);
+onMounted(async () => {
+  await referencesStore.loadReferences();
+
+  if (isMyProfile.value) {
+    nextTick(() => {
+      firstNameInput.value?.focus();
+    });
+  }
+});
 
 onUnmounted(() => {
   if (avatarPreview.value && avatarPreview.value.startsWith('blob:')) {
