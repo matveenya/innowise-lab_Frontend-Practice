@@ -41,13 +41,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
-import { getCvs as getCvsService } from '~/services/cvs';
-import { createQueryAdapter } from '~/utils/apolloAdapters';
+import { ref } from 'vue';
 import type { Cv } from 'cv-graphql';
 import CvsActionMenu from '~/components/cvs/ActionMenu.vue';
 import Button from '~/components/ui/Button.vue';
 import { CVS_TABLE_COLUMNS } from '~/constants/cvs';
+import { useCvs } from '~/composables/useCvs';
 
 definePageMeta({
   middleware: 'auth',
@@ -55,22 +54,12 @@ definePageMeta({
 
 const isDialogVisible = ref(false);
 const isDeleteModalVisible = ref(false);
-const searchTerm = ref('');
 const selectedCv = ref<Cv | null>(null);
 const actionsMenu = ref<InstanceType<typeof CvsActionMenu> | null>(null);
 
-const { data: cvs, refetch: refetchCvs } = createQueryAdapter(getCvsService);
+const { filteredCvs, searchTerm, refetch: refetchCvs } = useCvs();
 
 const columns = CVS_TABLE_COLUMNS;
-
-const filteredCvs = computed<Cv[] | null>(() => {
-  if (!cvs.value) return null;
-
-  const term = searchTerm.value.trim().toLowerCase();
-  if (!term) return cvs.value;
-
-  return cvs.value.filter(cv => cv.name.toLowerCase().includes(term));
-});
 
 const handleOpenMenu = (event: Event, cv: Cv) => {
   selectedCv.value = cv;

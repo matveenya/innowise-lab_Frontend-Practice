@@ -27,36 +27,30 @@ import Textarea from '~/components/ui/Textarea.vue';
 import { useForm } from 'vee-validate';
 import { toTypedSchema } from '@vee-validate/zod';
 import { cvSchema, type CvForm } from '~/utils/schemas/cvValidationSchema';
-import { getCvs, updateCv } from '~/services/cvs';
-import { createQueryAdapter } from '~/utils/apolloAdapters';
+import { updateCv } from '~/services/cvs';
 import { useToast } from 'primevue/usetoast';
+import { useCv } from '~/composables/useCv';
 
 definePageMeta({
   layout: 'cv-details',
 });
 
-const route = useRoute();
 const toast = useToast();
-
-const { data: cvs } = createQueryAdapter(getCvs);
+const { cv, cvId } = useCv();
 
 const { handleSubmit, resetForm, meta, isSubmitting } = useForm<CvForm>({
   validationSchema: toTypedSchema(cvSchema),
 });
 
 watch(
-  [cvs, () => route.query.id],
-  ([newCvs, cvId]) => {
-    if (!newCvs || !cvId) return;
-
-    const foundCv = newCvs.find(cv => cv.id === cvId);
-
-    if (foundCv) {
+  cv,
+  newCv => {
+    if (newCv) {
       resetForm({
         values: {
-          name: foundCv.name || '',
-          education: foundCv.education || '',
-          description: foundCv.description || '',
+          name: newCv.name || '',
+          education: newCv.education || '',
+          description: newCv.description || '',
         },
       });
     }
@@ -65,12 +59,11 @@ watch(
 );
 
 const handleUpdate = handleSubmit(async values => {
-  const cvId = route.query.id?.toString();
-  if (!cvId) return;
+  if (!cvId.value) return;
 
   try {
     await updateCv({
-      cvId,
+      cvId: cvId.value,
       name: values.name,
       education: values.education || undefined,
       description: values.description || '',

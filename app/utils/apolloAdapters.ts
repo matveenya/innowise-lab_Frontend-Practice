@@ -24,7 +24,7 @@ type QueryAdapter<TResult, TVariables> = {
 };
 
 type QueryOptions<TVariables> = {
-  variables?: TVariables | undefined;
+  variables?: TVariables | Ref<TVariables> | ComputedRef<TVariables> | undefined;
 };
 
 export function createQueryAdapter<TResult, TVariables>(

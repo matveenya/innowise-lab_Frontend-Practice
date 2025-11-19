@@ -56,27 +56,21 @@
 
 <script setup lang="ts">
 import Button from '~/components/ui/Button.vue';
-import { useRoute } from 'vue-router';
-import { getCvById, addCvProject } from '~/services/cvs';
-import { createQueryAdapter } from '~/utils/apolloAdapters';
+import { addCvProject } from '~/services/cvs';
 import { formatDateNumeric } from '~/utils/dateUtils';
 import { ref, computed } from 'vue';
-import type { Cv, CvProject } from 'cv-graphql';
+import type { CvProject } from 'cv-graphql';
 import { PROJECTS_TABLE_COLUMNS } from '~/constants/projects';
+import { useCv } from '~/composables/useCv';
 
 definePageMeta({
   layout: 'cv-details',
 });
 
-const route = useRoute();
-const cvId = route.query.id as string;
+const { cv, cvId, refetch } = useCv();
 
 const searchTerm = ref('');
 const isAddModalVisible = ref(false);
-
-const { data: cv, refetch } = createQueryAdapter<Cv, { cvId: string }>(getCvById, {
-  variables: { cvId },
-});
 
 const filteredProjects = computed<CvProject[]>(() => {
   if (!cv.value?.projects) return [];
@@ -103,7 +97,7 @@ const handleProjectAdded = async (formData: ProjectFormData) => {
     const endDateISO = formData.endDate ? new Date(formData.endDate).toISOString() : null;
 
     await addCvProject({
-      cvId,
+      cvId: cvId.value,
       projectId: formData.projectId,
       start_date: startDateISO,
       end_date: endDateISO,
