@@ -47,7 +47,7 @@ import { createQueryAdapter } from '~/utils/apolloAdapters';
 import type { Cv } from 'cv-graphql';
 import CvsActionMenu from '~/components/cvs/ActionMenu.vue';
 import Button from '~/components/ui/Button.vue';
-import type { ColumnDef } from '~/components/cvs/Table.vue';
+import { CVS_TABLE_COLUMNS } from '~/constants/cvs';
 
 definePageMeta({
   middleware: 'auth',
@@ -61,25 +61,7 @@ const actionsMenu = ref<InstanceType<typeof CvsActionMenu> | null>(null);
 
 const { data: cvs, refetch: refetchCvs } = createQueryAdapter(getCvsService);
 
-const columns: ColumnDef<Cv>[] = [
-  {
-    field: 'name',
-    header: 'Name',
-    sortable: true,
-    style: 'width: 35%',
-    bodyClass: 'cv-row__cell cv-row__cell--name',
-  },
-  {
-    field: 'education',
-    header: 'Education',
-    sortable: true,
-  },
-  {
-    field: 'user.email',
-    header: 'Employee',
-    sortable: true,
-  },
-];
+const columns = CVS_TABLE_COLUMNS;
 
 const filteredCvs = computed<Cv[] | null>(() => {
   if (!cvs.value) return null;

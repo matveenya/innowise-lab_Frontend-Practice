@@ -62,7 +62,7 @@ import { createQueryAdapter } from '~/utils/apolloAdapters';
 import { formatDateNumeric } from '~/utils/dateUtils';
 import { ref, computed } from 'vue';
 import type { Cv, CvProject } from 'cv-graphql';
-import type { ColumnDef } from '~/components/cvs/Table.vue';
+import { PROJECTS_TABLE_COLUMNS } from '~/constants/projects';
 
 definePageMeta({
   layout: 'cv-details',
@@ -86,24 +86,7 @@ const filteredProjects = computed<CvProject[]>(() => {
   return cv.value.projects.filter((p: CvProject) => p.name && p.name.toLowerCase().includes(term));
 });
 
-const columns: ColumnDef<CvProject>[] = [
-  { field: 'name', header: 'Name', sortable: true, slotName: 'name', style: 'width: 30%' },
-  { field: 'domain', header: 'Domain', sortable: true, style: 'width: 20%' },
-  {
-    field: 'start_date',
-    header: 'Start Date',
-    sortable: true,
-    slotName: 'date',
-    style: 'width: 20%',
-  },
-  {
-    field: 'end_date',
-    header: 'End Date',
-    sortable: true,
-    slotName: 'date',
-    style: 'width: 20%',
-  },
-];
+const columns = PROJECTS_TABLE_COLUMNS;
 
 interface ProjectFormData {
   projectId: string;
