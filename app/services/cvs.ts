@@ -1,6 +1,7 @@
 import { apolloQuery, apolloMutation } from '~/utils/apollo';
 import { GET_CVS } from '~/graphql/queries';
-import { CREATE_CV, DELETE_CV, UPDATE_CV } from '~/graphql/mutations';
+import { GET_CV_BY_ID } from '~/graphql/queries/cv';
+import { CREATE_CV, DELETE_CV, UPDATE_CV, ADD_CV_PROJECT } from '~/graphql/mutations/cvs';
 import type {
   GetCvsResult,
   CreateCvArgs,
@@ -9,9 +10,11 @@ import type {
   DeleteCvResult,
   UpdateCvResult,
   UpdateCvArgs,
+  AddCvProjectResult,
+  AddCvProjectArgs,
 } from '~/graphql/types';
 import type { FetchPolicy } from '@apollo/client';
-import type { UpdateCvInput } from 'cv-graphql';
+import type { UpdateCvInput, AddCvProjectInput, Cv } from 'cv-graphql';
 
 export async function getCvs(fetchPolicy?: FetchPolicy) {
   const result = await apolloQuery<GetCvsResult>(GET_CVS, {}, fetchPolicy);
@@ -51,4 +54,22 @@ export async function updateCv(cv: UpdateCvInput) {
     }
   );
   return result.updateCv;
+}
+
+export async function addCvProject(project: AddCvProjectInput) {
+  const result = await apolloMutation<AddCvProjectResult, AddCvProjectArgs>(ADD_CV_PROJECT, {
+    project,
+  });
+  return result.addCvProject;
+}
+
+export async function getCvById(args?: { cvId: string }, fetchPolicy?: FetchPolicy) {
+  if (!args?.cvId) throw new Error('CV ID is required');
+
+  const result = await apolloQuery<{ cv: Cv }, { cvId: string }>(
+    GET_CV_BY_ID,
+    { cvId: args.cvId },
+    fetchPolicy
+  );
+  return result.cv;
 }

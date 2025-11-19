@@ -78,5 +78,7 @@ const tabItems = computed<TabItem[]>(() => {
   background-color: $color-primary;
   color: $color-text-primary;
   padding-top: $space-lg;
+  height: 100%;
+  overflow-y: auto;
 }
 </style>

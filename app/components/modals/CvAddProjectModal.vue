@@ -11,9 +11,10 @@
             id="project"
             v-model="form.projectId"
             label="Project"
-            :options="projectOptions"
+            :options="projects || []"
             option-label="name"
             option-value="id"
+            :loading="loading"
           />
           <Input id="domain" v-model="form.domain" label="Domain" />
         </div>
@@ -24,24 +25,22 @@
         </div>
 
         <div class="form-row form-row--full">
-          <Textarea id="description" name="form.description" label="Description" :rows="8" />
+          <Textarea v-model="form.description" name="description" label="Description" :rows="8" />
         </div>
 
         <div class="form-row form-row--full">
-          <Select
-            id="environment"
-            v-model="form.environmentId"
+          <MultiSelect
+            v-model="form.environment"
             label="Environment"
-            :options="environmentOptions"
-            option-label="name"
-            option-value="id"
+            :options="form.environment"
+            :disabled="true"
           />
         </div>
 
         <div class="form-row form-row--full">
           <Textarea
-            id="responsibilities"
-            name="form.responsibilities"
+            v-model="form.responsibilities"
+            name="responsibilities"
             label="Responsibilities"
             :rows="1"
           />
@@ -51,19 +50,27 @@
 
     <template #footer>
       <Button variant="outline" @click="closeModal">CANCEL</Button>
-
       <Button variant="primary" :disabled="!isFormValid" @click="handleCreate"> ADD </Button>
     </template>
   </ModalsBaseModal>
 </template>
 
 <script setup lang="ts">
+import { reactive, computed, watch } from 'vue';
 import Button from '~/components/ui/Button.vue';
 import Select from '~/components/ui/Select.vue';
 import Textarea from '~/components/ui/Textarea.vue';
+import Input from '~/components/ui/Input.vue';
+import DateField from '~/components/ui/DateField.vue';
+import MultiSelect from '~/components/ui/MultiSelect.vue';
+import { getProjects } from '~/services/projects';
+import { createQueryAdapter } from '~/utils/apolloAdapters';
+import type { Project } from 'cv-graphql';
 
 const isVisible = defineModel<boolean>('isVisible', { required: true });
 const emit = defineEmits(['create']);
+
+const { data: projects, loading } = createQueryAdapter(getProjects);
 
 const form = reactive({
   projectId: null as string | null,
@@ -71,25 +78,43 @@ const form = reactive({
   startDate: null as Date | null,
   endDate: null as Date | null,
   description: '',
-  environmentId: null as string | null,
+  environment: [] as string[],
   responsibilities: '',
 });
 
-const projectOptions = [
-  { id: '1', name: 'E-Commerce Platform' },
-  { id: '2', name: 'Internal CRM' },
-  { id: '3', name: 'Mobile Banking App' },
-];
+const parseDate = (value: string | number | null | undefined): Date | null => {
+  if (!value) return null;
+  if (!isNaN(Number(value))) {
+    return new Date(Number(value));
+  }
+  const date = new Date(value);
+  return isNaN(date.getTime()) ? null : date;
+};
 
-const environmentOptions = [
-  { id: 'dev', name: 'Development' },
-  { id: 'staging', name: 'Staging' },
-  { id: 'prod', name: 'Production' },
-];
+watch(
+  () => form.projectId,
+  newId => {
+    if (!newId || !projects.value) return;
 
-const isFormValid = computed(() => {
-  return !!form.projectId;
-});
+    const selectedProject = projects.value.find((p: Project) => p.id === newId);
+
+    if (selectedProject) {
+      form.domain = selectedProject.domain || '';
+      form.description = selectedProject.description || '';
+
+      if (Array.isArray(selectedProject.environment)) {
+        form.environment = [...selectedProject.environment];
+      } else {
+        form.environment = [];
+      }
+
+      form.startDate = parseDate(selectedProject.start_date);
+      form.endDate = parseDate(selectedProject.end_date);
+    }
+  }
+);
+
+const isFormValid = computed(() => !!form.projectId);
 
 const closeModal = () => {
   isVisible.value = false;
@@ -102,14 +127,22 @@ const resetForm = () => {
   form.startDate = null;
   form.endDate = null;
   form.description = '';
-  form.environmentId = null;
+  form.environment = [];
   form.responsibilities = '';
 };
 
 const handleCreate = () => {
   if (!isFormValid.value) return;
 
-  emit('create', { ...form });
+  emit('create', {
+    ...form,
+    startDate: form.startDate,
+    endDate: form.endDate,
+    responsibilities:
+      typeof form.responsibilities === 'string'
+        ? form.responsibilities.split('\n').filter(l => l.trim())
+        : form.responsibilities,
+  });
   closeModal();
 };
 </script>
@@ -120,13 +153,13 @@ const handleCreate = () => {
 
   .modal {
     width: $modal-width * 1.5 !important;
+  }
 
-    &-title {
-      font-size: $font-size-xl;
-      font-weight: $font-weight-bold;
-      color: $color-text-primary;
-      margin: 0;
-    }
+  .modal-title {
+    font-size: $font-size-xl;
+    font-weight: $font-weight-bold;
+    color: $color-text-primary;
+    margin: 0;
   }
 }
 

@@ -1,40 +1,96 @@
 <template>
   <div class="form-group">
-    <Field v-slot="{ field, errorMessage }" :name="name" :validate-on-blur="validateOnBlur">
-      <div class="floating-label-group">
-        <textarea
-          :id="name"
-          class="floating-label-field floating-label-field--textarea"
-          :class="{
-            'is-error': errorMessage,
-            'has-value': !!field.value,
-          }"
-          :rows="rows"
-          :placeholder="placeholder"
-          v-bind="field"
-        ></textarea>
-        <label :for="name" class="floating-label">{{ label }}</label>
-      </div>
-      <ErrorMessage :name="name" class="form-error" />
-    </Field>
+    <div class="floating-label-group">
+      <textarea
+        :id="inputId"
+        class="floating-label-field floating-label-field--textarea"
+        :class="{
+          'is-error': errorMessage,
+          'has-value': !!inputValue,
+        }"
+        :rows="rows"
+        :placeholder="placeholder"
+        :value="inputValue"
+        @input="handleInput"
+        @blur="handleBlur"
+      ></textarea>
+      <label :for="inputId" class="floating-label">{{ label }}</label>
+    </div>
+    <span v-if="errorMessage" class="form-error">{{ errorMessage }}</span>
   </div>
 </template>
 
 <script setup lang="ts">
-withDefaults(
+import { useField } from 'vee-validate';
+import { toRef, watch, ref, type Ref } from 'vue';
+
+const props = withDefaults(
   defineProps<{
-    name: string;
+    name?: string;
     label: string;
     rows?: number;
     placeholder?: string;
     validateOnBlur?: boolean;
+    modelValue?: string;
   }>(),
   {
     rows: 8,
     placeholder: ' ',
     validateOnBlur: true,
+    name: undefined,
+    modelValue: '',
   }
 );
+
+const emit = defineEmits(['update:modelValue']);
+
+const inputId = props.name || `textarea-${Math.random().toString(36).substr(2, 9)}`;
+
+let inputValue;
+let errorMessage;
+let handleBlur;
+let handleChange;
+
+if (props.name) {
+  const nameRef = toRef(props, 'name') as Ref<string>;
+
+  const {
+    value,
+    errorMessage: error,
+    handleBlur: blur,
+    handleChange: change,
+  } = useField(nameRef, undefined, {
+    validateOnValueUpdate: !props.validateOnBlur,
+    initialValue: props.modelValue,
+  });
+
+  inputValue = value;
+  errorMessage = error;
+  handleBlur = blur;
+  handleChange = change;
+
+  watch(
+    () => props.modelValue,
+    newValue => {
+      if (newValue !== undefined) {
+        value.value = newValue;
+      }
+    }
+  );
+} else {
+  inputValue = toRef(props, 'modelValue');
+  errorMessage = ref('');
+  handleBlur = () => {};
+  handleChange = null;
+}
+
+const handleInput = (event: Event) => {
+  if (handleChange) {
+    handleChange(event);
+  }
+  const target = event.target as HTMLTextAreaElement;
+  emit('update:modelValue', target.value);
+};
 </script>
 
 <style lang="scss" scoped>
@@ -46,6 +102,7 @@ withDefaults(
     color: $color-secondary;
     font-size: $font-size-sm;
     margin-top: $space-xs;
+    display: block;
   }
 }
 

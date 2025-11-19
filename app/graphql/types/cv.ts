@@ -33,3 +33,20 @@ export interface UpdateCvArgs {
 export interface UpdateCvResult {
   updateCv: Cv;
 }
+
+export interface AddCvProjectInput {
+  cvId: string;
+  projectId: string;
+  start_date: string;
+  end_date?: string | null;
+  roles: string[];
+  responsibilities: string[];
+}
+
+export interface AddCvProjectArgs {
+  project: AddCvProjectInput;
+}
+
+export interface AddCvProjectResult {
+  addCvProject: Cv;
+}
