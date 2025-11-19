@@ -10,7 +10,18 @@
       </Button>
     </div>
 
-    <CvsTable :cvs="filteredCvs" @open-menu="handleOpenMenu" @reset-search="searchTerm = ''" />
+    <CvsTable
+      :data="filteredCvs"
+      :columns="columns"
+      sort-field="name"
+      @reset-search="searchTerm = ''"
+    >
+      <template #actions="{ data }">
+        <button class="actions-button" @click="event => handleOpenMenu(event, data)">
+          <Icon name="mdi:dots-vertical" size="1.5em" mode="svg" />
+        </button>
+      </template>
+    </CvsTable>
 
     <CvsActionMenu
       ref="actionsMenu"
@@ -30,11 +41,13 @@
 </template>
 
 <script setup lang="ts">
+import { ref, computed } from 'vue';
 import { getCvs as getCvsService } from '~/services/cvs';
 import { createQueryAdapter } from '~/utils/apolloAdapters';
 import type { Cv } from 'cv-graphql';
 import CvsActionMenu from '~/components/cvs/ActionMenu.vue';
 import Button from '~/components/ui/Button.vue';
+import type { ColumnDef } from '~/components/cvs/Table.vue';
 
 definePageMeta({
   middleware: 'auth',
@@ -48,7 +61,27 @@ const actionsMenu = ref<InstanceType<typeof CvsActionMenu> | null>(null);
 
 const { data: cvs, refetch: refetchCvs } = createQueryAdapter(getCvsService);
 
-const filteredCvs = computed(() => {
+const columns: ColumnDef<Cv>[] = [
+  {
+    field: 'name',
+    header: 'Name',
+    sortable: true,
+    style: 'width: 35%',
+    bodyClass: 'cv-row__cell cv-row__cell--name',
+  },
+  {
+    field: 'education',
+    header: 'Education',
+    sortable: true,
+  },
+  {
+    field: 'user.email',
+    header: 'Employee',
+    sortable: true,
+  },
+];
+
+const filteredCvs = computed<Cv[] | null>(() => {
   if (!cvs.value) return null;
 
   const term = searchTerm.value.trim().toLowerCase();
@@ -69,7 +102,7 @@ const handleDetails = () => {
 };
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 .cvs-page {
   padding-left: $space-2xl;
   padding-top: $space-lg;
@@ -93,6 +126,20 @@ const handleDetails = () => {
       padding: $space-lg $space-6xl;
       border-radius: $radius-2xl;
     }
+  }
+}
+
+.actions-button {
+  background: transparent;
+  color: $color-text-secondary;
+  cursor: pointer;
+  border-radius: $radius-full;
+  padding: $space-xs;
+  border: none;
+  display: inline-flex;
+
+  &:hover {
+    background-color: $button-bg-disabled;
   }
 }
 </style>
