@@ -131,7 +131,7 @@ const handleInput = (event: Event) => {
     transition: opacity 0.2s ease;
   }
 
-  &:hover:not(:disabled) {
+  &:hover:not(:disabled):not(:focus) {
     border-color: $color-nav-link;
   }
 
