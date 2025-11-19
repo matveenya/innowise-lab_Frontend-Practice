@@ -12,6 +12,14 @@ export const GET_USERS: TypedDocumentNode<GetUsersResult, Record<string, never>>
     users {
       id
       email
+      department {
+        id
+        name
+      }
+      position {
+        id
+        name
+      }
       profile {
         first_name
         last_name

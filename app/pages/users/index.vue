@@ -44,6 +44,7 @@
           <Menu ref="menu" :model="menuItems" :popup="true" :pt="menuPT" />
         </template>
       </Column>
+      <UpdateUser ref="updateUserModalRef" @update-user="refreshUsers" />
 
       <template v-if="!pending" #empty>
         <NoSearchResult @reset-search="resetSearch" />
@@ -62,6 +63,7 @@ import { refDebounced } from '@vueuse/core';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import Menu from 'primevue/menu';
+import UpdateUser from '~/components/modals/UpdateUser.vue';
 
 definePageMeta({
   middleware: 'auth',
@@ -73,6 +75,7 @@ const searchInput = ref('');
 const searchQuery = refDebounced(searchInput, 300);
 const sortField = ref('department_name');
 const sortOrder = ref(1);
+const updateUserModalRef = ref<InstanceType<typeof UpdateUser> | null>(null);
 const columns = USERS_TABLE_COLUMNS;
 
 const auth = useAuthStore();
@@ -95,7 +98,9 @@ const menuItems = computed(() => {
     {
       label: 'Update user',
       command: () => {
-        alert('Update');
+        if (selectedUser.value) {
+          updateUserModalRef.value?.open(selectedUser.value);
+        }
       },
     },
   ];
@@ -112,7 +117,7 @@ const menuItems = computed(() => {
   return items;
 });
 
-const { users, pending } = await useUsersTable();
+const { users, pending, refresh } = await useUsersTable();
 
 const renderActionIconName = (userData: User): string => {
   return userData.id === currentUserId.value
@@ -132,6 +137,10 @@ const handleIconClick = (event: Event, userData: User) => {
 
 const resetSearch = () => {
   searchInput.value = '';
+};
+
+const refreshUsers = () => {
+  refresh();
 };
 
 const filteredUsers = computed<User[]>(() => {
