@@ -22,10 +22,17 @@
       @blur="isFocused = false"
     >
       <template #value>
-        <span v-if="isEmpty(model)" class="multiselect__value multiselect__value--empty">
-          &nbsp;
-        </span>
-        <span v-else class="multiselect__value">{{ displayValue }}</span>
+        <div v-if="!isEmpty(model)" class="multiselect__chips-container">
+          <span
+            v-for="item in selectedOptions"
+            :key="getOptionLabel(item)"
+            class="multiselect__chip"
+          >
+            {{ getOptionLabel(item) }}
+            <Icon name="material-symbols:cancel" class="multiselect__chip-remove" />
+          </span>
+        </div>
+        <span v-else class="multiselect__value multiselect__value--empty"> &nbsp; </span>
       </template>
 
       <template #dropdownicon>
@@ -138,11 +145,9 @@ const isOptionSelected = (option: TOption): boolean => {
   return model.value.includes(val);
 };
 
-const displayValue = computed(() => {
-  if (!model.value || model.value.length === 0) return '';
-
-  const selectedOptions = props.options.filter(option => isOptionSelected(option));
-  return selectedOptions.map(opt => getOptionLabel(opt)).join(', ');
+const selectedOptions = computed(() => {
+  if (!model.value || model.value.length === 0) return [];
+  return props.options.filter(option => isOptionSelected(option));
 });
 
 const hasValue = computed(() => !isEmpty(model.value));
@@ -187,6 +192,7 @@ const hasValue = computed(() => !isEmpty(model.value));
   &__field {
     position: relative;
     width: 100%;
+    min-height: $space-6xl;
     padding: $space-md $space-4xl $space-md $space-md;
     background-color: $color-primary;
     border: $border-subtle;
@@ -208,7 +214,11 @@ const hasValue = computed(() => !isEmpty(model.value));
 
     &--disabled {
       pointer-events: none;
-      opacity: 0.6;
+      opacity: 1;
+
+      .multiselect__chip {
+        color: $color-text-muted;
+      }
     }
 
     &.p-multiselect,
@@ -230,6 +240,31 @@ const hasValue = computed(() => !isEmpty(model.value));
     .p-multiselect-trigger {
       display: none;
     }
+  }
+
+  &__chips-container {
+    @include d-flex(flex-start, center, row, wrap);
+    gap: $space-xs;
+    width: 100%;
+  }
+
+  &__chip {
+    @include d-flex(center, center);
+    gap: $space-xs;
+    background-color: $color-chip-bg;
+    border: $border-thin-1 $color-chip-border;
+    border-radius: $radius-3xl;
+    padding: $space-2xs $space-md;
+    font-size: $font-size-sm;
+    color: $color-text-primary;
+    white-space: nowrap;
+    line-height: 1.4;
+  }
+
+  &__chip-remove {
+    font-size: $font-size-lg;
+    color: inherit;
+    opacity: 0.7;
   }
 
   &__value {

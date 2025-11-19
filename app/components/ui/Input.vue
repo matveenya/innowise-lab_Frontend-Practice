@@ -87,6 +87,17 @@ const placeholder = ' ';
     &:not(:focus):not(:placeholder-shown) + .floating-label {
       color: $color-text-secondary;
     }
+
+    &:disabled {
+      color: $color-text-muted;
+      -webkit-text-fill-color: $color-text-muted;
+      border-color: $color-border-subtle;
+      cursor: default;
+
+      & + .floating-label {
+        color: $color-text-muted;
+      }
+    }
   }
 }
 :deep(.floating-label-field:-webkit-autofill),

@@ -16,7 +16,7 @@
             option-value="id"
             :loading="loading"
           />
-          <Input id="domain" v-model="form.domain" label="Domain" />
+          <Input id="domain" v-model="form.domain" label="Domain" :disabled="true" />
         </div>
 
         <div class="form-row">
@@ -25,7 +25,13 @@
         </div>
 
         <div class="form-row form-row--full">
-          <Textarea v-model="form.description" name="description" label="Description" :rows="8" />
+          <Textarea
+            v-model="form.description"
+            name="description"
+            label="Description"
+            :rows="8"
+            :disabled="true"
+          />
         </div>
 
         <div class="form-row form-row--full">

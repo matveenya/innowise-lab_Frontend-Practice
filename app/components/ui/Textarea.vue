@@ -11,6 +11,7 @@
         :rows="rows"
         :placeholder="placeholder"
         :value="inputValue"
+        :disabled="disabled"
         @input="handleInput"
         @blur="handleBlur"
       ></textarea>
@@ -32,6 +33,7 @@ const props = withDefaults(
     placeholder?: string;
     validateOnBlur?: boolean;
     modelValue?: string;
+    disabled?: boolean;
   }>(),
   {
     rows: 8,
@@ -39,6 +41,7 @@ const props = withDefaults(
     validateOnBlur: true,
     name: undefined,
     modelValue: '',
+    disabled: false,
   }
 );
 
@@ -128,7 +131,7 @@ const handleInput = (event: Event) => {
     transition: opacity 0.2s ease;
   }
 
-  &:hover {
+  &:hover:not(:disabled) {
     border-color: $color-nav-link;
   }
 
@@ -164,6 +167,11 @@ const handleInput = (event: Event) => {
   &:focus::placeholder,
   &.has-value::placeholder {
     opacity: 1;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: default;
   }
 }
 
