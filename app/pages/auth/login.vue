@@ -12,6 +12,8 @@
         <template #link-text>FORGOT PASSWORD</template>
       </FormAction>
     </form>
+
+    <AppToast />
   </div>
 </template>
 
@@ -19,8 +21,10 @@
 import { authSchema, type AuthSchema } from '~/utils/schemas/authValidationSchema';
 import { useForm } from 'vee-validate';
 import { toTypedSchema } from '@vee-validate/zod';
+import { useToast } from 'primevue/usetoast';
 
 const authStore = useAuthStore();
+const toast = useToast();
 
 definePageMeta({
   layout: 'auth',
@@ -37,6 +41,12 @@ const onSubmit = handleSubmit(async () => {
   });
   if (success) {
     navigateTo('/users');
+  } else {
+    toast.add({
+      severity: 'error',
+      summary: 'Invalid email or password',
+      life: 3000,
+    });
   }
 });
 </script>
