@@ -21,10 +21,10 @@
       <template #date="{ data, field }">
         <template v-if="typeof field === 'string'">
           <template v-if="field === 'end_date'">
-            {{ data.end_date ? formatDate(data.end_date) : 'Till now' }}
+            {{ data.end_date ? formatDateNumeric(data.end_date) : 'Till now' }}
           </template>
           <template v-else>
-            {{ formatDate(data[field as keyof typeof data]) }}
+            {{ formatDateNumeric(data[field as keyof typeof data]) }}
           </template>
         </template>
       </template>
@@ -59,7 +59,7 @@ import Button from '~/components/ui/Button.vue';
 import { useRoute } from 'vue-router';
 import { getCvById, addCvProject } from '~/services/cvs';
 import { createQueryAdapter } from '~/utils/apolloAdapters';
-import { formatDate } from '~/utils/dateUtils';
+import { formatDateNumeric } from '~/utils/dateUtils';
 import { ref, computed } from 'vue';
 import type { Cv, CvProject } from 'cv-graphql';
 import type { ColumnDef } from '~/components/cvs/Table.vue';
@@ -88,9 +88,21 @@ const filteredProjects = computed<CvProject[]>(() => {
 
 const columns: ColumnDef<CvProject>[] = [
   { field: 'name', header: 'Name', sortable: true, slotName: 'name', style: 'width: 30%' },
-  { field: 'domain', header: 'Domain', style: 'width: 20%' },
-  { field: 'start_date', header: 'Start Date', slotName: 'date', style: 'width: 20%' },
-  { field: 'end_date', header: 'End Date', slotName: 'date', style: 'width: 20%' },
+  { field: 'domain', header: 'Domain', sortable: true, style: 'width: 20%' },
+  {
+    field: 'start_date',
+    header: 'Start Date',
+    sortable: true,
+    slotName: 'date',
+    style: 'width: 20%',
+  },
+  {
+    field: 'end_date',
+    header: 'End Date',
+    sortable: true,
+    slotName: 'date',
+    style: 'width: 20%',
+  },
 ];
 
 interface ProjectFormData {

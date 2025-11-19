@@ -11,6 +11,13 @@ const formater = new Intl.DateTimeFormat('en-US', {
   timeZone: 'UTC',
 });
 
+const numericFormater = new Intl.DateTimeFormat('en-US', {
+  day: '2-digit',
+  month: '2-digit',
+  year: 'numeric',
+  timeZone: 'UTC',
+});
+
 export const formatDate = (value: unknown) => {
   if (!value) return '';
 
@@ -27,4 +34,22 @@ export const formatDate = (value: unknown) => {
   }
 
   return formater.format(date);
+};
+
+export const formatDateNumeric = (value: unknown) => {
+  if (!value) return '';
+
+  let date: Date;
+
+  if (!isNaN(Number(value))) {
+    date = new Date(Number(value));
+  } else {
+    date = new Date(String(value));
+  }
+
+  if (isNaN(date.getTime())) {
+    return '';
+  }
+
+  return numericFormater.format(date);
 };
