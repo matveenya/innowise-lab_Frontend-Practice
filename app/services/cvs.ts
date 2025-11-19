@@ -1,7 +1,6 @@
 import { apolloQuery, apolloMutation } from '~/utils/apollo';
-import { GET_CVS } from '~/graphql/queries';
-import { GET_CV_BY_ID } from '~/graphql/queries/cv';
-import { CREATE_CV, DELETE_CV, UPDATE_CV, ADD_CV_PROJECT } from '~/graphql/mutations/cvs';
+import { GET_CVS, GET_CV_BY_ID } from '~/graphql/queries';
+import { CREATE_CV, DELETE_CV, UPDATE_CV, ADD_CV_PROJECT } from '~/graphql/mutations';
 import type {
   GetCvsResult,
   CreateCvArgs,
