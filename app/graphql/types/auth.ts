@@ -3,6 +3,7 @@ import type {
   AuthResult,
   UpdateTokenResult as UpdateTokenResultType,
   ForgotPasswordInput,
+  ResetPasswordInput,
 } from 'cv-graphql';
 
 export type LoginArgs = {
@@ -27,4 +28,12 @@ export type UpdateTokenResult = {
 
 export type ForgotPasswordArgs = {
   auth: ForgotPasswordInput;
+};
+
+export type ResetPasswordArgs = {
+  auth: ResetPasswordInput;
+};
+
+export type ResetPasswordResult = {
+  resetPassword: null;
 };
