@@ -10,8 +10,8 @@
         <template #button-text>RESET PASSWORD</template>
         <template #link-text>CANCEL</template>
       </FormAction>
-      <Toast />
     </form>
+    <AppToast />
   </div>
 </template>
 
@@ -24,6 +24,7 @@ import { useForm } from 'vee-validate';
 import { toTypedSchema } from '@vee-validate/zod';
 import { CombinedGraphQLErrors } from '@apollo/client/errors';
 import { forgotPassword as forgotPasswordService } from '~/services/auth';
+import { useToast } from 'primevue/usetoast';
 
 definePageMeta({
   layout: 'auth',
@@ -33,12 +34,23 @@ const { handleSubmit, setFieldError, resetForm } = useForm<ForgotPasswordSchema>
   validationSchema: toTypedSchema(forgotPasswordSchema),
 });
 
+const toast = useToast();
+
 const onSubmit = handleSubmit(async values => {
   try {
     await forgotPasswordService({ email: values.email });
 
+    toast.add({
+      severity: 'success',
+      summary: 'Check your email inbox',
+      life: 3000,
+    });
+
     resetForm();
-    navigateTo('/auth/login');
+
+    setTimeout(() => {
+      navigateTo('/auth/login');
+    }, 3000);
   } catch (error) {
     if (CombinedGraphQLErrors.is(error)) {
       error.errors.forEach(graphQLError => {

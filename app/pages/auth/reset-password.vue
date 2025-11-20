@@ -67,7 +67,7 @@ const onSubmit = handleSubmit(async values => {
     await resetPasswordService({ newPassword: values.password }, token.value);
 
     toast.add({
-      severity: 'Create a new password',
+      severity: 'success',
       summary: 'Create a new password',
       life: 3000,
     });
