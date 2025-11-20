@@ -16,6 +16,7 @@
         <template #link-text>BACK TO LOG IN</template>
       </FormAction>
     </form>
+    <AppToast />
   </div>
 </template>
 
@@ -26,16 +27,58 @@ import {
 } from '~/utils/schemas/authValidationSchema';
 import { useForm } from 'vee-validate';
 import { toTypedSchema } from '@vee-validate/zod';
+import { resetPassword as resetPasswordService } from '~/services/auth';
+import { useToast } from 'primevue/usetoast';
 
 definePageMeta({
   layout: 'auth',
 });
 
+const route = useRoute();
+const toast = useToast();
+
+const token = computed(() => route.query.token as string);
+
 const { handleSubmit } = useForm<ResetPasswordSchema>({
   validationSchema: toTypedSchema(resetPasswordSchema),
 });
 
-const onSubmit = handleSubmit(() => {});
+onMounted(() => {
+  if (!token.value) {
+    toast.add({
+      severity: 'Error',
+      summary: 'Invalid Link',
+      life: 5000,
+    });
+  }
+});
+
+const onSubmit = handleSubmit(async values => {
+  if (!token.value) {
+    return;
+  }
+
+  try {
+    await resetPasswordService({ auth: { newPassword: values.password } }, token.value);
+
+    toast.add({
+      severity: 'success',
+      summary: 'Create a new password',
+      life: 3000,
+    });
+
+    setTimeout(() => {
+      navigateTo('/auth/login');
+    }, 1500);
+  } catch (error) {
+    console.error('Reset password error:', error);
+    toast.add({
+      severity: 'error',
+      summary: 'Error',
+      life: 3000,
+    });
+  }
+});
 </script>
 
 <style scoped lang="scss">
