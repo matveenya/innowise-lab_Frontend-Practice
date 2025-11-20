@@ -30,6 +30,10 @@ export type ForgotPasswordArgs = {
   auth: ForgotPasswordInput;
 };
 
+export type ForgotPasswordResult = {
+  forgotPassword: null;
+};
+
 export type ResetPasswordArgs = {
   auth: ResetPasswordInput;
 };

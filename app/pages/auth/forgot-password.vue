@@ -38,7 +38,7 @@ const toast = useToast();
 
 const onSubmit = handleSubmit(async values => {
   try {
-    await forgotPasswordService({ email: values.email });
+    await forgotPasswordService({ auth: { email: values.email } });
 
     toast.add({
       severity: 'success',

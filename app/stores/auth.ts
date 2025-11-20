@@ -62,19 +62,14 @@ export const useAuthStore = defineStore('auth', () => {
   restoreUserFromToken();
 
   const login = async (auth: AuthInput) => {
-    try {
-      const data = await loginService({ auth });
+    const data = await loginService({ auth });
 
-      if (data) {
-        setToken(data.access_token, data.refresh_token);
-        setUser(data.user);
-        return true;
-      }
-      return false;
-    } catch (error) {
-      console.error('Login error:', error);
-      return false;
+    if (data) {
+      setToken(data.access_token, data.refresh_token);
+      setUser(data.user);
+      return true;
     }
+    return false;
   };
 
   const signup = async (auth: AuthInput) => {

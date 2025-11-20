@@ -55,16 +55,11 @@ onMounted(() => {
 
 const onSubmit = handleSubmit(async values => {
   if (!token.value) {
-    toast.add({
-      severity: 'Error',
-      summary: 'Error',
-      life: 3000,
-    });
     return;
   }
 
   try {
-    await resetPasswordService({ newPassword: values.password }, token.value);
+    await resetPasswordService({ auth: { newPassword: values.password } }, token.value);
 
     toast.add({
       severity: 'success',

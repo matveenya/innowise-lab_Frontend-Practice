@@ -8,9 +8,10 @@ import type {
   SignupResult,
   UpdateTokenResult,
   ForgotPasswordArgs,
+  ForgotPasswordResult,
   ResetPasswordArgs,
+  ResetPasswordResult,
 } from '~/graphql/types';
-import type { ResetPasswordInput } from 'cv-graphql';
 
 export async function login(args: LoginArgs) {
   const result = await apolloQuery<LoginResult, LoginArgs>(LOGIN, args);
@@ -37,18 +38,14 @@ export async function updateToken(refreshToken: string) {
   return result.updateToken;
 }
 
-export async function forgotPassword(auth: ForgotPasswordArgs['auth']): Promise<void> {
-  await apolloMutation<{ forgotPassword: null }, ForgotPasswordArgs>(FORGOT_PASSWORD, { auth });
+export async function forgotPassword(args: ForgotPasswordArgs): Promise<void> {
+  await apolloMutation<ForgotPasswordResult, ForgotPasswordArgs>(FORGOT_PASSWORD, args);
 }
 
-export async function resetPassword(auth: ResetPasswordInput, token: string) {
-  const result = await apolloMutation<{ resetPassword: null }, ResetPasswordArgs>(
+export async function resetPassword(args: ResetPasswordArgs, token: string) {
+  const result = await apolloMutation<ResetPasswordResult, ResetPasswordArgs>(
     RESET_PASSWORD,
-    {
-      auth: {
-        newPassword: auth.newPassword,
-      },
-    },
+    args,
     {
       context: {
         headers: {

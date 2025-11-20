@@ -26,17 +26,21 @@ definePageMeta({
   layout: 'auth',
 });
 
-const { handleSubmit, values } = useForm<AuthSchema>({
+const { handleSubmit, setFieldError } = useForm<AuthSchema>({
   validationSchema: toTypedSchema(authSchema),
 });
 
-const onSubmit = handleSubmit(async () => {
-  const success = await authStore.login({
-    email: values.email,
-    password: values.password,
-  });
-  if (success) {
+const onSubmit = handleSubmit(async values => {
+  try {
+    await authStore.login({
+      email: values.email,
+      password: values.password,
+    });
+
     navigateTo('/users');
+  } catch (error) {
+    console.error(error);
+    setFieldError('password', 'Incorrect password');
   }
 });
 </script>
