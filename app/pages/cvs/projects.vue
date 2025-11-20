@@ -40,7 +40,6 @@
           <div v-if="data.description" class="project-details__description">
             {{ data.description }}
           </div>
-
           <div v-if="data.responsibilities?.length" class="project-details__chips">
             <span v-for="(resp, i) in data.responsibilities" :key="i" class="chip">
               {{ resp }}
@@ -50,12 +49,12 @@
       </template>
     </CvsTable>
 
-    <ModalsCvAddProjectModal v-model:is-visible="isAddModalVisible" @create="handleProjectAdded" />
+    <ModalsCvAddProjectModal v-model:is-visible="isAddModalVisible" @create="onProjectAdd" />
 
     <ModalsCvUpdateProjectModal
       v-model:is-visible="isUpdateModalVisible"
       :project="selectedProject"
-      @update="handleProjectUpdated"
+      @update="onProjectUpdate"
     />
 
     <CvsActionMenu ref="actionMenuRef" :items="menuItems" />
@@ -67,7 +66,7 @@
       :item-name="selectedProject?.name"
       :item-id="selectedProject?.id"
       :use-default-cv-service="false"
-      @confirm="handleRemoveProject"
+      @confirm="onProjectRemove"
     />
 
     <AppToast />
@@ -75,22 +74,19 @@
 </template>
 
 <script setup lang="ts">
-import Button from '~/components/ui/Button.vue';
-import { addCvProject, removeCvProject, updateCvProject } from '~/services/cvs';
-import { formatDateNumeric } from '~/utils/dateUtils';
 import { ref, computed } from 'vue';
+import Button from '~/components/ui/Button.vue';
+import { formatDateNumeric } from '~/utils/dateUtils';
 import type { CvProject } from 'cv-graphql';
 import { PROJECTS_TABLE_COLUMNS } from '~/constants/projects';
 import { useCv } from '~/composables/useCv';
+import { useCvProjects, type ProjectFormData } from '~/composables/useCvProjects';
 import CvsActionMenu, { type ActionMenuItem } from '~/components/cvs/ActionMenu.vue';
-import { useToast } from 'primevue/usetoast';
 
-definePageMeta({
-  layout: 'cv-details',
-});
+definePageMeta({ layout: 'cv-details' });
 
 const { cv, cvId, refetch } = useCv();
-const toast = useToast();
+const { handleAddProject, handleUpdateProject, handleRemoveProject } = useCvProjects(cvId, refetch);
 
 const searchTerm = ref('');
 const isAddModalVisible = ref(false);
@@ -98,16 +94,14 @@ const isDeleteModalVisible = ref(false);
 const isUpdateModalVisible = ref(false);
 const selectedProject = ref<CvProject | null>(null);
 const actionMenuRef = ref<InstanceType<typeof CvsActionMenu> | null>(null);
+const columns = PROJECTS_TABLE_COLUMNS;
 
 const filteredProjects = computed<CvProject[]>(() => {
   if (!cv.value?.projects) return [];
   const term = searchTerm.value.toLowerCase();
   if (!term) return cv.value.projects;
-
-  return cv.value.projects.filter((p: CvProject) => p.name && p.name.toLowerCase().includes(term));
+  return cv.value.projects.filter((p: CvProject) => p.name?.toLowerCase().includes(term));
 });
-
-const columns = PROJECTS_TABLE_COLUMNS;
 
 const menuItems = computed<ActionMenuItem[]>(() => [
   {
@@ -129,95 +123,18 @@ const openActionMenu = (event: Event, project: CvProject) => {
   actionMenuRef.value?.toggle(event);
 };
 
-interface ProjectFormData {
-  projectId: string;
-  startDate: Date | null;
-  endDate: Date | null;
-  responsibilities: string | string[];
-}
-
-const formatDateToISO = (date: Date): string => {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
+const onProjectAdd = async (data: ProjectFormData) => {
+  await handleAddProject(data);
 };
 
-const handleProjectAdded = async (formData: ProjectFormData) => {
-  try {
-    const startDateISO = formData.startDate
-      ? formatDateToISO(new Date(formData.startDate))
-      : formatDateToISO(new Date());
-
-    const endDateISO = formData.endDate ? formatDateToISO(new Date(formData.endDate)) : null;
-
-    await addCvProject({
-      cvId: cvId.value,
-      projectId: formData.projectId,
-      start_date: startDateISO,
-      end_date: endDateISO,
-      roles: [],
-      responsibilities: formData.responsibilities
-        ? Array.isArray(formData.responsibilities)
-          ? formData.responsibilities
-          : [formData.responsibilities]
-        : [],
-    });
-
-    await refetch();
-    toast.add({ severity: 'success', summary: 'Project added successfully', life: 3000 });
-  } catch (error) {
-    console.error('Failed to add project:', error);
-    toast.add({ severity: 'error', summary: 'Failed to add project', life: 3000 });
-  }
+const onProjectUpdate = async (data: ProjectFormData) => {
+  await handleUpdateProject(data);
 };
 
-const handleProjectUpdated = async (formData: ProjectFormData) => {
-  if (!cvId.value) return;
-
-  try {
-    const startDateISO = formData.startDate
-      ? formatDateToISO(new Date(formData.startDate))
-      : formatDateToISO(new Date());
-
-    const endDateISO = formData.endDate ? formatDateToISO(new Date(formData.endDate)) : null;
-
-    await updateCvProject({
-      cvId: cvId.value,
-      projectId: formData.projectId,
-      start_date: startDateISO,
-      end_date: endDateISO,
-      roles: [],
-      responsibilities: formData.responsibilities
-        ? Array.isArray(formData.responsibilities)
-          ? formData.responsibilities
-          : [formData.responsibilities]
-        : [],
-    });
-
-    await refetch();
-    toast.add({ severity: 'success', summary: 'Project updated successfully', life: 3000 });
-  } catch (error) {
-    console.error('Failed to update project:', error);
-    toast.add({ severity: 'error', summary: 'Failed to update project', life: 3000 });
-  }
-};
-
-const handleRemoveProject = async () => {
-  if (!selectedProject.value?.project?.id || !cvId.value) return;
-
-  try {
-    await removeCvProject({
-      cvId: cvId.value,
-      projectId: selectedProject.value.project.id,
-    });
-
-    await refetch();
-    isDeleteModalVisible.value = false;
-    toast.add({ severity: 'success', summary: 'Project removed successfully', life: 3000 });
-  } catch (error) {
-    console.error('Failed to remove project:', error);
-    toast.add({ severity: 'error', summary: 'Failed to remove project', life: 3000 });
+const onProjectRemove = async () => {
+  if (selectedProject.value?.project?.id) {
+    const success = await handleRemoveProject(selectedProject.value.project.id);
+    if (success) isDeleteModalVisible.value = false;
   }
 };
 </script>

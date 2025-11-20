@@ -1,6 +1,6 @@
 <template>
   <section class="cv-details__content">
-    <form class="cv-form" @submit.prevent="handleUpdate">
+    <form class="cv-form" @submit.prevent="onSubmit">
       <FloatLabelInput name="name" label="Name" placeholder=" " type="text" />
       <FloatLabelInput name="education" label="Education" placeholder=" " type="text" />
       <Textarea name="description" label="Description" />
@@ -16,7 +16,6 @@
         </Button>
       </div>
     </form>
-
     <AppToast />
   </section>
 </template>
@@ -27,16 +26,13 @@ import Textarea from '~/components/ui/Textarea.vue';
 import { useForm } from 'vee-validate';
 import { toTypedSchema } from '@vee-validate/zod';
 import { cvSchema, type CvForm } from '~/utils/schemas/cvValidationSchema';
-import { updateCv } from '~/services/cvs';
-import { useToast } from 'primevue/usetoast';
 import { useCv } from '~/composables/useCv';
+import { useCvDetails } from '~/composables/useCvDetails';
 
-definePageMeta({
-  layout: 'cv-details',
-});
+definePageMeta({ layout: 'cv-details' });
 
-const toast = useToast();
 const { cv, cvId } = useCv();
+const { handleUpdateCv } = useCvDetails(cvId);
 
 const { handleSubmit, resetForm, meta, isSubmitting } = useForm<CvForm>({
   validationSchema: toTypedSchema(cvSchema),
@@ -58,42 +54,23 @@ watch(
   { immediate: true }
 );
 
-const handleUpdate = handleSubmit(async values => {
-  if (!cvId.value) return;
+const onSubmit = handleSubmit(async values => {
+  const success = await handleUpdateCv({
+    name: values.name,
+    education: values.education,
+    description: values.description,
+  });
 
-  try {
-    await updateCv({
-      cvId: cvId.value,
-      name: values.name,
-      education: values.education || undefined,
-      description: values.description || '',
-    });
-
+  if (success) {
     resetForm({ values });
-
-    toast.add({
-      severity: 'success',
-      summary: 'CV was updated',
-      life: 3000,
-    });
-  } catch (error) {
-    console.error('Failed to update CV:', error);
-    toast.add({
-      severity: 'error',
-      summary: 'Failed to update CV',
-      life: 3000,
-    });
   }
 });
 </script>
 
 <style scoped lang="scss">
-.cv-details {
-  &__content {
-    @include container($cv-details-width);
-  }
+.cv-details__content {
+  @include container($cv-details-width);
 }
-
 .cv-form {
   @include d-flex(flex-start, stretch, column);
   gap: $space-3xl;

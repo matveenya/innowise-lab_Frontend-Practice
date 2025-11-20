@@ -53,3 +53,9 @@ export const formatDateNumeric = (value: unknown) => {
 
   return numericFormater.format(date);
 };
+
+export const safeParseDate = (value: string | number | null | undefined): Date | null => {
+  if (!value) return null;
+  const date = new Date(Number(value));
+  return isNaN(date.getTime()) ? new Date(String(value)) : date;
+};

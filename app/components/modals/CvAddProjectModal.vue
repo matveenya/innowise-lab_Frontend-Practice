@@ -71,6 +71,7 @@ import DateField from '~/components/ui/DateField.vue';
 import MultiSelect from '~/components/ui/MultiSelect.vue';
 import { getProjects } from '~/services/projects';
 import { createQueryAdapter } from '~/utils/apolloAdapters';
+import { safeParseDate } from '~/utils/dateUtils';
 import type { Project } from 'cv-graphql';
 
 const isVisible = defineModel<boolean>('isVisible', { required: true });
@@ -87,15 +88,6 @@ const form = reactive({
   environment: [] as string[],
   responsibilities: '',
 });
-
-const parseDate = (value: string | number | null | undefined): Date | null => {
-  if (!value) return null;
-  if (!isNaN(Number(value))) {
-    return new Date(Number(value));
-  }
-  const date = new Date(value);
-  return isNaN(date.getTime()) ? null : date;
-};
 
 watch(
   () => form.projectId,
@@ -114,8 +106,8 @@ watch(
         form.environment = [];
       }
 
-      form.startDate = parseDate(selectedProject.start_date);
-      form.endDate = parseDate(selectedProject.end_date);
+      form.startDate = safeParseDate(selectedProject.start_date);
+      form.endDate = safeParseDate(selectedProject.end_date);
     }
   }
 );

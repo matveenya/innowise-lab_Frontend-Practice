@@ -60,6 +60,7 @@ import Textarea from '~/components/ui/Textarea.vue';
 import Input from '~/components/ui/Input.vue';
 import DateField from '~/components/ui/DateField.vue';
 import MultiSelect from '~/components/ui/MultiSelect.vue';
+import { safeParseDate } from '~/utils/dateUtils';
 import type { CvProject } from 'cv-graphql';
 
 const props = defineProps<{
@@ -79,12 +80,6 @@ const form = reactive({
   responsibilities: '',
 });
 
-const parseDate = (value: string | number | null | undefined): Date | null => {
-  if (!value) return null;
-  const date = new Date(Number(value));
-  return isNaN(date.getTime()) ? new Date(String(value)) : date;
-};
-
 const getDateTimestamp = (date: Date | null | undefined): number => {
   return date ? date.getTime() : 0;
 };
@@ -92,11 +87,11 @@ const getDateTimestamp = (date: Date | null | undefined): number => {
 const isDirty = computed(() => {
   if (!props.project) return false;
 
-  const originalStart = getDateTimestamp(parseDate(props.project.start_date));
+  const originalStart = getDateTimestamp(safeParseDate(props.project.start_date));
   const currentStart = getDateTimestamp(form.startDate);
   if (originalStart !== currentStart) return true;
 
-  const originalEnd = getDateTimestamp(parseDate(props.project.end_date));
+  const originalEnd = getDateTimestamp(safeParseDate(props.project.end_date));
   const currentEnd = getDateTimestamp(form.endDate);
   if (originalEnd !== currentEnd) return true;
 
@@ -114,8 +109,8 @@ watch(
       form.domain = newProject.domain || '';
       form.description = newProject.description || '';
       form.environment = newProject.environment ? [...newProject.environment] : [];
-      form.startDate = parseDate(newProject.start_date);
-      form.endDate = parseDate(newProject.end_date);
+      form.startDate = safeParseDate(newProject.start_date);
+      form.endDate = safeParseDate(newProject.end_date);
       form.responsibilities = newProject.responsibilities
         ? newProject.responsibilities.join('\n')
         : '';
