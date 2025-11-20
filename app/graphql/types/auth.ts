@@ -28,3 +28,7 @@ export type UpdateTokenResult = {
 export type ForgotPasswordArgs = {
   auth: ForgotPasswordInput;
 };
+
+export type ForgotPasswordResult = {
+  forgotPassword: null;
+};
