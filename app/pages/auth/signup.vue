@@ -12,6 +12,8 @@
         <template #link-text>I HAVE AN ACCOUNT</template>
       </FormAction>
     </form>
+
+    <AppToast />
   </div>
 </template>
 
@@ -19,8 +21,10 @@
 import { authSchema, type AuthSchema } from '~/utils/schemas/authValidationSchema';
 import { useForm } from 'vee-validate';
 import { toTypedSchema } from '@vee-validate/zod';
+import { useToast } from 'primevue/usetoast';
 
 const authStore = useAuthStore();
+const toast = useToast();
 
 definePageMeta({
   layout: 'auth',
@@ -38,6 +42,17 @@ const onSubmit = handleSubmit(async () => {
 
   if (result?.success) {
     navigateTo('/users');
+  } else {
+    const message =
+      result?.error && result.error.toLowerCase().includes('exist')
+        ? 'User with this email already exists'
+        : 'Failed to sign up. Please check your data';
+
+    toast.add({
+      severity: 'error',
+      summary: message,
+      life: 3000,
+    });
   }
 });
 </script>

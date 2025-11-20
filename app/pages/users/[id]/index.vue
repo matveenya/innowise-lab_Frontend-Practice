@@ -58,7 +58,7 @@
         id="department"
         v-model="departmentId"
         label="Department"
-        :options="departments ?? []"
+        :options="referencesStore.departments"
         option-label="name"
         option-value="id"
         :disabled="!isMyProfile"
@@ -67,7 +67,7 @@
         id="position"
         v-model="positionId"
         label="Position"
-        :options="positions ?? []"
+        :options="referencesStore.positions"
         option-label="name"
         option-value="id"
         :disabled="!isMyProfile"
@@ -92,8 +92,6 @@ import { useToast } from 'primevue/usetoast';
 import {
   getUserById,
   getUserProfile,
-  getDepartments,
-  getPositions,
   updateUser,
   updateProfile,
   uploadAvatar,
@@ -103,6 +101,7 @@ import { createQueryAdapter } from '~/utils/apolloAdapters';
 import { formatDate } from '~/utils/dateUtils';
 import { fileToBase64, validateFileSize, validateFileType } from '~/utils/fileUtils';
 import { useAuthStore } from '~/stores/auth';
+import { useReferencesStore } from '~/stores/references';
 import Select from '~/components/ui/Select.vue';
 import Button from '~/components/ui/Button.vue';
 import AppToast from '~/components/ui/AppToast.vue';
@@ -127,9 +126,12 @@ const { data: profile } = createQueryAdapter(getUserProfile, {
   variables: { id: userId },
 });
 
-const { data: departments } = createQueryAdapter(getDepartments);
-const { data: positions } = createQueryAdapter(getPositions);
+const referencesStore = useReferencesStore();
 const refetchUserInLayout = inject<(() => Promise<unknown>) | null>('refetchUserInLayout', null);
+
+onMounted(async () => {
+  await referencesStore.loadReferences();
+});
 
 const { handleSubmit, meta, resetForm, isSubmitting } = useForm<UserProfileForm>({
   validationSchema: toTypedSchema(userProfileSchema),

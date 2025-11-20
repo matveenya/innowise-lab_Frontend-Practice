@@ -196,6 +196,11 @@ const hasValue = computed(() => !isEmpty(displayValue.value));
 
     &--disabled {
       pointer-events: none;
+
+      .select__value,
+      :deep(:is(&__native-label, .p-select-label)) {
+        color: rgba($color-text-primary, $opacity-50);
+      }
     }
 
     &,

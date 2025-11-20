@@ -16,7 +16,12 @@
             option-value="id"
             :loading="loading"
           />
-          <Input id="domain" v-model="form.domain" label="Domain" :disabled="true" />
+          <Input
+            id="domain"
+            :model-value="selectedProject?.domain || ''"
+            label="Domain"
+            :disabled="true"
+          />
         </div>
 
         <div class="form-row">
@@ -26,7 +31,7 @@
 
         <div class="form-row form-row--full">
           <Textarea
-            v-model="form.description"
+            :model-value="selectedProject?.description || ''"
             name="description"
             label="Description"
             :rows="8"
@@ -36,9 +41,9 @@
 
         <div class="form-row form-row--full">
           <MultiSelect
-            v-model="form.environment"
+            :model-value="selectedProject?.environment || []"
             label="Environment"
-            :options="form.environment"
+            :options="selectedProject?.environment || []"
             :disabled="true"
           />
         </div>
@@ -81,36 +86,21 @@ const { data: projects, loading } = createQueryAdapter(getProjects);
 
 const form = reactive({
   projectId: null as string | null,
-  domain: '',
   startDate: null as Date | null,
   endDate: null as Date | null,
-  description: '',
-  environment: [] as string[],
   responsibilities: '',
 });
 
-watch(
-  () => form.projectId,
-  newId => {
-    if (!newId || !projects.value) return;
-
-    const selectedProject = projects.value.find((p: Project) => p.id === newId);
-
-    if (selectedProject) {
-      form.domain = selectedProject.domain || '';
-      form.description = selectedProject.description || '';
-
-      if (Array.isArray(selectedProject.environment)) {
-        form.environment = [...selectedProject.environment];
-      } else {
-        form.environment = [];
-      }
-
-      form.startDate = safeParseDate(selectedProject.start_date);
-      form.endDate = safeParseDate(selectedProject.end_date);
-    }
-  }
+const selectedProject = computed(() =>
+  projects.value?.find((p: Project) => p.id === form.projectId)
 );
+
+watch(selectedProject, newProject => {
+  if (newProject) {
+    form.startDate = safeParseDate(newProject.start_date);
+    form.endDate = safeParseDate(newProject.end_date);
+  }
+});
 
 const isFormValid = computed(() => !!form.projectId);
 
@@ -121,11 +111,8 @@ const closeModal = () => {
 
 const resetForm = () => {
   form.projectId = null;
-  form.domain = '';
   form.startDate = null;
   form.endDate = null;
-  form.description = '';
-  form.environment = [];
   form.responsibilities = '';
 };
 
