@@ -52,6 +52,12 @@
 
     <ModalsCvAddProjectModal v-model:is-visible="isAddModalVisible" @create="handleProjectAdded" />
 
+    <ModalsCvUpdateProjectModal
+      v-model:is-visible="isUpdateModalVisible"
+      :project="selectedProject"
+      @update="handleProjectUpdated"
+    />
+
     <CvsActionMenu ref="actionMenuRef" :items="menuItems" />
 
     <ModalsCvDeleteModal
@@ -70,14 +76,14 @@
 
 <script setup lang="ts">
 import Button from '~/components/ui/Button.vue';
-import { addCvProject, removeCvProject } from '~/services/cvs';
+import { addCvProject, removeCvProject, updateCvProject } from '~/services/cvs';
 import { formatDateNumeric } from '~/utils/dateUtils';
 import { ref, computed } from 'vue';
 import type { CvProject } from 'cv-graphql';
 import { PROJECTS_TABLE_COLUMNS } from '~/constants/projects';
 import { useCv } from '~/composables/useCv';
 import CvsActionMenu, { type ActionMenuItem } from '~/components/cvs/ActionMenu.vue';
-import { useToast } from '#imports';
+import { useToast } from 'primevue/usetoast';
 
 definePageMeta({
   layout: 'cv-details',
@@ -89,6 +95,7 @@ const toast = useToast();
 const searchTerm = ref('');
 const isAddModalVisible = ref(false);
 const isDeleteModalVisible = ref(false);
+const isUpdateModalVisible = ref(false);
 const selectedProject = ref<CvProject | null>(null);
 const actionMenuRef = ref<InstanceType<typeof CvsActionMenu> | null>(null);
 
@@ -105,6 +112,9 @@ const columns = PROJECTS_TABLE_COLUMNS;
 const menuItems = computed<ActionMenuItem[]>(() => [
   {
     label: 'Update project',
+    command: () => {
+      isUpdateModalVisible.value = true;
+    },
   },
   {
     label: 'Remove project',
@@ -126,12 +136,20 @@ interface ProjectFormData {
   responsibilities: string | string[];
 }
 
+const formatDateToISO = (date: Date): string => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
 const handleProjectAdded = async (formData: ProjectFormData) => {
   try {
     const startDateISO = formData.startDate
-      ? new Date(formData.startDate).toISOString()
-      : new Date().toISOString();
-    const endDateISO = formData.endDate ? new Date(formData.endDate).toISOString() : null;
+      ? formatDateToISO(new Date(formData.startDate))
+      : formatDateToISO(new Date());
+
+    const endDateISO = formData.endDate ? formatDateToISO(new Date(formData.endDate)) : null;
 
     await addCvProject({
       cvId: cvId.value,
@@ -147,8 +165,41 @@ const handleProjectAdded = async (formData: ProjectFormData) => {
     });
 
     await refetch();
+    toast.add({ severity: 'success', summary: 'Project added successfully', life: 3000 });
   } catch (error) {
     console.error('Failed to add project:', error);
+    toast.add({ severity: 'error', summary: 'Failed to add project', life: 3000 });
+  }
+};
+
+const handleProjectUpdated = async (formData: ProjectFormData) => {
+  if (!cvId.value) return;
+
+  try {
+    const startDateISO = formData.startDate
+      ? formatDateToISO(new Date(formData.startDate))
+      : formatDateToISO(new Date());
+
+    const endDateISO = formData.endDate ? formatDateToISO(new Date(formData.endDate)) : null;
+
+    await updateCvProject({
+      cvId: cvId.value,
+      projectId: formData.projectId,
+      start_date: startDateISO,
+      end_date: endDateISO,
+      roles: [],
+      responsibilities: formData.responsibilities
+        ? Array.isArray(formData.responsibilities)
+          ? formData.responsibilities
+          : [formData.responsibilities]
+        : [],
+    });
+
+    await refetch();
+    toast.add({ severity: 'success', summary: 'Project updated successfully', life: 3000 });
+  } catch (error) {
+    console.error('Failed to update project:', error);
+    toast.add({ severity: 'error', summary: 'Failed to update project', life: 3000 });
   }
 };
 

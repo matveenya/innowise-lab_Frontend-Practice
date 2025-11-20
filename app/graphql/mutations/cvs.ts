@@ -10,6 +10,8 @@ import type {
   AddCvProjectArgs,
   RemoveCvProjectResult,
   RemoveCvProjectArgs,
+  UpdateCvProjectResult,
+  UpdateCvProjectArgs,
 } from '../types';
 
 export const CREATE_CV: TypedDocumentNode<CreateCvResult, CreateCvArgs> = gql`
@@ -77,6 +79,24 @@ export const ADD_CV_PROJECT: TypedDocumentNode<AddCvProjectResult, AddCvProjectA
 export const REMOVE_CV_PROJECT: TypedDocumentNode<RemoveCvProjectResult, RemoveCvProjectArgs> = gql`
   mutation RemoveCvProject($project: RemoveCvProjectInput!) {
     removeCvProject(project: $project) {
+      id
+      projects {
+        id
+        name
+        domain
+        start_date
+        end_date
+        description
+        environment
+        responsibilities
+      }
+    }
+  }
+`;
+
+export const UPDATE_CV_PROJECT: TypedDocumentNode<UpdateCvProjectResult, UpdateCvProjectArgs> = gql`
+  mutation UpdateCvProject($project: UpdateCvProjectInput!) {
+    updateCvProject(project: $project) {
       id
       projects {
         id

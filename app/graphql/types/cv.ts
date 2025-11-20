@@ -63,3 +63,20 @@ export interface RemoveCvProjectArgs {
 export interface RemoveCvProjectResult {
   removeCvProject: Cv;
 }
+
+export interface UpdateCvProjectInput {
+  cvId: string;
+  projectId: string;
+  start_date: string;
+  end_date?: string | null;
+  roles: string[];
+  responsibilities: string[];
+}
+
+export interface UpdateCvProjectArgs {
+  project: UpdateCvProjectInput;
+}
+
+export interface UpdateCvProjectResult {
+  updateCvProject: Cv;
+}

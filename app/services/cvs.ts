@@ -6,6 +6,7 @@ import {
   UPDATE_CV,
   ADD_CV_PROJECT,
   REMOVE_CV_PROJECT,
+  UPDATE_CV_PROJECT,
 } from '~/graphql/mutations';
 import type {
   GetCvsResult,
@@ -20,6 +21,9 @@ import type {
   RemoveCvProjectResult,
   RemoveCvProjectArgs,
   RemoveCvProjectInput,
+  UpdateCvProjectInput,
+  UpdateCvProjectResult,
+  UpdateCvProjectArgs,
 } from '~/graphql/types';
 import type { FetchPolicy } from '@apollo/client';
 import type { UpdateCvInput, AddCvProjectInput, Cv } from 'cv-graphql';
@@ -88,4 +92,12 @@ export async function removeCvProject(project: RemoveCvProjectInput) {
     { project }
   );
   return result.removeCvProject;
+}
+
+export async function updateCvProject(project: UpdateCvProjectInput) {
+  const result = await apolloMutation<UpdateCvProjectResult, UpdateCvProjectArgs>(
+    UPDATE_CV_PROJECT,
+    { project }
+  );
+  return result.updateCvProject;
 }
