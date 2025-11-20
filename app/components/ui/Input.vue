@@ -89,6 +89,13 @@ const placeholder = ' ';
     }
 
     &:disabled {
+      -webkit-text-fill-color: $color-text-muted;
+      border-color: $color-border-subtle;
+      cursor: default;
+
+      & + .floating-label {
+        color: $color-text-muted;
+      }
       color: rgba($color-text-primary, $opacity-50);
     }
   }

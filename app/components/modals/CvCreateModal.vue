@@ -1,18 +1,30 @@
 <template>
-  <ModalsBaseModal :is-visible="isVisible" @update:is-visible="emit('update:isVisible', $event)">
+  <ModalsBaseModal v-model:is-visible="isVisible">
     <template #header>
       <h3 class="modal__title">Create CV</h3>
     </template>
 
     <template #body>
-      <Input id="name" v-model="name" label="Name" />
-      <Input id="education" v-model="education" label="Education" />
-      <Textarea id="description" v-model="description" label="Description" />
+      <FloatLabelInput
+        name="name"
+        label="Name"
+        placeholder=" "
+        type="text"
+        :validate-on-blur="false"
+      />
+      <FloatLabelInput name="education" label="Education" placeholder=" " type="text" />
+      <Textarea name="description" label="Description" :validate-on-blur="false" />
     </template>
 
     <template #footer>
       <Button variant="outline" @click="closeModal">Cancel</Button>
-      <Button variant="primary" :disabled="!isFormValid" @click="handlecreateCv"> Create </Button>
+      <Button
+        variant="primary"
+        :disabled="!values.name && !values.education && !values.description"
+        @click="handleCreateCv"
+      >
+        Create
+      </Button>
     </template>
   </ModalsBaseModal>
 
@@ -20,40 +32,40 @@
 </template>
 
 <script setup lang="ts">
-import Textarea from '../ui/Textarea.vue';
+import { useForm } from 'vee-validate';
+import { toTypedSchema } from '@vee-validate/zod';
+import { cvSchema, type CvForm } from '~/utils/schemas/cvValidationSchema';
 import { createCv as createCvService } from '~/services/cvs';
 import { useToast } from 'primevue/usetoast';
+import Textarea from '../ui/Textarea.vue';
 import Button from '../ui/Button.vue';
 
-defineProps<{ isVisible: boolean }>();
-const emit = defineEmits(['update:isVisible', 'cv-created']);
+const isVisible = defineModel<boolean>('isVisible', { required: true });
+const emit = defineEmits(['cv-created']);
 
 const authStore = useAuthStore();
 const toast = useToast();
 
-const name = ref('');
-const education = ref('');
-const description = ref('');
-
-const isFormValid = computed(() => {
-  return name.value.trim().length > 0;
+const { handleSubmit, resetForm, values } = useForm<CvForm>({
+  validationSchema: toTypedSchema(cvSchema),
+  initialValues: {
+    name: '',
+    education: '',
+    description: '',
+  },
 });
 
 const closeModal = () => {
-  emit('update:isVisible', false);
-  name.value = '';
-  education.value = '';
-  description.value = '';
+  isVisible.value = false;
+  resetForm();
 };
 
-const handlecreateCv = async () => {
-  if (!isFormValid.value) return;
-
+const handleCreateCv = handleSubmit(async values => {
   try {
     await createCvService({
-      name: name.value,
-      education: education.value ? education.value : undefined,
-      description: description.value,
+      name: values.name,
+      education: values.education || undefined,
+      description: values.description || '',
       userId: authStore.user?.id,
     });
 
@@ -73,7 +85,7 @@ const handlecreateCv = async () => {
       life: 3000,
     });
   }
-};
+});
 </script>
 
 <style scoped lang="scss">

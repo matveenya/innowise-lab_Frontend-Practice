@@ -1,3 +1,7 @@
+export * from './signup';
+export * from './updateToken';
+export * from './forgotPassword';
+export * from './cvs';
 export * from './auth';
 export * from './createCv';
 export * from './deleteCv';

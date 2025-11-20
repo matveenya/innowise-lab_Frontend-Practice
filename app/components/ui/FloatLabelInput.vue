@@ -1,6 +1,6 @@
 <template>
   <div class="form-group">
-    <Field v-slot="{ field, errorMessage }" :name="name">
+    <Field v-slot="{ field, errorMessage }" :name="name" :validate-on-blur="validateOnBlur">
       <div class="form-input-wrapper">
         <input
           :id="name"
@@ -23,12 +23,17 @@
 </template>
 
 <script setup lang="ts">
-defineProps<{
+interface Props {
   name: string;
   type: string;
   placeholder: string;
   label: string;
-}>();
+  validateOnBlur?: boolean;
+}
+
+withDefaults(defineProps<Props>(), {
+  validateOnBlur: true,
+});
 </script>
 
 <style scoped lang="scss">
@@ -56,6 +61,10 @@ defineProps<{
       transition: opacity 0.2s ease;
     }
 
+    &:hover:not(:disabled):not(:focus) {
+      border-color: $color-nav-link;
+    }
+
     &:focus {
       outline: none;
       border: $border-outline-active;
@@ -66,7 +75,7 @@ defineProps<{
     &:-webkit-autofill + .form-input__label {
       top: 0;
       left: $space-lg;
-      font-size: 0.75em;
+      font-size: $font-size-sm;
       transform: translateY(-50%);
       background-color: $color-primary;
       padding: 0 $space-xs;
@@ -106,7 +115,7 @@ defineProps<{
     left: $space-lg;
     transform: translateY(-50%);
     font-size: $font-size-md;
-    color: rgba(255, 255, 255, 0.7);
+    color: $color-text-secondary;
     pointer-events: none;
     transition: all 0.2s ease;
     z-index: 1;

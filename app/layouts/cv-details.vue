@@ -47,7 +47,7 @@ const breadcrumbItems = computed<BreadcrumbItem[]>(() => {
     items.push({
       label: currentCv.value.name,
       to: { path: '/cvs/details', query: { id: currentCv.value.id } },
-      class: !isDetailsPage
+      class: isDetailsPage
         ? 'breadcrumb__highlight breadcrumb__highlight--static'
         : 'breadcrumb__highlight breadcrumb__highlight--link',
     });
@@ -78,5 +78,7 @@ const tabItems = computed<TabItem[]>(() => {
   background-color: $color-primary;
   color: $color-text-primary;
   padding-top: $space-lg;
+  height: 100%;
+  overflow-y: auto;
 }
 </style>
