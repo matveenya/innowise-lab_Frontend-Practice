@@ -29,8 +29,8 @@
         </template>
       </template>
 
-      <template #actions>
-        <button class="actions-button">
+      <template #actions="{ data }">
+        <button class="actions-button" @click="event => openActionMenu(event, data)">
           <Icon name="mdi:dots-vertical" size="1.5em" mode="svg" />
         </button>
       </template>
@@ -51,26 +51,46 @@
     </CvsTable>
 
     <ModalsCvAddProjectModal v-model:is-visible="isAddModalVisible" @create="handleProjectAdded" />
+
+    <CvsActionMenu ref="actionMenuRef" :items="menuItems" />
+
+    <ModalsCvDeleteModal
+      v-model:is-visible="isDeleteModalVisible"
+      title="Remove project"
+      message-prefix="Are you sure you want to remove project"
+      :item-name="selectedProject?.name"
+      :item-id="selectedProject?.id"
+      :use-default-cv-service="false"
+      @confirm="handleRemoveProject"
+    />
+
+    <AppToast />
   </div>
 </template>
 
 <script setup lang="ts">
 import Button from '~/components/ui/Button.vue';
-import { addCvProject } from '~/services/cvs';
+import { addCvProject, removeCvProject } from '~/services/cvs';
 import { formatDateNumeric } from '~/utils/dateUtils';
 import { ref, computed } from 'vue';
 import type { CvProject } from 'cv-graphql';
 import { PROJECTS_TABLE_COLUMNS } from '~/constants/projects';
 import { useCv } from '~/composables/useCv';
+import CvsActionMenu, { type ActionMenuItem } from '~/components/cvs/ActionMenu.vue';
+import { useToast } from '#imports';
 
 definePageMeta({
   layout: 'cv-details',
 });
 
 const { cv, cvId, refetch } = useCv();
+const toast = useToast();
 
 const searchTerm = ref('');
 const isAddModalVisible = ref(false);
+const isDeleteModalVisible = ref(false);
+const selectedProject = ref<CvProject | null>(null);
+const actionMenuRef = ref<InstanceType<typeof CvsActionMenu> | null>(null);
 
 const filteredProjects = computed<CvProject[]>(() => {
   if (!cv.value?.projects) return [];
@@ -81,6 +101,23 @@ const filteredProjects = computed<CvProject[]>(() => {
 });
 
 const columns = PROJECTS_TABLE_COLUMNS;
+
+const menuItems = computed<ActionMenuItem[]>(() => [
+  {
+    label: 'Update project',
+  },
+  {
+    label: 'Remove project',
+    command: () => {
+      isDeleteModalVisible.value = true;
+    },
+  },
+]);
+
+const openActionMenu = (event: Event, project: CvProject) => {
+  selectedProject.value = project;
+  actionMenuRef.value?.toggle(event);
+};
 
 interface ProjectFormData {
   projectId: string;
@@ -112,6 +149,24 @@ const handleProjectAdded = async (formData: ProjectFormData) => {
     await refetch();
   } catch (error) {
     console.error('Failed to add project:', error);
+  }
+};
+
+const handleRemoveProject = async () => {
+  if (!selectedProject.value?.project?.id || !cvId.value) return;
+
+  try {
+    await removeCvProject({
+      cvId: cvId.value,
+      projectId: selectedProject.value.project.id,
+    });
+
+    await refetch();
+    isDeleteModalVisible.value = false;
+    toast.add({ severity: 'success', summary: 'Project removed successfully', life: 3000 });
+  } catch (error) {
+    console.error('Failed to remove project:', error);
+    toast.add({ severity: 'error', summary: 'Failed to remove project', life: 3000 });
   }
 };
 </script>

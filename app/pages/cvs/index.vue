@@ -23,27 +23,23 @@
       </template>
     </CvsTable>
 
-    <CvsActionMenu
-      ref="actionsMenu"
-      @details="handleDetails"
-      @delete="isDeleteModalVisible = true"
-    />
+    <CvsActionMenu ref="actionsMenu" :items="menuItems" />
 
     <ModalsCvCreateModal v-model:is-visible="isDialogVisible" @cv-created="refetchCvs" />
 
     <ModalsCvDeleteModal
       v-model:is-visible="isDeleteModalVisible"
-      :cv-id="selectedCv?.id"
-      :cv-name="selectedCv?.name"
+      :item-id="selectedCv?.id"
+      :item-name="selectedCv?.name"
       @cv-deleted="refetchCvs"
     />
   </section>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import type { Cv } from 'cv-graphql';
-import CvsActionMenu from '~/components/cvs/ActionMenu.vue';
+import CvsActionMenu, { type ActionMenuItem } from '~/components/cvs/ActionMenu.vue';
 import Button from '~/components/ui/Button.vue';
 import { CVS_TABLE_COLUMNS } from '~/constants/cvs';
 import { useCvs } from '~/composables/useCvs';
@@ -61,15 +57,26 @@ const { filteredCvs, searchTerm, refetch: refetchCvs } = useCvs();
 
 const columns = CVS_TABLE_COLUMNS;
 
+const menuItems = computed<ActionMenuItem[]>(() => [
+  {
+    label: 'Details',
+    command: () => {
+      if (selectedCv.value) {
+        navigateTo({ path: '/cvs/details', query: { id: selectedCv.value.id } });
+      }
+    },
+  },
+  {
+    label: 'Delete CV',
+    command: () => {
+      isDeleteModalVisible.value = true;
+    },
+  },
+]);
+
 const handleOpenMenu = (event: Event, cv: Cv) => {
   selectedCv.value = cv;
   actionsMenu.value?.toggle(event);
-};
-
-const handleDetails = () => {
-  if (selectedCv.value) {
-    navigateTo({ path: '/cvs/details', query: { id: selectedCv.value.id } });
-  }
 };
 </script>
 

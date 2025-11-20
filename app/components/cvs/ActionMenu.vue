@@ -1,10 +1,11 @@
 <template>
-  <Menu ref="menu" :model="menuItems" :popup="true" class="cv-actions-menu">
+  <Menu ref="menu" :model="computedItems" :popup="true" class="cv-actions-menu">
     <template #item="{ item }">
       <button
         class="cv-actions-menu__item"
         @click="e => item.command && item.command({ originalEvent: e, item })"
       >
+        <Icon v-if="item.icon" :name="item.icon" size="1.2em" mode="svg" />
         <span>{{ item.label }}</span>
       </button>
     </template>
@@ -13,12 +14,22 @@
 
 <script setup lang="ts">
 import Menu from 'primevue/menu';
+import { computed, ref } from 'vue';
+
+export interface ActionMenuItem {
+  label: string;
+  command?: () => void;
+}
+
+const props = defineProps<{
+  items?: ActionMenuItem[];
+}>();
 
 const emit = defineEmits(['details', 'delete']);
 
 const menu = ref<InstanceType<typeof Menu> | null>(null);
 
-const menuItems = [
+const defaultItems = [
   {
     label: 'Details',
     command: () => emit('details'),
@@ -28,6 +39,8 @@ const menuItems = [
     command: () => emit('delete'),
   },
 ];
+
+const computedItems = computed(() => props.items || defaultItems);
 
 const toggle = (event: Event) => {
   menu.value?.toggle(event);

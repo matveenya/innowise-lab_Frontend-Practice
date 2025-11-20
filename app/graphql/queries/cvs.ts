@@ -26,6 +26,9 @@ export const GET_CV_BY_ID: TypedDocumentNode<{ cv: Cv }, { cvId: string }> = gql
       education
       projects {
         id
+        project {
+          id
+        }
         name
         domain
         start_date

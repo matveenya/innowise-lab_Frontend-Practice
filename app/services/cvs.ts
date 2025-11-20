@@ -1,6 +1,12 @@
 import { apolloQuery, apolloMutation } from '~/utils/apollo';
 import { GET_CVS, GET_CV_BY_ID } from '~/graphql/queries';
-import { CREATE_CV, DELETE_CV, UPDATE_CV, ADD_CV_PROJECT } from '~/graphql/mutations';
+import {
+  CREATE_CV,
+  DELETE_CV,
+  UPDATE_CV,
+  ADD_CV_PROJECT,
+  REMOVE_CV_PROJECT,
+} from '~/graphql/mutations';
 import type {
   GetCvsResult,
   CreateCvArgs,
@@ -11,6 +17,9 @@ import type {
   UpdateCvArgs,
   AddCvProjectResult,
   AddCvProjectArgs,
+  RemoveCvProjectResult,
+  RemoveCvProjectArgs,
+  RemoveCvProjectInput,
 } from '~/graphql/types';
 import type { FetchPolicy } from '@apollo/client';
 import type { UpdateCvInput, AddCvProjectInput, Cv } from 'cv-graphql';
@@ -71,4 +80,12 @@ export async function getCvById(args?: { cvId: string }, fetchPolicy?: FetchPoli
     fetchPolicy
   );
   return result.cv;
+}
+
+export async function removeCvProject(project: RemoveCvProjectInput) {
+  const result = await apolloMutation<RemoveCvProjectResult, RemoveCvProjectArgs>(
+    REMOVE_CV_PROJECT,
+    { project }
+  );
+  return result.removeCvProject;
 }

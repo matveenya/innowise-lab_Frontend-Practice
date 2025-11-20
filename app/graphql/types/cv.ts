@@ -50,3 +50,16 @@ export interface AddCvProjectArgs {
 export interface AddCvProjectResult {
   addCvProject: Cv;
 }
+
+export interface RemoveCvProjectInput {
+  cvId: string;
+  projectId: string;
+}
+
+export interface RemoveCvProjectArgs {
+  project: RemoveCvProjectInput;
+}
+
+export interface RemoveCvProjectResult {
+  removeCvProject: Cv;
+}

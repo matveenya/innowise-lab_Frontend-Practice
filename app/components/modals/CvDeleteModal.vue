@@ -1,22 +1,20 @@
 <template>
   <ModalsBaseModal v-model:is-visible="isVisible">
     <template #header>
-      <h3 class="modal-title">Delete CV</h3>
+      <h3 class="modal-title">{{ title }}</h3>
     </template>
     <template #body>
       <p class="delete-confirmation-text">
-        Are you sure you want to delete CV
-        <span class="highlight-text">{{ cvName }}</span
+        {{ messagePrefix }}
+        <span class="highlight-text">{{ itemName }}</span
         >?
       </p>
     </template>
     <template #footer>
       <Button variant="outline" @click="closeModal">CANCEL</Button>
-      <Button variant="primary" @click="handleDelete">CONFIRM</Button>
+      <Button variant="primary" :disabled="isLoading" @click="handleConfirm">CONFIRM</Button>
     </template>
   </ModalsBaseModal>
-
-  <AppToast />
 </template>
 
 <script setup lang="ts">
@@ -24,24 +22,46 @@ import { deleteCv as deleteCvService } from '~/services/cvs';
 import { useToast } from 'primevue/usetoast';
 import Button from '../ui/Button.vue';
 
-const props = defineProps<{
-  cvId?: string;
-  cvName?: string;
-}>();
+const props = withDefaults(
+  defineProps<{
+    itemId?: string;
+    itemName?: string;
+    title?: string;
+    messagePrefix?: string;
+    loading?: boolean;
+    useDefaultCvService?: boolean;
+  }>(),
+  {
+    title: 'Delete CV',
+    messagePrefix: 'Are you sure you want to delete CV',
+    useDefaultCvService: true,
+    loading: false,
+    itemId: '',
+    itemName: '',
+  }
+);
 
 const isVisible = defineModel<boolean>('isVisible', { required: true });
-const emit = defineEmits(['cv-deleted']);
+const emit = defineEmits(['cv-deleted', 'confirm']);
 const toast = useToast();
+
+const isLoading = ref(false);
 
 const closeModal = () => {
   isVisible.value = false;
 };
 
-const handleDelete = async () => {
-  if (!props.cvId) return;
+const handleConfirm = async () => {
+  if (!props.useDefaultCvService) {
+    emit('confirm', props.itemId);
+    return;
+  }
 
+  if (!props.itemId) return;
+
+  isLoading.value = true;
   try {
-    await deleteCvService(props.cvId);
+    await deleteCvService(props.itemId);
     emit('cv-deleted');
     closeModal();
 
@@ -57,6 +77,8 @@ const handleDelete = async () => {
       summary: 'Failed to delete CV',
       life: 3000,
     });
+  } finally {
+    isLoading.value = false;
   }
 };
 </script>
