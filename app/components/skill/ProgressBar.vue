@@ -1,6 +1,15 @@
 <template>
-  <button class="skill-container">
-    <ProgressBar mode="determinate" :value="currentPercentage" :show-value="false" :pt="skillPT" />
+  <button
+    class="skill-container"
+    :class="{ 'is-selected-for-delete': isSelected }"
+    @click="handleClick"
+  >
+    <ProgressBar
+      mode="determinate"
+      :value="isSelected ? 0 : currentPercentage"
+      :show-value="false"
+      :pt="skillPT"
+    />
     <span class="skill-label">{{ skillLabel }}</span>
   </button>
 </template>
@@ -13,7 +22,11 @@ import { SKILL_LEVEL_SETTINGS } from '~/constants/skills';
 const props = defineProps<{
   level: string;
   skillLabel: string;
+  isDeleteMode?: boolean;
+  isSelected?: boolean;
 }>();
+
+const emit = defineEmits(['click']);
 
 const normalizedLevel = computed<SkillLevel>(() => {
   const lower = props.level?.toLowerCase() as SkillLevel | undefined;
@@ -23,6 +36,12 @@ const normalizedLevel = computed<SkillLevel>(() => {
 const currentPercentage = computed(() => {
   return SKILL_LEVEL_SETTINGS[normalizedLevel.value];
 });
+
+const handleClick = () => {
+  if (props.isDeleteMode) {
+    emit('click');
+  }
+};
 
 const skillPT = computed(() => ({
   root: { class: ['skill-bar-root', `type-${normalizedLevel.value}`] },
@@ -44,6 +63,15 @@ const skillPT = computed(() => ({
   color: $color-text-muted;
   cursor: pointer;
   transition: background-color 0.3s ease;
+
+  &.is-selected-for-delete {
+    background-color: $color-novice-max !important;
+
+    .skill-label {
+      color: $color-text-primary !important;
+    }
+  }
+
   &:hover {
     background-color: $button-outline-hover;
   }

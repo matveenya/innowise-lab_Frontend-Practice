@@ -14,16 +14,42 @@
               :key="skill.id"
               :level="skillLevels[skill.id] || 'Novice'"
               :skill-label="skill.name"
+              :is-delete-mode="isDeleteMode"
+              :is-selected="skillsToDelete.includes(skill.id)"
+              @click="toggleSkillDeletion(skill.id)"
             />
           </div>
         </div>
       </div>
     </div>
     <div class="profile-skills__actions">
-      <Button variant="ghost" @click="openAddSkillModal"
+      <Button v-if="isDeleteMode" variant="outline" @click="cancelDeleteMode"> Cancel </Button>
+
+      <Button
+        v-else
+        variant="ghost"
+        class="profile-skills__actions-add-skill"
+        @click="openAddSkillModal"
         ><Icon name="material-symbols:add-2-rounded" size="1.5rem" />Add Skill</Button
       >
-      <Button variant="ghost"
+
+      <Button
+        v-if="isDeleteMode"
+        variant="primary"
+        :disabled="skillsToDelete.length === 0"
+        class="btn-delete-confirm"
+        @click="deleteSelectedSkills"
+        >Delete
+        <span v-if="skillsToDelete.length > 0" class="badge-count">
+          {{ skillsToDelete.length }}
+        </span>
+      </Button>
+
+      <Button
+        v-else-if="selectedSkills.length > 0"
+        variant="ghost"
+        class="profile-skills__actions-remove-skill"
+        @click="isDeleteMode = true"
         ><Icon name="material-symbols:delete-forever" size="1.5rem" />Remove skill</Button
       >
     </div>
@@ -55,6 +81,9 @@ const modalAddSkill = ref<InstanceType<typeof ModalAddSkill> | null>(null);
 const selectedSkills = ref<Skill[]>([]);
 const skillLevels = ref<Record<string, Mastery>>({});
 
+const isDeleteMode = ref(false);
+const skillsToDelete = ref<string[]>([]);
+
 const groupedSelectedSkills = computed<SkillGroup[]>(() => {
   return groupSkillsByCategory(selectedSkills.value);
 });
@@ -72,6 +101,29 @@ const handleAddSkill = (payload: { skill: Skill; mastery: Mastery }) => {
 
   selectedSkills.value.push(payload.skill);
   skillLevels.value[payload.skill.id] = payload.mastery;
+};
+
+const cancelDeleteMode = () => {
+  isDeleteMode.value = false;
+  skillsToDelete.value = [];
+};
+
+const toggleSkillDeletion = (skillId: string) => {
+  if (!isDeleteMode.value) return;
+
+  if (skillsToDelete.value.includes(skillId)) {
+    skillsToDelete.value = skillsToDelete.value.filter(id => id !== skillId);
+  } else {
+    skillsToDelete.value.push(skillId);
+  }
+};
+
+const deleteSelectedSkills = () => {
+  selectedSkills.value = selectedSkills.value.filter(
+    skill => !skillsToDelete.value.includes(skill.id)
+  );
+
+  cancelDeleteMode();
 };
 </script>
 
@@ -112,15 +164,27 @@ const handleAddSkill = (payload: { skill: Skill; mastery: Mastery }) => {
       display: inline-flex;
       align-items: center;
       gap: $space-lg;
-      padding: $space-md $space-sm;
+      height: 3rem;
+      padding: $space-xl $space-md;
+    }
 
-      &:last-child {
-        color: $color-secondary;
-        &:hover {
-          background-color: rgba($color-secondary, 0.08);
-        }
+    &-remove-skill {
+      color: $color-secondary;
+      &:hover {
+        background-color: rgba($color-secondary, 0.08);
       }
     }
   }
+}
+
+.badge-count {
+  background-color: $color-text-primary;
+  border-radius: $radius-rounded;
+  width: $space-xl;
+  height: $space-xl;
+  @include d-flex(center, center);
+  color: $color-primary;
+  font-weight: $font-weight-bold;
+  font-size: $font-size-sm;
 }
 </style>
