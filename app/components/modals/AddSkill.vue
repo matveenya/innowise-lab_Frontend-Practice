@@ -42,10 +42,29 @@ import { MASTERY_VALUES, type Mastery } from '~/constants/skills';
 import { groupSkillsByCategory, type SkillGroup } from '~/utils/skillUtils';
 import { addSkillSchema, type AddSkillSchemaType } from '~/utils/schemas/skillSchema';
 
+const props = defineProps<{
+  alreadySelected: Skill[];
+}>();
+
 const isVisible = ref(false);
 const referencesStore = useReferencesStore();
 
-const groupedSkills = computed<SkillGroup[]>(() => groupSkillsByCategory(referencesStore.skills));
+const groupedSkills = computed<SkillGroup[]>(() => {
+  const allGroups = groupSkillsByCategory(referencesStore.skills);
+
+  if (!props.alreadySelected || props.alreadySelected.length === 0) {
+    return allGroups;
+  }
+
+  const selectedIds = new Set(props.alreadySelected.map(skill => skill.id));
+
+  const filteredGroups = allGroups.map(group => ({
+    ...group,
+    items: group.items.filter(skill => !selectedIds.has(skill.id)),
+  }));
+
+  return filteredGroups.filter(group => group.items.length > 0);
+});
 
 const skill = ref<Skill | null>(null);
 const mastery = ref<Mastery | null>(null);

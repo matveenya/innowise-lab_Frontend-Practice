@@ -27,7 +27,11 @@
         ><Icon name="material-symbols:delete-forever" size="1.5rem" />Remove skill</Button
       >
     </div>
-    <ModalAddSkill ref="modalAddSkill" @add-skill="handleAddSkill" />
+    <ModalAddSkill
+      ref="modalAddSkill"
+      :already-selected="selectedSkills"
+      @add-skill="handleAddSkill"
+    />
   </div>
 </template>
 
