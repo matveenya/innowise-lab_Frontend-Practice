@@ -83,8 +83,7 @@ const tabItems = computed<TabItem[]>(() => {
   color: $color-text-primary;
   height: 100%;
   overflow-y: auto;
-  display: flex;
-  flex-direction: column;
+  @include d-flex(flex-start, stretch, column);
 
   &__header {
     position: sticky;
