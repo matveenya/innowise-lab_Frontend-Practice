@@ -120,6 +120,7 @@ const handleInput = (event: Event) => {
   border: $border-subtle;
   padding: $space-md;
   color: $color-text-primary;
+  font-family: inherit;
   font-size: $font-size-md;
   outline: none;
   transition: border-color 0.2s ease;

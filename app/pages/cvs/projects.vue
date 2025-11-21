@@ -177,7 +177,7 @@ const onProjectRemove = async () => {
     padding: $space-2xs $space-md;
     font-size: $font-size-sm;
     color: $color-text-secondary;
-    white-space: nowrap;
+    white-space: normal;
   }
 }
 </style>
