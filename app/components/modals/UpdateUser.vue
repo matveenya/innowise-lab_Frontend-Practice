@@ -1,5 +1,5 @@
 <template>
-  <ModalsBaseModal :is-visible="isVisible" @update:is-visible="val => (isVisible = val)">
+  <ModalsBaseModal v-model:is-visible="isVisible">
     <template #header>
       <h3 class="modal__title">Update User</h3>
     </template>

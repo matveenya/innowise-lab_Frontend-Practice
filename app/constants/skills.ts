@@ -7,3 +7,7 @@ export const SKILL_LEVEL_SETTINGS: Record<SkillLevel, number> = {
   proficient: 80,
   expert: 100,
 } as const;
+
+export const MASTERY_VALUES = ['Novice', 'Advanced', 'Competent', 'Proficient', 'Expert'] as const;
+
+export type Mastery = (typeof MASTERY_VALUES)[number];

@@ -33,8 +33,9 @@
 
       <template #dropdownicon>
         <div class="skill-select__icon-wrapper">
-          <i
-            class="pi pi-chevron-down skill-select__icon"
+          <Icon
+            name="heroicons:chevron-down"
+            class="skill-select__icon"
             :class="{ 'skill-select__icon--open': isOpen }"
           />
         </div>
