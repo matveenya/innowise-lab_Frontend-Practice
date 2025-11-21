@@ -1,6 +1,6 @@
 <template>
   <main v-if="cv" class="cv-preview-page">
-    <PreviewHeader :user="cv.user" />
+    <PreviewHeader :user="cv.user" @export-pdf="exportToPdf" />
 
     <section class="cv-preview-page__main-info">
       <PreviewInfoSide :education="cv.education" :domains="projectDomains" />
@@ -35,6 +35,7 @@ import { useCv } from '~/composables/useCv';
 import PreviewHeader from '~/components/cvs/PreviewHeader.vue';
 import PreviewInfoSide from '~/components/cvs/PreviewInfoSide.vue';
 import PreviewProjectCard from '~/components/cvs/PreviewProjectCard.vue';
+import { generateCvPdf } from '~/utils/pdfGenerator';
 
 definePageMeta({
   layout: 'cv-details',
@@ -59,6 +60,11 @@ const projectDomains = computed(() => {
 
   return [...new Set(domains)].join(', ');
 });
+
+const exportToPdf = () => {
+  if (!cv.value) return;
+  generateCvPdf(cv.value, userPosition.value, projectDomains.value);
+};
 </script>
 
 <style lang="scss" scoped>

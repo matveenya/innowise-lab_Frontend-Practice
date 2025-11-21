@@ -15,7 +15,9 @@
         />
       </div>
 
-      <Button variant="outline" class="export-btn"> EXPORT PDF </Button>
+      <Button variant="outline" class="export-btn" @click="$emit('export-pdf')">
+        EXPORT PDF
+      </Button>
     </div>
   </header>
 </template>
@@ -29,6 +31,8 @@ import Select from '~/components/ui/Select.vue';
 const props = defineProps<{
   user?: User | null;
 }>();
+
+defineEmits(['export-pdf']);
 
 const selectedLanguage = ref('English');
 const languages = ['English', 'Deutsch', 'Русский'];
