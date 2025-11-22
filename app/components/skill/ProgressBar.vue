@@ -38,9 +38,7 @@ const currentPercentage = computed(() => {
 });
 
 const handleClick = () => {
-  if (props.isDeleteMode) {
-    emit('click');
-  }
+  emit('click');
 };
 
 const skillPT = computed(() => ({

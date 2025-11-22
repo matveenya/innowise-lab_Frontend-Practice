@@ -14,6 +14,7 @@ import {
   DELETE_AVATAR_MUTATION,
   ADD_PROFILE_SKILL_MUTATION,
   DELETE_PROFILE_SKILL_MUTATION,
+  UPDATE_PROFILE_SKILL_MUTATION,
 } from '~/graphql/mutations';
 import type {
   GetUserByIdResult,
@@ -33,6 +34,8 @@ import type {
   AddProfileSkillArgs,
   DeleteProfileSkillResult,
   DeleteProfileSkillArgs,
+  UpdateProfileSkillResult,
+  UpdateProfileSkillArgs,
 } from '~/graphql/types';
 
 export async function getUsers() {
@@ -117,6 +120,15 @@ export async function addProfileSkill(args: AddProfileSkillArgs) {
   );
 
   return result.addProfileSkill;
+}
+
+export async function updateProfileSkill(args: UpdateProfileSkillArgs) {
+  const result = await apolloMutation<UpdateProfileSkillResult, UpdateProfileSkillArgs>(
+    UPDATE_PROFILE_SKILL_MUTATION,
+    args
+  );
+
+  return result.updateProfileSkill;
 }
 
 export async function deleteProfileSkill(args: DeleteProfileSkillArgs) {

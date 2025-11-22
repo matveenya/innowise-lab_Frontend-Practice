@@ -12,6 +12,8 @@ import type {
   AddProfileSkillArgs,
   DeleteProfileSkillResult,
   DeleteProfileSkillArgs,
+  UpdateProfileSkillResult,
+  UpdateProfileSkillArgs,
 } from '../types/user';
 
 export const UPDATE_USER_MUTATION: TypedDocumentNode<UpdateUserResult, UpdateUserArgs> = gql`
@@ -93,6 +95,22 @@ export const ADD_PROFILE_SKILL_MUTATION: TypedDocumentNode<
 > = gql`
   mutation AddProfileSkill($skill: AddProfileSkillInput!) {
     addProfileSkill(skill: $skill) {
+      id
+      skills {
+        name
+        categoryId
+        mastery
+      }
+    }
+  }
+`;
+
+export const UPDATE_PROFILE_SKILL_MUTATION: TypedDocumentNode<
+  UpdateProfileSkillResult,
+  UpdateProfileSkillArgs
+> = gql`
+  mutation UpdateProfileSkill($skill: UpdateProfileSkillInput!) {
+    updateProfileSkill(skill: $skill) {
       id
       skills {
         name

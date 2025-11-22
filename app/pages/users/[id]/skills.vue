@@ -16,7 +16,7 @@
               :skill-label="skill.name"
               :is-delete-mode="isDeleteMode"
               :is-selected="skillsToDelete.includes(skill.id)"
-              @click="toggleSkillDeletion(skill.id)"
+              @click="handleSkillClick(skill)"
             />
           </div>
         </div>
@@ -58,6 +58,7 @@
       :already-selected="selectedSkills"
       @add-skill="handleAddSkill"
     />
+    <ModalUpdateSkill ref="modalUpdateSkill" @update-skill="handleUpdateSkill" />
   </div>
 </template>
 
@@ -66,11 +67,17 @@ import Button from '~/components/ui/Button.vue';
 import SkillProgressBar from '~/components/skill/ProgressBar.vue';
 import { useReferencesStore } from '~/stores/references';
 import ModalAddSkill from '~/components/modals/AddSkill.vue';
+import ModalUpdateSkill from '~/components/modals/UpdateSkill.vue';
 import type { Mastery } from '~/constants/skills';
 import type { Mastery as SkillMastery } from 'cv-graphql';
 import type { Skill } from '~/graphql/types';
 import { groupSkillsByCategory, type SkillGroup } from '~/utils/skillUtils';
-import { getUserProfile, addProfileSkill, deleteProfileSkill } from '~/services/users';
+import {
+  getUserProfile,
+  addProfileSkill,
+  deleteProfileSkill,
+  updateProfileSkill,
+} from '~/services/users';
 
 definePageMeta({
   layout: 'user-profile',
@@ -80,6 +87,7 @@ definePageMeta({
 const route = useRoute();
 const referencesStore = useReferencesStore();
 const modalAddSkill = ref<InstanceType<typeof ModalAddSkill> | null>(null);
+const modalUpdateSkill = ref<InstanceType<typeof ModalUpdateSkill> | null>(null);
 
 const selectedSkills = ref<Skill[]>([]);
 const skillLevels = ref<Record<string, Mastery>>({});
@@ -142,18 +150,46 @@ const handleAddSkill = async (payload: { skill: Skill; mastery: Mastery }) => {
   }
 };
 
+const handleUpdateSkill = async (payload: { skill: Skill; mastery: Mastery }) => {
+  if (!payload.skill || !payload.mastery) return;
+
+  try {
+    await updateProfileSkill({
+      skill: {
+        userId: route.params.id as string,
+        name: payload.skill.name,
+        categoryId: payload.skill.category?.id,
+        mastery: payload.mastery as unknown as SkillMastery,
+      },
+    });
+
+    skillLevels.value[payload.skill.id] = payload.mastery;
+  } catch (error) {
+    console.error('Failed to update skill', error);
+  }
+};
+
 const cancelDeleteMode = () => {
   isDeleteMode.value = false;
   skillsToDelete.value = [];
 };
 
 const toggleSkillDeletion = (skillId: string) => {
-  if (!isDeleteMode.value) return;
-
   if (skillsToDelete.value.includes(skillId)) {
     skillsToDelete.value = skillsToDelete.value.filter(id => id !== skillId);
   } else {
     skillsToDelete.value.push(skillId);
+  }
+};
+
+const handleSkillClick = (skill: Skill) => {
+  if (isDeleteMode.value) {
+    toggleSkillDeletion(skill.id);
+  } else {
+    const currentMastery = skillLevels.value[skill.id];
+    if (currentMastery) {
+      modalUpdateSkill.value?.open(skill, currentMastery);
+    }
   }
 };
 

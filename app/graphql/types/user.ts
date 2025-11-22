@@ -9,6 +9,7 @@ import type {
   DeleteAvatarInput,
   AddProfileSkillInput,
   DeleteProfileSkillInput,
+  UpdateProfileSkillInput,
 } from 'cv-graphql';
 
 export type GetUsersResult = {
@@ -79,6 +80,14 @@ export type DeleteProfileSkillArgs = {
   skill: DeleteProfileSkillInput;
 };
 
+export type UpdateProfileSkillResult = {
+  updateProfileSkill: Profile;
+};
+
+export type UpdateProfileSkillArgs = {
+  skill: UpdateProfileSkillInput;
+};
+
 export type {
   User,
   UpdateUserInput,
@@ -86,4 +95,5 @@ export type {
   Position,
   AddProfileSkillInput,
   DeleteProfileSkillInput,
+  UpdateProfileSkillInput,
 };
