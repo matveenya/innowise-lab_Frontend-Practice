@@ -8,6 +8,10 @@ import type {
   UpdateProfileArgs,
   DeleteAvatarResult,
   DeleteAvatarArgs,
+  AddProfileSkillResult,
+  AddProfileSkillArgs,
+  DeleteProfileSkillResult,
+  DeleteProfileSkillArgs,
 } from '../types/user';
 
 export const UPDATE_USER_MUTATION: TypedDocumentNode<UpdateUserResult, UpdateUserArgs> = gql`
@@ -80,5 +84,37 @@ export const UPDATE_PROFILE_MUTATION: TypedDocumentNode<UpdateProfileResult, Upd
 export const DELETE_AVATAR_MUTATION: TypedDocumentNode<DeleteAvatarResult, DeleteAvatarArgs> = gql`
   mutation DeleteAvatar($avatar: DeleteAvatarInput!) {
     deleteAvatar(avatar: $avatar)
+  }
+`;
+
+export const ADD_PROFILE_SKILL_MUTATION: TypedDocumentNode<
+  AddProfileSkillResult,
+  AddProfileSkillArgs
+> = gql`
+  mutation AddProfileSkill($skill: AddProfileSkillInput!) {
+    addProfileSkill(skill: $skill) {
+      id
+      skills {
+        name
+        categoryId
+        mastery
+      }
+    }
+  }
+`;
+
+export const DELETE_PROFILE_SKILL_MUTATION: TypedDocumentNode<
+  DeleteProfileSkillResult,
+  DeleteProfileSkillArgs
+> = gql`
+  mutation DeleteProfileSkill($skill: DeleteProfileSkillInput!) {
+    deleteProfileSkill(skill: $skill) {
+      id
+      skills {
+        name
+        categoryId
+        mastery
+      }
+    }
   }
 `;

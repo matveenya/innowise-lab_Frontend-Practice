@@ -67,14 +67,17 @@ import SkillProgressBar from '~/components/skill/ProgressBar.vue';
 import { useReferencesStore } from '~/stores/references';
 import ModalAddSkill from '~/components/modals/AddSkill.vue';
 import type { Mastery } from '~/constants/skills';
+import type { Mastery as SkillMastery } from 'cv-graphql';
 import type { Skill } from '~/graphql/types';
 import { groupSkillsByCategory, type SkillGroup } from '~/utils/skillUtils';
+import { getUserProfile, addProfileSkill, deleteProfileSkill } from '~/services/users';
 
 definePageMeta({
   layout: 'user-profile',
   middleware: 'auth',
 });
 
+const route = useRoute();
 const referencesStore = useReferencesStore();
 const modalAddSkill = ref<InstanceType<typeof ModalAddSkill> | null>(null);
 
@@ -88,19 +91,55 @@ const groupedSelectedSkills = computed<SkillGroup[]>(() => {
   return groupSkillsByCategory(selectedSkills.value);
 });
 
+const fetchUserProfile = async () => {
+  try {
+    const userProfile = await getUserProfile({ id: route.params.id as string });
+
+    if (userProfile?.skills) {
+      const mappedSkills: Skill[] = [];
+      userProfile.skills.forEach(userSkill => {
+        const refSkill = referencesStore.skills.find(s => s.name === userSkill.name);
+        if (refSkill) {
+          mappedSkills.push(refSkill);
+          if (userSkill.mastery) {
+            skillLevels.value[refSkill.id] = userSkill.mastery as Mastery;
+          }
+        }
+      });
+      selectedSkills.value = mappedSkills;
+    }
+  } catch (error) {
+    console.error('Failed to load user skills', error);
+  }
+};
+
 onMounted(async () => {
   await referencesStore.loadReferences();
+  await fetchUserProfile();
 });
 
 const openAddSkillModal = () => {
   modalAddSkill.value?.open();
 };
 
-const handleAddSkill = (payload: { skill: Skill; mastery: Mastery }) => {
+const handleAddSkill = async (payload: { skill: Skill; mastery: Mastery }) => {
   if (!payload.skill || !payload.mastery) return;
 
-  selectedSkills.value.push(payload.skill);
-  skillLevels.value[payload.skill.id] = payload.mastery;
+  try {
+    await addProfileSkill({
+      skill: {
+        userId: route.params.id as string,
+        name: payload.skill.name,
+        categoryId: payload.skill.category?.id,
+        mastery: payload.mastery as unknown as SkillMastery,
+      },
+    });
+
+    selectedSkills.value.push(payload.skill);
+    skillLevels.value[payload.skill.id] = payload.mastery;
+  } catch (error) {
+    console.error('Failed to add skill', error);
+  }
 };
 
 const cancelDeleteMode = () => {
@@ -118,12 +157,33 @@ const toggleSkillDeletion = (skillId: string) => {
   }
 };
 
-const deleteSelectedSkills = () => {
-  selectedSkills.value = selectedSkills.value.filter(
-    skill => !skillsToDelete.value.includes(skill.id)
-  );
+const deleteSelectedSkills = async () => {
+  try {
+    const skillsToDeleteNames: string[] = [];
+    skillsToDelete.value.forEach(id => {
+      const skill = selectedSkills.value.find(s => s.id === id);
+      if (skill) {
+        skillsToDeleteNames.push(skill.name);
+      }
+    });
 
-  cancelDeleteMode();
+    if (skillsToDeleteNames.length > 0) {
+      await deleteProfileSkill({
+        skill: {
+          userId: route.params.id as string,
+          name: skillsToDeleteNames,
+        },
+      });
+
+      selectedSkills.value = selectedSkills.value.filter(
+        skill => !skillsToDelete.value.includes(skill.id)
+      );
+    }
+
+    cancelDeleteMode();
+  } catch (error) {
+    console.error('Failed to delete skills', error);
+  }
 };
 </script>
 
