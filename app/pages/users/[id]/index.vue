@@ -52,7 +52,13 @@
       <p class="user-profile__member-since">A member since {{ memberSince }}</p>
     </div>
     <form class="user-profile__details" @submit.prevent="onSubmit">
-      <Input id="first-name" v-model="firstName" label="First Name" :disabled="!isMyProfile" />
+      <Input
+        id="first-name"
+        ref="firstNameInput"
+        v-model="firstName"
+        label="First Name"
+        :disabled="!isMyProfile"
+      />
       <Input id="last-name" v-model="lastName" label="Last Name" :disabled="!isMyProfile" />
       <Select
         id="department"
@@ -99,6 +105,7 @@ import {
 } from '~/services/users';
 import { createQueryAdapter } from '~/utils/apolloAdapters';
 import { formatDate } from '~/utils/dateUtils';
+import { formatUserName } from '~/utils/userUtils';
 import { fileToBase64, validateFileSize, validateFileType } from '~/utils/fileUtils';
 import { useAuthStore } from '~/stores/auth';
 import { useReferencesStore } from '~/stores/references';
@@ -119,19 +126,16 @@ const authStore = useAuthStore();
 const userId = route.params.id as string;
 const toast = useToast();
 
-const { data: user } = createQueryAdapter(getUserById, {
+const { data: user, refetch: refetchUser } = createQueryAdapter(getUserById, {
   variables: { id: userId },
 });
-const { data: profile } = createQueryAdapter(getUserProfile, {
+const { data: profile, refetch: refetchProfile } = createQueryAdapter(getUserProfile, {
   variables: { id: userId },
 });
 
 const referencesStore = useReferencesStore();
 const refetchUserInLayout = inject<(() => Promise<unknown>) | null>('refetchUserInLayout', null);
-
-onMounted(async () => {
-  await referencesStore.loadReferences();
-});
+const { triggerRefetch: refetchUserInMenu } = useUserMenuRefetch();
 
 const { handleSubmit, meta, resetForm, isSubmitting } = useForm<UserProfileForm>({
   validationSchema: toTypedSchema(userProfileSchema),
@@ -166,10 +170,7 @@ watchEffect(() => {
 });
 
 const userName = computed(() => {
-  if (profile.value?.first_name && profile.value?.last_name) {
-    return `${profile.value.first_name} ${profile.value.last_name}`;
-  }
-  return profile.value?.first_name || user.value?.email || '';
+  return formatUserName(profile.value, user.value?.email);
 });
 
 const isMyProfile = computed(() => {
@@ -199,9 +200,13 @@ const onSubmit = handleSubmit(async values => {
       }),
     ]);
 
+    await Promise.all([refetchUser(), refetchProfile()]);
+
     if (refetchUserInLayout) {
       await refetchUserInLayout();
     }
+
+    await refetchUserInMenu();
 
     if (selectedFile.value) {
       const file = selectedFile.value;
@@ -326,6 +331,17 @@ const removeAvatar = async () => {
     });
   }
 };
+
+const firstNameInput = ref<{ focus: () => void } | null>(null);
+onMounted(async () => {
+  await referencesStore.loadReferences();
+
+  if (isMyProfile.value) {
+    nextTick(() => {
+      firstNameInput.value?.focus();
+    });
+  }
+});
 
 onUnmounted(() => {
   if (avatarPreview.value && avatarPreview.value.startsWith('blob:')) {
