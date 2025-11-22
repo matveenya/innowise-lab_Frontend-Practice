@@ -40,7 +40,7 @@ const onSubmit = handleSubmit(async () => {
     password: values.password,
   });
   if (success) {
-    navigateTo('/users');
+    navigateTo(`/users/${authStore.user?.id}`);
   } else {
     toast.add({
       severity: 'error',

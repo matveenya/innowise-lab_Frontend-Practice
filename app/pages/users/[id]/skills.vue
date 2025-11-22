@@ -22,7 +22,10 @@
         </div>
       </div>
     </div>
-    <div class="profile-skills__actions">
+    <div
+      class="profile-skills__actions"
+      :class="{ 'profile-skills__actions--centered': selectedSkills.length === 0 }"
+    >
       <Button v-if="isDeleteMode" variant="outline" @click="cancelDeleteMode"> Cancel </Button>
 
       <Button
@@ -59,10 +62,13 @@
       @add-skill="handleAddSkill"
     />
     <ModalUpdateSkill ref="modalUpdateSkill" @update-skill="handleUpdateSkill" />
+    <AppToast />
   </div>
 </template>
 
 <script setup lang="ts">
+import { useToast } from 'primevue/usetoast';
+import AppToast from '~/components/ui/AppToast.vue';
 import Button from '~/components/ui/Button.vue';
 import SkillProgressBar from '~/components/skill/ProgressBar.vue';
 import { useReferencesStore } from '~/stores/references';
@@ -86,6 +92,7 @@ definePageMeta({
 
 const route = useRoute();
 const referencesStore = useReferencesStore();
+const toast = useToast();
 const modalAddSkill = ref<InstanceType<typeof ModalAddSkill> | null>(null);
 const modalUpdateSkill = ref<InstanceType<typeof ModalUpdateSkill> | null>(null);
 
@@ -145,8 +152,18 @@ const handleAddSkill = async (payload: { skill: Skill; mastery: Mastery }) => {
 
     selectedSkills.value.push(payload.skill);
     skillLevels.value[payload.skill.id] = payload.mastery;
+    toast.add({
+      severity: 'success',
+      summary: 'Skill was added',
+      life: 3000,
+    });
   } catch (error) {
     console.error('Failed to add skill', error);
+    toast.add({
+      severity: 'error',
+      summary: 'Failed to add skill',
+      life: 3000,
+    });
   }
 };
 
@@ -164,8 +181,18 @@ const handleUpdateSkill = async (payload: { skill: Skill; mastery: Mastery }) =>
     });
 
     skillLevels.value[payload.skill.id] = payload.mastery;
+    toast.add({
+      severity: 'success',
+      summary: 'Skill was updated',
+      life: 3000,
+    });
   } catch (error) {
     console.error('Failed to update skill', error);
+    toast.add({
+      severity: 'error',
+      summary: 'Failed to update skill',
+      life: 3000,
+    });
   }
 };
 
@@ -214,11 +241,22 @@ const deleteSelectedSkills = async () => {
       selectedSkills.value = selectedSkills.value.filter(
         skill => !skillsToDelete.value.includes(skill.id)
       );
+
+      toast.add({
+        severity: 'success',
+        summary: 'Skills were removed',
+        life: 3000,
+      });
     }
 
     cancelDeleteMode();
   } catch (error) {
     console.error('Failed to delete skills', error);
+    toast.add({
+      severity: 'error',
+      summary: 'Failed to delete skills',
+      life: 3000,
+    });
   }
 };
 </script>
@@ -270,6 +308,14 @@ const deleteSelectedSkills = async () => {
       color: $color-secondary;
       &:hover {
         background-color: rgba($color-secondary, 0.08);
+      }
+    }
+
+    &--centered {
+      justify-content: center;
+
+      button {
+        min-width: $button-width-details;
       }
     }
   }

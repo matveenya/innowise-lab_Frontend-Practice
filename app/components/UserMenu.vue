@@ -1,8 +1,8 @@
 <template>
   <div class="userbar">
     <button class="userbar-avatar" @click="toggleMenu">
-      <Avatar label="U" class="userbar-avatar__icon" />
-      <span class="userbar-avatar__name">User Name</span>
+      <Avatar :label="avatarLabel" class="userbar-avatar__icon" />
+      <span class="userbar-avatar__name">{{ userName }}</span>
     </button>
 
     <Menu ref="menu" :model="items" :popup="true" class="userbar-menu">
@@ -23,9 +23,41 @@
 <script setup lang="ts">
 import Avatar from 'primevue/avatar';
 import Menu from 'primevue/menu';
+import { getUserById } from '~/services/users';
+import { createQueryAdapter } from '~/utils/apolloAdapters';
+import { formatUserName } from '~/utils/userUtils';
 
 const menu = ref<InstanceType<typeof Menu> | null>(null);
 const authStore = useAuthStore();
+
+const { data: userData, refetch: refetchUser } = createQueryAdapter(
+  async vars => {
+    if (!vars?.id) return;
+
+    return await getUserById(vars);
+  },
+  {
+    variables: computed(() => {
+      if (!authStore.user?.id) return;
+
+      return { id: authStore.user.id };
+    }),
+  }
+);
+
+const { registerRefetch } = useUserMenuRefetch();
+onMounted(() => {
+  const unregister = registerRefetch(refetchUser);
+  onUnmounted(unregister);
+});
+
+const userName = computed(() => {
+  return formatUserName(userData.value?.profile, userData.value?.email || authStore.user?.email);
+});
+
+const avatarLabel = computed(() => {
+  return userName.value.charAt(0).toUpperCase();
+});
 
 interface UserMenuLink {
   label: string;
@@ -80,6 +112,8 @@ const toggleMenu = (event: Event) => {
       font-size: $font-size-md;
       font-weight: $font-weight-regular;
       white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
   }
   &-menu {

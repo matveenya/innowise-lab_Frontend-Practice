@@ -16,6 +16,7 @@ import type { BreadcrumbItem } from '~/components/ui/BaseBreadcrumb.vue';
 import type { TabItem } from '~/components/ui/BaseTabs.vue';
 import { getUserById } from '~/services/users';
 import { createQueryAdapter } from '~/utils/apolloAdapters';
+import { formatUserName } from '~/utils/userUtils';
 
 const route = useRoute();
 const userId = route.params.id as string;
@@ -27,10 +28,7 @@ const { data: user, refetch: refetchUser } = createQueryAdapter(getUserById, {
 provide('refetchUserInLayout', refetchUser);
 
 const userName = computed(() => {
-  if (user.value?.profile.first_name && user.value?.profile.last_name) {
-    return `${user.value.profile.first_name} ${user.value.profile.last_name}`;
-  }
-  return user.value?.profile.first_name || user.value?.email || '';
+  return formatUserName(user.value?.profile, user.value?.email);
 });
 
 type UserProfileTab = 'profile' | 'skills' | 'languages';
@@ -62,7 +60,7 @@ const tabItems = computed<TabItem[]>(() => {
   if (!userId) return [];
 
   return [
-    { label: 'PROFILE', to: `/users/${userId}/` },
+    { label: 'PROFILE', to: `/users/${userId}` },
     { label: 'SKILLS', to: `/users/${userId}/skills` },
     { label: 'LANGUAGES', to: `/users/${userId}/languages` },
   ];
