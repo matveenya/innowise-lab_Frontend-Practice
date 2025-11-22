@@ -24,6 +24,15 @@ export const GET_CV_BY_ID: TypedDocumentNode<{ cv: Cv }, { cvId: string }> = gql
       name
       description
       education
+      user {
+        id
+        email
+        position_name
+        profile {
+          first_name
+          last_name
+        }
+      }
       projects {
         id
         project {

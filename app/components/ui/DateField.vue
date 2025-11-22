@@ -54,10 +54,7 @@ const datePickerPT = {
 .floating-label-group {
   position: relative;
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: stretch;
+  @include d-flex(flex-start, stretch, column);
 }
 
 .floating-label {
@@ -135,9 +132,7 @@ button.cv-datepicker-trigger {
   border: none;
   color: $color-text-secondary;
   cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  @include d-flex(center, center);
   z-index: 5;
 }
 
@@ -153,9 +148,7 @@ button.cv-datepicker-trigger {
 
 .cv-datepicker-header {
   padding: $space-sm;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  @include d-flex(space-between, center);
   border-bottom: $border-subtle;
   background-color: $color-primary;
   color: $color-text-primary;
@@ -196,9 +189,7 @@ button.cv-datepicker-trigger {
 }
 
 .cv-datepicker-day {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  @include d-flex(center, center);
   width: $space-3xl;
   height: $space-3xl;
   border-radius: $radius-rounded;
