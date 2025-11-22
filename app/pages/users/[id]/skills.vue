@@ -226,6 +226,8 @@ const deleteSelectedSkills = async () => {
 <style scoped lang="scss">
 .profile-skills {
   width: 100%;
+  max-width: $cv-details-width;
+  margin-inline: auto;
   padding-inline: $space-2xl;
   @include d-flex(space-between, center, column);
   gap: $space-lg;
