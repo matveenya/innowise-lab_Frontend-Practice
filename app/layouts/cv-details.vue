@@ -1,8 +1,12 @@
 <template>
   <NuxtLayout name="default">
     <div class="cv-details-layout">
-      <BaseBreadcrumb :items="breadcrumbItems" />
-      <BaseTabs :items="tabItems" />
+      <div class="cv-details-layout__header">
+        <div class="cv-details-layout__header-content">
+          <BaseBreadcrumb :items="breadcrumbItems" />
+          <BaseTabs :items="tabItems" />
+        </div>
+      </div>
 
       <main class="cv-details-layout__content">
         <slot />
@@ -47,7 +51,7 @@ const breadcrumbItems = computed<BreadcrumbItem[]>(() => {
     items.push({
       label: currentCv.value.name,
       to: { path: '/cvs/details', query: { id: currentCv.value.id } },
-      class: !isDetailsPage
+      class: isDetailsPage
         ? 'breadcrumb__highlight breadcrumb__highlight--static'
         : 'breadcrumb__highlight breadcrumb__highlight--link',
     });
@@ -77,6 +81,28 @@ const tabItems = computed<TabItem[]>(() => {
 .cv-details-layout {
   background-color: $color-primary;
   color: $color-text-primary;
-  padding-top: $space-lg;
+  height: 100%;
+  overflow-y: auto;
+  @include d-flex(flex-start, stretch, column);
+
+  &__header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: $color-primary;
+    width: 100%;
+  }
+
+  &__header-content {
+    padding-top: $space-lg;
+    padding-inline: $space-2xl;
+    max-width: $container-wide;
+    margin-inline: auto;
+  }
+
+  &__content {
+    flex: 1;
+    width: 100%;
+  }
 }
 </style>

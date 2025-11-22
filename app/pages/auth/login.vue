@@ -12,8 +12,6 @@
         <template #link-text>FORGOT PASSWORD</template>
       </FormAction>
     </form>
-
-    <AppToast />
   </div>
 </template>
 
@@ -21,32 +19,28 @@
 import { authSchema, type AuthSchema } from '~/utils/schemas/authValidationSchema';
 import { useForm } from 'vee-validate';
 import { toTypedSchema } from '@vee-validate/zod';
-import { useToast } from 'primevue/usetoast';
 
 const authStore = useAuthStore();
-const toast = useToast();
 
 definePageMeta({
   layout: 'auth',
 });
 
-const { handleSubmit, values } = useForm<AuthSchema>({
+const { handleSubmit, setFieldError } = useForm<AuthSchema>({
   validationSchema: toTypedSchema(authSchema),
 });
 
-const onSubmit = handleSubmit(async () => {
-  const success = await authStore.login({
-    email: values.email,
-    password: values.password,
-  });
-  if (success) {
-    navigateTo(`/users/${authStore.user?.id}`);
-  } else {
-    toast.add({
-      severity: 'error',
-      summary: 'Invalid email or password',
-      life: 3000,
+const onSubmit = handleSubmit(async values => {
+  try {
+    await authStore.login({
+      email: values.email,
+      password: values.password,
     });
+
+    navigateTo('/users');
+  } catch (error) {
+    console.error(error);
+    setFieldError('password', 'Incorrect password');
   }
 });
 </script>

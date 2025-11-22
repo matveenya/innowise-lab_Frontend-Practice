@@ -47,6 +47,7 @@ $button-outline-text: $color-text-muted;
 /* BUTTON SIZES */
 $button-width: 220px;
 $button-width-details: 410px;
+$button-width-sm: 140px;
 
 /* INPUT SIZES */
 $input-width-cvs: 320px;
@@ -70,6 +71,10 @@ $border-outline-active: 1px solid $color-secondary;
 $color-border-subtle: #565656;
 $border-outline-color: rgba(118, 118, 118, 0.5);
 $border-subtle: 1px solid $color-border-subtle;
+
+/* CHIPS */
+$color-chip-bg: rgba(255, 255, 255, 0.08);
+$color-chip-border: rgba(255, 255, 255, 0.1);
 
 /* OPACITY */
 $opacity-50: 0.5;

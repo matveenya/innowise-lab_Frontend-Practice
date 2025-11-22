@@ -80,7 +80,7 @@ const togglePasswordVisibility = (): void => {
     &:-webkit-autofill + .form-input__label {
       top: 0;
       left: $space-lg;
-      font-size: 0.75em;
+      font-size: $font-size-sm;
       transform: translateY(-50%);
       background-color: $color-primary;
       padding: 0 $space-xs;
@@ -120,7 +120,7 @@ const togglePasswordVisibility = (): void => {
     left: $space-lg;
     transform: translateY(-50%);
     font-size: $font-size-md;
-    color: rgba(255, 255, 255, 0.7);
+    color: rgba($color-text-primary, 0.7);
     pointer-events: none;
     transition: all 0.2s ease;
     z-index: 1;

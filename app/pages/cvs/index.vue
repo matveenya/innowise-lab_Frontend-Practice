@@ -10,31 +10,39 @@
       </Button>
     </div>
 
-    <CvsTable :cvs="filteredCvs" @open-menu="handleOpenMenu" @reset-search="searchTerm = ''" />
+    <CvsTable
+      :data="filteredCvs"
+      :columns="columns"
+      sort-field="name"
+      @reset-search="searchTerm = ''"
+    >
+      <template #actions="{ data }">
+        <button class="actions-button" @click="event => handleOpenMenu(event, data)">
+          <Icon name="mdi:dots-vertical" size="1.5em" mode="svg" />
+        </button>
+      </template>
+    </CvsTable>
 
-    <CvsActionMenu
-      ref="actionsMenu"
-      @details="handleDetails"
-      @delete="isDeleteModalVisible = true"
-    />
+    <CvsActionMenu ref="actionsMenu" :items="menuItems" />
 
     <ModalsCvCreateModal v-model:is-visible="isDialogVisible" @cv-created="refetchCvs" />
 
     <ModalsCvDeleteModal
       v-model:is-visible="isDeleteModalVisible"
-      :cv-id="selectedCv?.id"
-      :cv-name="selectedCv?.name"
+      :item-id="selectedCv?.id"
+      :item-name="selectedCv?.name"
       @cv-deleted="refetchCvs"
     />
   </section>
 </template>
 
 <script setup lang="ts">
-import { getCvs as getCvsService } from '~/services/cvs';
-import { createQueryAdapter } from '~/utils/apolloAdapters';
+import { ref, computed } from 'vue';
 import type { Cv } from 'cv-graphql';
-import CvsActionMenu from '~/components/cvs/ActionMenu.vue';
+import CvsActionMenu, { type ActionMenuItem } from '~/components/cvs/ActionMenu.vue';
 import Button from '~/components/ui/Button.vue';
+import { CVS_TABLE_COLUMNS } from '~/constants/cvs';
+import { useCvs } from '~/composables/useCvs';
 
 definePageMeta({
   middleware: 'auth',
@@ -42,34 +50,37 @@ definePageMeta({
 
 const isDialogVisible = ref(false);
 const isDeleteModalVisible = ref(false);
-const searchTerm = ref('');
 const selectedCv = ref<Cv | null>(null);
 const actionsMenu = ref<InstanceType<typeof CvsActionMenu> | null>(null);
 
-const { data: cvs, refetch: refetchCvs } = createQueryAdapter(getCvsService);
+const { filteredCvs, searchTerm, refetch: refetchCvs } = useCvs();
 
-const filteredCvs = computed(() => {
-  if (!cvs.value) return null;
+const columns = CVS_TABLE_COLUMNS;
 
-  const term = searchTerm.value.trim().toLowerCase();
-  if (!term) return cvs.value;
-
-  return cvs.value.filter(cv => cv.name.toLowerCase().includes(term));
-});
+const menuItems = computed<ActionMenuItem[]>(() => [
+  {
+    label: 'Details',
+    command: () => {
+      if (selectedCv.value) {
+        navigateTo({ path: '/cvs/details', query: { id: selectedCv.value.id } });
+      }
+    },
+  },
+  {
+    label: 'Delete CV',
+    command: () => {
+      isDeleteModalVisible.value = true;
+    },
+  },
+]);
 
 const handleOpenMenu = (event: Event, cv: Cv) => {
   selectedCv.value = cv;
   actionsMenu.value?.toggle(event);
 };
-
-const handleDetails = () => {
-  if (selectedCv.value) {
-    navigateTo({ path: '/cvs/details', query: { id: selectedCv.value.id } });
-  }
-};
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 .cvs-page {
   padding-left: $space-2xl;
   padding-top: $space-lg;
@@ -93,6 +104,20 @@ const handleDetails = () => {
       padding: $space-lg $space-6xl;
       border-radius: $radius-2xl;
     }
+  }
+}
+
+.actions-button {
+  background: transparent;
+  color: $color-text-secondary;
+  cursor: pointer;
+  border-radius: $radius-full;
+  padding: $space-xs;
+  border: none;
+  display: inline-flex;
+
+  &:hover {
+    background-color: $button-bg-disabled;
   }
 }
 </style>

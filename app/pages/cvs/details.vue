@@ -1,17 +1,21 @@
 <template>
   <section class="cv-details__content">
-    <form class="cv-form" @submit.prevent="handleUpdate">
-      <Input id="cv-name" v-model="name" label="Name" />
-      <Input id="cv-education" v-model="education" label="Education" />
-      <Textarea id="cv-description" v-model="description" label="Description" />
+    <form class="cv-form" @submit.prevent="onSubmit">
+      <FloatLabelInput name="name" label="Name" placeholder=" " type="text" />
+      <FloatLabelInput name="education" label="Education" placeholder=" " type="text" />
+      <Textarea name="description" label="Description" />
 
       <div class="cv-form__actions">
-        <Button variant="primary" type="submit" class="cv-form__button" :disabled="!isModified">
+        <Button
+          variant="primary"
+          type="submit"
+          class="cv-form__button"
+          :disabled="!meta.dirty || !meta.valid || isSubmitting"
+        >
           Update
         </Button>
       </div>
     </form>
-
     <AppToast />
   </section>
 </template>
@@ -19,94 +23,54 @@
 <script setup lang="ts">
 import Button from '~/components/ui/Button.vue';
 import Textarea from '~/components/ui/Textarea.vue';
-import { useToast } from 'primevue/usetoast';
-import { getCvs, updateCv } from '~/services/cvs';
-import { createQueryAdapter } from '~/utils/apolloAdapters';
+import { useForm } from 'vee-validate';
+import { toTypedSchema } from '@vee-validate/zod';
+import { cvSchema, type CvForm } from '~/utils/schemas/cvValidationSchema';
+import { useCv } from '~/composables/useCv';
+import { useCvDetails } from '~/composables/useCvDetails';
 
-definePageMeta({
-  layout: 'cv-details',
+definePageMeta({ layout: 'cv-details' });
+
+const { cv, cvId } = useCv();
+const { handleUpdateCv } = useCvDetails(cvId);
+
+const { handleSubmit, resetForm, meta, isSubmitting } = useForm<CvForm>({
+  validationSchema: toTypedSchema(cvSchema),
 });
 
-const route = useRoute();
-const toast = useToast();
-
-const name = ref('');
-const education = ref('');
-const description = ref('');
-
-const initialName = ref('');
-const initialEducation = ref('');
-const initialDescription = ref('');
-
-const { data: cvs } = createQueryAdapter(getCvs);
-
 watch(
-  [cvs, () => route.query.id],
-  ([newCvs, cvId]) => {
-    if (!newCvs || !cvId) return;
-
-    const foundCv = newCvs.find(cv => cv.id === cvId);
-
-    if (foundCv) {
-      name.value = foundCv.name || '';
-      education.value = foundCv.education || '';
-      description.value = foundCv.description || '';
-
-      initialName.value = foundCv.name || '';
-      initialEducation.value = foundCv.education || '';
-      initialDescription.value = foundCv.description || '';
+  cv,
+  newCv => {
+    if (newCv) {
+      resetForm({
+        values: {
+          name: newCv.name || '',
+          education: newCv.education || '',
+          description: newCv.description || '',
+        },
+      });
     }
   },
   { immediate: true }
 );
 
-const isModified = computed(() => {
-  return (
-    name.value.trim() !== initialName.value.trim() ||
-    education.value.trim() !== initialEducation.value.trim() ||
-    description.value.trim() !== initialDescription.value.trim()
-  );
-});
+const onSubmit = handleSubmit(async values => {
+  const success = await handleUpdateCv({
+    name: values.name,
+    education: values.education,
+    description: values.description,
+  });
 
-const handleUpdate = async () => {
-  const cvId = route.query.id?.toString();
-  if (!cvId) return;
-
-  try {
-    await updateCv({
-      cvId,
-      name: name.value,
-      education: education.value,
-      description: description.value,
-    });
-
-    initialName.value = name.value;
-    initialEducation.value = education.value;
-    initialDescription.value = description.value;
-
-    toast.add({
-      severity: 'success',
-      summary: 'CV was updated',
-      life: 3000,
-    });
-  } catch (error) {
-    console.error('Failed to update CV:', error);
-    toast.add({
-      severity: 'error',
-      summary: 'Failed to update CV',
-      life: 3000,
-    });
+  if (success) {
+    resetForm({ values });
   }
-};
+});
 </script>
 
 <style scoped lang="scss">
-.cv-details {
-  &__content {
-    @include container($cv-details-width);
-  }
+.cv-details__content {
+  @include container($cv-details-width);
 }
-
 .cv-form {
   @include d-flex(flex-start, stretch, column);
   gap: $space-3xl;
