@@ -44,7 +44,13 @@ const handleClick = () => {
 };
 
 const skillPT = computed(() => ({
-  root: { class: ['skill-bar-root', `type-${normalizedLevel.value}`] },
+  root: {
+    class: [
+      'skill-bar-root',
+      `type-${normalizedLevel.value}`,
+      { 'is-delete-selected': props.isSelected },
+    ],
+  },
   value: { class: 'skill-bar-value' },
 }));
 </script>
@@ -65,8 +71,6 @@ const skillPT = computed(() => ({
   transition: background-color 0.3s ease;
 
   &.is-selected-for-delete {
-    background-color: $color-novice-max !important;
-
     .skill-label {
       color: $color-text-primary !important;
     }
@@ -87,6 +91,10 @@ const skillPT = computed(() => ({
 }
 :deep(.skill-bar-value) {
   height: 100%;
+}
+
+:deep(.is-delete-selected) {
+  background-color: $color-novice-max !important;
 }
 
 $skill-colors: (
