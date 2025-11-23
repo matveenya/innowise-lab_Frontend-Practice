@@ -12,6 +12,12 @@ import type {
   RemoveCvProjectArgs,
   UpdateCvProjectResult,
   UpdateCvProjectArgs,
+  AddCvSkillResult,
+  AddCvSkillArgs,
+  UpdateCvSkillResult,
+  UpdateCvSkillArgs,
+  DeleteCvSkillResult,
+  DeleteCvSkillArgs,
 } from '../types';
 
 export const CREATE_CV: TypedDocumentNode<CreateCvResult, CreateCvArgs> = gql`
@@ -107,6 +113,42 @@ export const UPDATE_CV_PROJECT: TypedDocumentNode<UpdateCvProjectResult, UpdateC
         description
         environment
         responsibilities
+      }
+    }
+  }
+`;
+
+export const ADD_CV_SKILL: TypedDocumentNode<AddCvSkillResult, AddCvSkillArgs> = gql`
+  mutation AddCvSkill($skill: AddCvSkillInput!) {
+    addCvSkill(skill: $skill) {
+      id
+      skills {
+        name
+        mastery
+      }
+    }
+  }
+`;
+
+export const UPDATE_CV_SKILL: TypedDocumentNode<UpdateCvSkillResult, UpdateCvSkillArgs> = gql`
+  mutation UpdateCvSkill($skill: UpdateCvSkillInput!) {
+    updateCvSkill(skill: $skill) {
+      id
+      skills {
+        name
+        mastery
+      }
+    }
+  }
+`;
+
+export const DELETE_CV_SKILL: TypedDocumentNode<DeleteCvSkillResult, DeleteCvSkillArgs> = gql`
+  mutation DeleteCvSkill($skill: DeleteCvSkillInput!) {
+    deleteCvSkill(skill: $skill) {
+      id
+      skills {
+        name
+        mastery
       }
     }
   }

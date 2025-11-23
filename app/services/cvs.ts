@@ -7,6 +7,9 @@ import {
   ADD_CV_PROJECT,
   REMOVE_CV_PROJECT,
   UPDATE_CV_PROJECT,
+  ADD_CV_SKILL,
+  UPDATE_CV_SKILL,
+  DELETE_CV_SKILL,
 } from '~/graphql/mutations';
 import type {
   GetCvsResult,
@@ -24,6 +27,15 @@ import type {
   UpdateCvProjectInput,
   UpdateCvProjectResult,
   UpdateCvProjectArgs,
+  AddCvSkillInput,
+  AddCvSkillResult,
+  AddCvSkillArgs,
+  UpdateCvSkillInput,
+  UpdateCvSkillResult,
+  UpdateCvSkillArgs,
+  DeleteCvSkillInput,
+  DeleteCvSkillResult,
+  DeleteCvSkillArgs,
 } from '~/graphql/types';
 import type { FetchPolicy } from '@apollo/client';
 import type { UpdateCvInput, AddCvProjectInput, Cv } from 'cv-graphql';
@@ -100,4 +112,25 @@ export async function updateCvProject(project: UpdateCvProjectInput) {
     { project }
   );
   return result.updateCvProject;
+}
+
+export async function addCvSkill(skill: AddCvSkillInput) {
+  const result = await apolloMutation<AddCvSkillResult, AddCvSkillArgs>(ADD_CV_SKILL, {
+    skill,
+  });
+  return result.addCvSkill;
+}
+
+export async function updateCvSkill(skill: UpdateCvSkillInput) {
+  const result = await apolloMutation<UpdateCvSkillResult, UpdateCvSkillArgs>(UPDATE_CV_SKILL, {
+    skill,
+  });
+  return result.updateCvSkill;
+}
+
+export async function deleteCvSkill(skill: DeleteCvSkillInput) {
+  const result = await apolloMutation<DeleteCvSkillResult, DeleteCvSkillArgs>(DELETE_CV_SKILL, {
+    skill,
+  });
+  return result.deleteCvSkill;
 }
