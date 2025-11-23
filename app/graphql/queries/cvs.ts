@@ -33,6 +33,10 @@ export const GET_CV_BY_ID: TypedDocumentNode<{ cv: Cv }, { cvId: string }> = gql
           last_name
         }
       }
+      skills {
+        name
+        mastery
+      }
       projects {
         id
         project {
