@@ -5,12 +5,15 @@
     <section class="cv-preview-page__main-info">
       <PreviewInfoSide :education="cv.education" :domains="projectDomains" />
 
-      <section class="description-section">
-        <h3 class="description-title">{{ cv.name }}</h3>
-        <p class="description-text">
-          {{ cv.description }}
-        </p>
-      </section>
+      <div class="cv-preview-page__right-column">
+        <section class="description-section">
+          <h3 class="description-title">{{ cv.name }}</h3>
+          <p class="description-text">
+            {{ cv.description }}
+          </p>
+          <PreviewSkills v-if="groupedSkills.length" :groups="groupedSkills" />
+        </section>
+      </div>
     </section>
 
     <section class="cv-preview-page__projects">
@@ -30,11 +33,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, onMounted } from 'vue';
 import { useCv } from '~/composables/useCv';
+import { useReferencesStore } from '~/stores/references';
 import PreviewHeader from '~/components/cvs/PreviewHeader.vue';
 import PreviewInfoSide from '~/components/cvs/PreviewInfoSide.vue';
 import PreviewProjectCard from '~/components/cvs/PreviewProjectCard.vue';
+import PreviewSkills, { type SkillGroupDisplay } from '~/components/cvs/PreviewSkills.vue';
 import { generateCvPdf } from '~/utils/pdfGenerator';
 
 definePageMeta({
@@ -42,6 +47,11 @@ definePageMeta({
 });
 
 const { cv, loading } = useCv();
+const referencesStore = useReferencesStore();
+
+onMounted(() => {
+  referencesStore.loadReferences();
+});
 
 type UserWithPosition = {
   position_name?: string;
@@ -61,6 +71,27 @@ const projectDomains = computed(() => {
   return [...new Set(domains)].join(', ');
 });
 
+const groupedSkills = computed<SkillGroupDisplay[]>(() => {
+  if (!cv.value?.skills || referencesStore.skills.length === 0) return [];
+
+  const groups: Record<string, string[]> = {};
+
+  cv.value.skills.forEach(cvSkill => {
+    const refSkill = referencesStore.skills.find(s => s.name === cvSkill.name);
+    const categoryName = refSkill?.category_name || 'Other';
+
+    if (!groups[categoryName]) {
+      groups[categoryName] = [];
+    }
+    groups[categoryName].push(cvSkill.name);
+  });
+
+  return Object.entries(groups).map(([category, items]) => ({
+    category,
+    items,
+  }));
+});
+
 const exportToPdf = () => {
   if (!cv.value) return;
   generateCvPdf(cv.value, userPosition.value, projectDomains.value);
@@ -78,6 +109,11 @@ const exportToPdf = () => {
   &__main-info {
     @include grid-layout($sidebar-width-open 1fr, auto, $space-4xl);
     margin-bottom: $space-6xl;
+  }
+
+  &__right-column {
+    @include d-flex(flex-start, stretch, column);
+    gap: $space-lg;
   }
 
   .description-section {
