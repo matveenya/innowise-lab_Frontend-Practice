@@ -1,15 +1,15 @@
 <template>
   <main v-if="cv" class="cv-preview-page">
-    <PreviewHeader :user="cv.user" @export-pdf="exportToPdf" />
+    <PreviewHeader :user="cv?.user" @export-pdf="exportToPdf" />
 
     <section class="cv-preview-page__main-info">
-      <PreviewInfoSide :education="cv.education" :domains="projectDomains" />
+      <PreviewInfoSide :education="cv?.education" :domains="projectDomains" />
 
       <div class="cv-preview-page__right-column">
         <section class="description-section">
-          <h3 class="description-title">{{ cv.name }}</h3>
+          <h3 class="description-title">{{ cv?.name }}</h3>
           <p class="description-text">
-            {{ cv.description }}
+            {{ cv?.description }}
           </p>
           <PreviewSkills v-if="groupedSkills.length" :groups="groupedSkills" />
         </section>
@@ -21,13 +21,15 @@
 
       <div class="projects-list">
         <PreviewProjectCard
-          v-for="project in cv.projects"
+          v-for="project in cv?.projects"
           :key="project.id"
           :project="project"
           :user-position="userPosition"
         />
       </div>
     </section>
+
+    <ProfessionalSkillsTable v-if="groupedSkills.length" :groups="groupedSkills" />
   </main>
   <div v-else-if="loading" class="loading-state">Loading...</div>
 </template>
@@ -39,8 +41,13 @@ import { useReferencesStore } from '~/stores/references';
 import PreviewHeader from '~/components/cvs/PreviewHeader.vue';
 import PreviewInfoSide from '~/components/cvs/PreviewInfoSide.vue';
 import PreviewProjectCard from '~/components/cvs/PreviewProjectCard.vue';
-import PreviewSkills, { type SkillGroupDisplay } from '~/components/cvs/PreviewSkills.vue';
+import PreviewSkills from '~/components/cvs/PreviewSkills.vue';
+import ProfessionalSkillsTable, {
+  type SkillGroupDisplay,
+  type SkillItemDisplay,
+} from '~/components/cvs/ProfessionalSkillsTable.vue';
 import { generateCvPdf } from '~/utils/pdfGenerator';
+import { safeParseDate } from '~/utils/dateUtils';
 
 definePageMeta({
   layout: 'cv-details',
@@ -71,10 +78,55 @@ const projectDomains = computed(() => {
   return [...new Set(domains)].join(', ');
 });
 
+const calculateSkillStats = (
+  skillName: string
+): { experience: number | string; lastUsed: number | string } => {
+  if (!cv.value?.projects) return { experience: 0, lastUsed: '-' };
+
+  const matchedProjects = cv.value.projects.filter(p =>
+    p.environment?.some(env => env.toLowerCase() === skillName.toLowerCase())
+  );
+
+  if (matchedProjects.length === 0) return { experience: 0, lastUsed: '-' };
+
+  let totalDurationMs = 0;
+  let maxEndDate: Date | null = null;
+  let isCurrentlyUsed = false;
+
+  for (const p of matchedProjects) {
+    const start = safeParseDate(p.start_date);
+    if (!start) continue;
+
+    const end = safeParseDate(p.end_date);
+    const effectiveEnd = end || new Date();
+
+    if (!end) isCurrentlyUsed = true;
+
+    if (effectiveEnd > start) {
+      totalDurationMs += effectiveEnd.getTime() - start.getTime();
+    }
+
+    if (!maxEndDate || effectiveEnd > maxEndDate) {
+      maxEndDate = effectiveEnd;
+    }
+  }
+
+  const years = Math.floor(totalDurationMs / (1000 * 60 * 60 * 24 * 365));
+
+  const lastUsedYear = isCurrentlyUsed
+    ? new Date().getFullYear()
+    : (maxEndDate?.getFullYear() ?? '-');
+
+  return {
+    experience: years < 1 && totalDurationMs > 0 ? '< 1' : years,
+    lastUsed: lastUsedYear,
+  };
+};
+
 const groupedSkills = computed<SkillGroupDisplay[]>(() => {
   if (!cv.value?.skills || referencesStore.skills.length === 0) return [];
 
-  const groups: Record<string, string[]> = {};
+  const groups: Record<string, SkillItemDisplay[]> = {};
 
   cv.value.skills.forEach(cvSkill => {
     const refSkill = referencesStore.skills.find(s => s.name === cvSkill.name);
@@ -83,7 +135,14 @@ const groupedSkills = computed<SkillGroupDisplay[]>(() => {
     if (!groups[categoryName]) {
       groups[categoryName] = [];
     }
-    groups[categoryName].push(cvSkill.name);
+
+    const stats = calculateSkillStats(cvSkill.name);
+
+    groups[categoryName].push({
+      name: cvSkill.name,
+      experience: stats.experience,
+      lastUsed: stats.lastUsed,
+    });
   });
 
   return Object.entries(groups).map(([category, items]) => ({

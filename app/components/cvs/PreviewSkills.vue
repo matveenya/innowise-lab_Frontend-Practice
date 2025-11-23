@@ -2,20 +2,28 @@
   <div class="cv-preview-skills">
     <div v-for="group in groups" :key="group.category" class="skill-group">
       <h4 class="skill-group__title">{{ group.category }}</h4>
-      <p class="skill-group__list">{{ group.items.join(', ') }}.</p>
+      <p class="skill-group__list">{{ formatItems(group.items) }}.</p>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+export interface SkillItem {
+  name: string;
+}
+
 export interface SkillGroupDisplay {
   category: string;
-  items: string[];
+  items: string[] | SkillItem[];
 }
 
 defineProps<{
   groups: SkillGroupDisplay[];
 }>();
+
+const formatItems = (items: string[] | SkillItem[]) => {
+  return items.map(item => (typeof item === 'string' ? item : item.name)).join(', ');
+};
 </script>
 
 <style lang="scss" scoped>
