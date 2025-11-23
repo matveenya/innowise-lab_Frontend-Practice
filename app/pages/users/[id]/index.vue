@@ -470,6 +470,7 @@ onUnmounted(() => {
   color: $color-primary;
   font-size: $font-size-6xl;
   overflow: hidden;
+  object-fit: cover;
 
   img {
     width: 100%;
