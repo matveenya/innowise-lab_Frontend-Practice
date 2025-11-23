@@ -14,6 +14,12 @@ import type {
   DeleteProfileSkillArgs,
   UpdateProfileSkillResult,
   UpdateProfileSkillArgs,
+  AddProfileLanguageResult,
+  AddProfileLanguageArgs,
+  UpdateProfileLanguageResult,
+  UpdateProfileLanguageArgs,
+  DeleteProfileLanguageResult,
+  DeleteProfileLanguageArgs,
 } from '../types/user';
 
 export const UPDATE_USER_MUTATION: TypedDocumentNode<UpdateUserResult, UpdateUserArgs> = gql`
@@ -132,6 +138,51 @@ export const DELETE_PROFILE_SKILL_MUTATION: TypedDocumentNode<
         name
         categoryId
         mastery
+      }
+    }
+  }
+`;
+
+export const ADD_PROFILE_LANGUAGE_MUTATION: TypedDocumentNode<
+  AddProfileLanguageResult,
+  AddProfileLanguageArgs
+> = gql`
+  mutation AddProfileLanguage($language: AddProfileLanguageInput!) {
+    addProfileLanguage(language: $language) {
+      id
+      languages {
+        name
+        proficiency
+      }
+    }
+  }
+`;
+
+export const UPDATE_PROFILE_LANGUAGE_MUTATION: TypedDocumentNode<
+  UpdateProfileLanguageResult,
+  UpdateProfileLanguageArgs
+> = gql`
+  mutation UpdateProfileLanguage($language: UpdateProfileLanguageInput!) {
+    updateProfileLanguage(language: $language) {
+      id
+      languages {
+        name
+        proficiency
+      }
+    }
+  }
+`;
+
+export const DELETE_PROFILE_LANGUAGE_MUTATION: TypedDocumentNode<
+  DeleteProfileLanguageResult,
+  DeleteProfileLanguageArgs
+> = gql`
+  mutation DeleteProfileLanguage($language: DeleteProfileLanguageInput!) {
+    deleteProfileLanguage(language: $language) {
+      id
+      languages {
+        name
+        proficiency
       }
     }
   }

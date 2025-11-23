@@ -15,6 +15,9 @@ import {
   ADD_PROFILE_SKILL_MUTATION,
   DELETE_PROFILE_SKILL_MUTATION,
   UPDATE_PROFILE_SKILL_MUTATION,
+  ADD_PROFILE_LANGUAGE_MUTATION,
+  UPDATE_PROFILE_LANGUAGE_MUTATION,
+  DELETE_PROFILE_LANGUAGE_MUTATION,
 } from '~/graphql/mutations';
 import type {
   GetUserByIdResult,
@@ -36,6 +39,12 @@ import type {
   DeleteProfileSkillArgs,
   UpdateProfileSkillResult,
   UpdateProfileSkillArgs,
+  AddProfileLanguageResult,
+  AddProfileLanguageArgs,
+  UpdateProfileLanguageResult,
+  UpdateProfileLanguageArgs,
+  DeleteProfileLanguageResult,
+  DeleteProfileLanguageArgs,
 } from '~/graphql/types';
 
 export async function getUsers() {
@@ -138,4 +147,31 @@ export async function deleteProfileSkill(args: DeleteProfileSkillArgs) {
   );
 
   return result.deleteProfileSkill;
+}
+
+export async function addProfileLanguage(args: AddProfileLanguageArgs) {
+  const result = await apolloMutation<AddProfileLanguageResult, AddProfileLanguageArgs>(
+    ADD_PROFILE_LANGUAGE_MUTATION,
+    args
+  );
+
+  return result.addProfileLanguage;
+}
+
+export async function updateProfileLanguage(args: UpdateProfileLanguageArgs) {
+  const result = await apolloMutation<UpdateProfileLanguageResult, UpdateProfileLanguageArgs>(
+    UPDATE_PROFILE_LANGUAGE_MUTATION,
+    args
+  );
+
+  return result.updateProfileLanguage;
+}
+
+export async function deleteProfileLanguage(args: DeleteProfileLanguageArgs) {
+  const result = await apolloMutation<DeleteProfileLanguageResult, DeleteProfileLanguageArgs>(
+    DELETE_PROFILE_LANGUAGE_MUTATION,
+    args
+  );
+
+  return result.deleteProfileLanguage;
 }

@@ -10,6 +10,9 @@ import type {
   AddProfileSkillInput,
   DeleteProfileSkillInput,
   UpdateProfileSkillInput,
+  AddProfileLanguageInput,
+  UpdateProfileLanguageInput,
+  DeleteProfileLanguageInput,
 } from 'cv-graphql';
 
 export type GetUsersResult = {
@@ -88,6 +91,30 @@ export type UpdateProfileSkillArgs = {
   skill: UpdateProfileSkillInput;
 };
 
+export type AddProfileLanguageResult = {
+  addProfileLanguage: Profile;
+};
+
+export type AddProfileLanguageArgs = {
+  language: AddProfileLanguageInput;
+};
+
+export type UpdateProfileLanguageResult = {
+  updateProfileLanguage: Profile;
+};
+
+export type UpdateProfileLanguageArgs = {
+  language: UpdateProfileLanguageInput;
+};
+
+export type DeleteProfileLanguageResult = {
+  deleteProfileLanguage: Profile;
+};
+
+export type DeleteProfileLanguageArgs = {
+  language: DeleteProfileLanguageInput;
+};
+
 export type {
   User,
   UpdateUserInput,
@@ -96,4 +123,7 @@ export type {
   AddProfileSkillInput,
   DeleteProfileSkillInput,
   UpdateProfileSkillInput,
+  AddProfileLanguageInput,
+  UpdateProfileLanguageInput,
+  DeleteProfileLanguageInput,
 };
