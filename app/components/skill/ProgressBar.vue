@@ -1,7 +1,7 @@
 <template>
   <button
     class="skill-container"
-    :class="{ 'is-selected-for-delete': isSelected }"
+    :class="{ 'is-selected-for-delete': isSelected, 'is-readonly': readonly }"
     @click="handleClick"
   >
     <ProgressBar
@@ -24,6 +24,7 @@ const props = defineProps<{
   skillLabel: string;
   isDeleteMode?: boolean;
   isSelected?: boolean;
+  readonly?: boolean;
 }>();
 
 const emit = defineEmits(['click']);
@@ -74,7 +75,14 @@ const skillPT = computed(() => ({
     }
   }
 
-  &:hover {
+  &.is-readonly {
+    cursor: default;
+    &:hover {
+      background-color: transparent;
+    }
+  }
+
+  &:not(.is-readonly):hover {
     background-color: $button-outline-hover;
   }
   span {
