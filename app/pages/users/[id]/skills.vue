@@ -16,6 +16,7 @@
               :skill-label="skill.name"
               :is-delete-mode="isDeleteMode"
               :is-selected="skillsToDelete.includes(skill.id)"
+              :readonly="!isMyProfile"
               @click="handleSkillClick(skill)"
             />
           </div>
@@ -23,6 +24,7 @@
       </div>
     </div>
     <div
+      v-if="isMyProfile"
       class="profile-skills__actions"
       :class="{ 'profile-skills__actions--centered': selectedSkills.length === 0 }"
     >
@@ -91,10 +93,13 @@ definePageMeta({
 });
 
 const route = useRoute();
+const authStore = useAuthStore();
 const referencesStore = useReferencesStore();
 const toast = useToast();
 const modalAddSkill = ref<InstanceType<typeof ModalAddSkill> | null>(null);
 const modalUpdateSkill = ref<InstanceType<typeof ModalUpdateSkill> | null>(null);
+
+const isMyProfile = computed(() => authStore.user?.id === route.params.id);
 
 const selectedSkills = ref<Skill[]>([]);
 const skillLevels = ref<Record<string, Mastery>>({});
@@ -210,6 +215,8 @@ const toggleSkillDeletion = (skillId: string) => {
 };
 
 const handleSkillClick = (skill: Skill) => {
+  if (!isMyProfile.value) return;
+
   if (isDeleteMode.value) {
     toggleSkillDeletion(skill.id);
   } else {
