@@ -1,11 +1,24 @@
 import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
 import { formatDateNumeric } from '~/utils/dateUtils';
 import type { Cv } from 'cv-graphql';
+
+export interface SkillItemDisplay {
+  name: string;
+  experience: number | string;
+  lastUsed: number | string;
+}
+
+export interface SkillGroupDisplay {
+  category: string;
+  items: SkillItemDisplay[];
+}
 
 export const generateCvPdf = (
   cvData: Cv,
   userPosition: string | undefined,
-  projectDomains: string
+  projectDomains: string,
+  skillsData: SkillGroupDisplay[] = []
 ) => {
   const doc = new jsPDF({
     orientation: 'portrait',
@@ -18,6 +31,10 @@ export const generateCvPdf = (
 
   const colorPrimary = 'rgb(53, 53, 53)';
   const colorSecondary = 'rgb(197, 48, 49)';
+
+  const colorSecondaryRGB = [197, 48, 49] as [number, number, number];
+  const colorPrimaryRGB = [53, 53, 53] as [number, number, number];
+  const colorBorderRGB = [200, 200, 200] as [number, number, number];
 
   const fontName = 'helvetica';
 
@@ -202,6 +219,76 @@ export const generateCvPdf = (
       doc.setDrawColor(colorSecondary);
       doc.setLineWidth(0.3);
       doc.line(lineX, projectContentStart - 2, lineX, maxProjY);
+    });
+  }
+
+  if (skillsData && skillsData.length > 0) {
+    doc.addPage();
+
+    doc.setFont(fontName, 'normal');
+    doc.setFontSize(sizeSection);
+    doc.setTextColor(colorPrimary);
+    doc.text('Professional skills', margin, 20);
+
+    const tableBody: (string | number)[][] = [];
+
+    skillsData.forEach(group => {
+      group.items.forEach(skill => {
+        tableBody.push([group.category, skill.name, skill.experience, skill.lastUsed]);
+      });
+    });
+
+    autoTable(doc, {
+      startY: 30,
+      margin: { left: margin, right: margin },
+      head: [
+        [
+          { content: 'SKILLS', colSpan: 2, styles: { halign: 'left' } },
+          'EXPERIENCE\nIN YEARS',
+          'LAST USED',
+        ],
+      ],
+      body: tableBody,
+      theme: 'plain',
+      styles: {
+        font: fontName,
+        fontSize: 10,
+        cellPadding: 3,
+        valign: 'middle',
+        textColor: colorPrimaryRGB,
+        lineWidth: 0,
+      },
+      headStyles: {
+        fontStyle: 'bold',
+        textColor: colorPrimaryRGB,
+        valign: 'bottom',
+        lineWidth: 0,
+      },
+      columnStyles: {
+        0: { textColor: colorSecondaryRGB, fontStyle: 'normal', cellWidth: 50 },
+        1: { textColor: colorPrimaryRGB, fontStyle: 'normal' },
+        2: { halign: 'center', cellWidth: 30 },
+        3: { halign: 'center', cellWidth: 30 },
+      },
+      didParseCell: function (data) {
+        if (data.section === 'head') {
+          data.cell.styles.lineWidth = { bottom: 0.5 };
+          data.cell.styles.lineColor = colorSecondaryRGB;
+        }
+        if (data.section === 'body') {
+          data.cell.styles.lineWidth = { bottom: 0.1 };
+          data.cell.styles.lineColor = colorBorderRGB;
+        }
+      },
+      willDrawCell: function (data) {
+        if (
+          data.section === 'body' &&
+          data.row.index === tableBody.length - 1 &&
+          data.cell.styles.lineWidth
+        ) {
+          data.cell.styles.lineWidth = 0;
+        }
+      },
     });
   }
 

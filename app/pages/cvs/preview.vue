@@ -153,7 +153,7 @@ const groupedSkills = computed<SkillGroupDisplay[]>(() => {
 
 const exportToPdf = () => {
   if (!cv.value) return;
-  generateCvPdf(cv.value, userPosition.value, projectDomains.value);
+  generateCvPdf(cv.value, userPosition.value, projectDomains.value, groupedSkills.value);
 };
 </script>
 
