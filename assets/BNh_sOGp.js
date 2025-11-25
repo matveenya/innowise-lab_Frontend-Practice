@@ -1,0 +1,1 @@
+import{i as u}from"./wQxiObIx.js";import{c as d}from"./C3lKgcCv.js";import{an as i,m as e}from"./DMjsBP5e.js";function p(){const t=i(),r=e(()=>t.query.id),{data:o,loading:a,error:c,refetch:s}=d(u,{variables:e(()=>({cvId:r.value}))});return{cv:o,cvId:r,loading:a,error:c,refetch:s}}export{p as u};

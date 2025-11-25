@@ -1,0 +1,1 @@
+import{R as e,a as o}from"./CbWjMEUn.js";import{o as i,s as r}from"./CbIJKDGP.js";const t=i({name:r({required_error:o}).min(1,o),education:r().optional(),description:r({required_error:e}).min(1,e)});export{t as c};

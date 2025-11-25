@@ -1,0 +1,1 @@
+import{g as a,j as n,n as s,c as o,o as r}from"./DMjsBP5e.js";const m=a({__name:"index",async setup(_){let e,t;return[e,t]=n(()=>s("/users")),await e,t(),(c,i)=>(r(),o("div"))}});export{m as default};
