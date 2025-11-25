@@ -1,5 +1,9 @@
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
+  app: {
+    baseURL: process.env.NODE_ENV === 'production' ? '/innowise-lab_Frontend-Practice/' : '/',
+    buildAssetsDir: 'assets',
+  },
   devtools: { enabled: true },
   modules: [
     '@nuxt/eslint',
