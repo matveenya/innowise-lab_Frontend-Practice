@@ -1,0 +1,82 @@
+<template>
+  <div class="auth-content">
+    <h2 class="auth-content__title">Register now</h2>
+    <p class="auth-content__subtitle">Welcome! Sign up to continue</p>
+
+    <form class="auth-form" @submit.prevent="onSubmit">
+      <FloatLabelInput name="email" type="email" placeholder="example@email.com" label="Email" />
+      <PasswordInput name="password" label="Password" placeholder="Enter your password" />
+
+      <FormAction link-to="/auth/login">
+        <template #button-text>CREATE ACCOUNT</template>
+        <template #link-text>I HAVE AN ACCOUNT</template>
+      </FormAction>
+    </form>
+
+    <AppToast />
+  </div>
+</template>
+
+<script setup lang="ts">
+import { authSchema, type AuthSchema } from '~/utils/schemas/authValidationSchema';
+import { useForm } from 'vee-validate';
+import { toTypedSchema } from '@vee-validate/zod';
+import { useToast } from 'primevue/usetoast';
+
+const authStore = useAuthStore();
+const toast = useToast();
+
+definePageMeta({
+  layout: 'auth',
+});
+
+const { handleSubmit, values } = useForm<AuthSchema>({
+  validationSchema: toTypedSchema(authSchema),
+});
+
+const onSubmit = handleSubmit(async () => {
+  const result = await authStore.signup({
+    email: values.email,
+    password: values.password,
+  });
+
+  if (result?.success) {
+    navigateTo('/users');
+  } else {
+    const message =
+      result?.error && result.error.toLowerCase().includes('exist')
+        ? 'User with this email already exists'
+        : 'Failed to sign up. Please check your data';
+
+    toast.add({
+      severity: 'error',
+      summary: message,
+      life: 3000,
+    });
+  }
+});
+</script>
+
+<style scoped lang="scss">
+.auth-content {
+  text-align: center;
+
+  &__title {
+    font-size: $font-size-4xl;
+    font-weight: $font-weight-bold;
+    color: $color-text-primary;
+    margin-bottom: $space-xl;
+  }
+
+  &__subtitle {
+    font-size: $font-size-md;
+    color: $color-text-secondary;
+    margin-bottom: $space-5xl;
+  }
+}
+
+.auth-form {
+  @include d-flex(center, center, column);
+  gap: $space-xl;
+}
+</style>
